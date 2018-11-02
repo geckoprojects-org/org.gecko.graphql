@@ -1,0 +1,4 @@
+Private-Package: graphql.servlet.internal
+Export-Package: \
+	graphql.servlet,\
+	org.gecko.whiteboard.graphql.annotation

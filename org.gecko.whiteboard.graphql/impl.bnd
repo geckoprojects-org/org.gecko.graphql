@@ -1,0 +1,3 @@
+Private-Package: \
+	org.gecko.whiteboard.graphql,\
+	org.gecko.whiteboard.graphql.service

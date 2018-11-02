@@ -1,0 +1,23 @@
+-buildpath: \
+	osgi.annotation;version=7.0,\
+	osgi.core;version=7.0,\
+	osgi.cmpn;version=7.0,\
+	com.graphql-java,\
+	com.graphql-java-kickstart.graphql-java-servlet,\
+	org.apache.felix.http.servlet-api,\
+	javax.websocket-api,\
+	slf4j.api
+
+-testpath: \
+	${junit}
+
+javac.source: 1.8
+javac.target: 1.8
+
+Bundle-Version: 1.0.0.SNAPSHOT
+
+Bundle-Copyright: Data In Motion Consulting GmbH
+Bundle-License: Eclipse Public License v1.0
+Bundle-Vendor: Data In Motion Consulting GmbH
+
+-sub: *.bnd
