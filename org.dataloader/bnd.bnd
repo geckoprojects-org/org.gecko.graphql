@@ -1,6 +1,0 @@
--buildpath: com.graphql-java:java-dataloader
-
--resourceonly: true
-
-Export-Package: *
-Bundle-Version: 2.2.0

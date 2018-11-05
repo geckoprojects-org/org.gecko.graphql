@@ -56,9 +56,6 @@ public class ExampleIntegrationTest extends AbstractOSGiTest{
 		
 		assertTrue(serviceChecker.waitCreate());
 		
-		CountDownLatch latch = new CountDownLatch(1);
-		
-		latch.await(1, TimeUnit.MINUTES);
 		
 	}
 

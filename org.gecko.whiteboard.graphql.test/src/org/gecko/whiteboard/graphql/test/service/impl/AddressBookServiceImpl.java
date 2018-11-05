@@ -31,7 +31,9 @@ import org.osgi.service.component.annotations.Component;
  * @author jalbert
  * @since 2 Nov 2018
  */
-@Component(property="graphql.service.name=TestService")
+@Component(
+		property="graphql.service.name=TestService"
+		)
 public class AddressBookServiceImpl implements AddressBookService{
 
 	List<Address> addresses = new LinkedList<Address>();
