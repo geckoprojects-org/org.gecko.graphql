@@ -87,7 +87,7 @@ import graphql.servlet.NoOpInstrumentationProvider;
 @HttpWhiteboardServletPattern(DEFAULT_SERVLET_PATTERN)
 @RequireHttpWhiteboard
 @Capability(namespace=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name= OSGI_GRAPHQL_CAPABILITY_NAME, version="1.0.0")
-public class OsgiGraphQLWhiteboard extends AbstractGraphQLHttpServlet implements ServiceTrackerCustomizer<Object, Object>, GraphqlServiceRuntime {
+public class OsgiGraphqlWhiteboard extends AbstractGraphQLHttpServlet implements ServiceTrackerCustomizer<Object, Object>, GraphqlServiceRuntime {
 
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
@@ -165,10 +165,10 @@ public class OsgiGraphQLWhiteboard extends AbstractGraphQLHttpServlet implements
     }
 
     @Activate
-    public OsgiGraphQLWhiteboard(ComponentContext componentContext) throws InvalidSyntaxException {
+    public OsgiGraphqlWhiteboard(ComponentContext componentContext) throws InvalidSyntaxException {
     	bundleContext = componentContext.getBundleContext();
     	copyProperties(componentContext);
-    	serviceTracker = new ServiceTracker<Object, Object>(bundleContext, FrameworkUtil.createFilter("(" + GRAPHQL_WHITEBOARD_SERVICE + "=true)"), this);
+    	serviceTracker = new ServiceTracker<Object, Object>(bundleContext, FrameworkUtil.createFilter("(|(" + GRAPHQL_WHITEBOARD_QUERY_SERVICE + "=*)(" + GRAPHQL_WHITEBOARD_MUTATION_SERVICE + "=*))"), this);
     	serviceTracker.open();
     	
     	updateSchema();
@@ -226,27 +226,28 @@ public class OsgiGraphQLWhiteboard extends AbstractGraphQLHttpServlet implements
             types.addAll(typesProvider.getTypes());
         }
 
-        GraphQLObjectType mutationType = null;
+        final GraphQLObjectType.Builder mutationTypeBuilder = GraphQLObjectType.newObject().name("Mutation").description("Root mutation type");
 
         if (!mutationProviders.isEmpty()) {
-            final GraphQLObjectType.Builder mutationTypeBuilder = GraphQLObjectType.newObject().name("Mutation").description("Root mutation type");
 
             for (GraphQLMutationProvider provider : mutationProviders) {
                 provider.getMutations().forEach(mutationTypeBuilder::field);
             }
 
-            if (!mutationTypeBuilder.build().getFieldDefinitions().isEmpty()) {
-                mutationType = mutationTypeBuilder.build();
-            }
+//            if (!mutationTypeBuilder.build().getFieldDefinitions().isEmpty()) {
+//                mutationType = mutationTypeBuilder.build();
+//            }
         }
         
         if(!serviceReferences.isEmpty()) {
         	serviceReferences.entrySet().stream()
-        		.map(e -> new ServiceSchemaBuilder(e.getKey(), e.getValue(), queryTypeBuilder, types, typeBuilder))
+        		.map(e -> new ServiceSchemaBuilder(e.getKey(), e.getValue(), queryTypeBuilder, mutationTypeBuilder, types, typeBuilder))
         		.forEach(sb -> sb.build());
         }
         try {
-        	this.schemaProvider = new DefaultGraphQLSchemaProvider(GraphQLSchema.newSchema().query(queryTypeBuilder.build()).mutation(mutationType).additionalTypes(types).build());
+        	GraphQLObjectType query = queryTypeBuilder.build();
+        	GraphQLObjectType mutation = mutationTypeBuilder.build();
+        	this.schemaProvider = new DefaultGraphQLSchemaProvider(GraphQLSchema.newSchema().query(query).mutation(mutation.getFieldDefinitions().isEmpty() ? null : mutation).additionalTypes(types).build());
         	updateRuntime();
         	log.info("Schema generation sucessfull");
         } catch(AssertException e) {

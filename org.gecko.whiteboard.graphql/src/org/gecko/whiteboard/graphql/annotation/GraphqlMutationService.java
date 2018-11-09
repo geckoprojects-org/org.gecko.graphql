@@ -30,7 +30,7 @@ import org.osgi.service.component.annotations.ComponentPropertyType;
  * @since 5 Nov 2018
  */
 @ComponentPropertyType
-public @interface GraphqlService {
+public @interface GraphqlMutationService {
 
 	/**
 	 * Prefix for the property name. This value is prepended to each property
@@ -38,5 +38,5 @@ public @interface GraphqlService {
 	 */
 	String PREFIX_ = "osgi.";
 
-	// This is a marker annotation.
+	public String[] value() default {"*"};
 }

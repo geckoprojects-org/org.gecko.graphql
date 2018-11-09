@@ -27,6 +27,8 @@ import org.gecko.whiteboard.graphql.annotation.GraphqlArgument;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceObjects;
 import org.osgi.framework.ServiceReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
@@ -46,44 +48,58 @@ import graphql.schema.StaticDataFetcher;
  */
 public class ServiceSchemaBuilder {
 
-	private ServiceReference<Object> serviceReference;
-	private ServiceObjects<Object> serviceObjects;
-	private Builder queryTypeBuilder;
-	private Set<GraphQLType> types;
+	private final ServiceReference<Object> serviceReference;
+	private final ServiceObjects<Object> serviceObjects;
+	private final Builder queryTypeBuilder;
+	private final Builder mutationTypeBuilder;
+	private final Set<GraphQLType> types;
 	
-	private Map<Object, GraphQLType> typeMapping = new HashMap<Object, GraphQLType>();
-	private List<GraphqlSchemaTypeBuilder> schemaTypeBuilder = new LinkedList<>();
-	private GraphqlSchemaTypeBuilder defaultBuilder = new DefaultGraphqlTypeBuilder();
+	private final Map<Object, GraphQLType> typeMapping = new HashMap<Object, GraphQLType>();
+	private final List<GraphqlSchemaTypeBuilder> schemaTypeBuilder = new LinkedList<>();
+	private final GraphqlSchemaTypeBuilder defaultBuilder = new DefaultGraphqlTypeBuilder();
+	
+	private static final Logger LOG = LoggerFactory.getLogger(ServiceSchemaBuilder.class);
 	
 	/**
 	 * Creates a new instance.
 	 * @param serviceReference
 	 * @param serviceObjects
 	 * @param queryTypeBuilder
+	 * @param mutationTypeBuilder 
 	 * @param types
 	 * @param typeBuilder 
 	 */
 	public ServiceSchemaBuilder(ServiceReference<Object> serviceReference, ServiceObjects<Object> serviceObjects, Builder queryTypeBuilder,
-			Set<GraphQLType> types, List<GraphqlSchemaTypeBuilder> typeBuilder) {
+			Builder mutationTypeBuilder, Set<GraphQLType> types, List<GraphqlSchemaTypeBuilder> typeBuilder) {
 				this.serviceReference = serviceReference;
 				this.serviceObjects = serviceObjects;
 				this.queryTypeBuilder = queryTypeBuilder;
+				this.mutationTypeBuilder = mutationTypeBuilder;
 				this.types = types;
 				types.forEach(type -> typeMapping.put(type.getName(), type));
 				schemaTypeBuilder.addAll(typeBuilder);
 	}
 
 	/**
-	 * @return
+	 * Builds the query and mutation Schema
 	 */
 	public void build() {
 		Object service = serviceObjects.getService();
 		try {
 			List<Class<?>> interfaces = GraphqlSchemaTypeBuilder.getAllInterfaces(service.getClass());
 			for(Class<?> curInterface : interfaces) {
-				if(isDeclaredInterface(curInterface, serviceReference)) {
-					String name = getServiceName(serviceReference, curInterface);
+				boolean isQuery = isDeclaredQueryInterface(curInterface, serviceReference);
+				boolean isMutation = isDeclaredMutationInterface(curInterface, serviceReference);
+				if(isQuery && isMutation) {
+					LOG.warn("The Interace {} is marked as query and mutation. You must chose one. The Interface will be ignored", curInterface.getName());
+					continue;
+				}
+				if(isQuery) {
+					String name = getQueryName(serviceReference, curInterface);
 					queryTypeBuilder.field(GraphqlSchemaTypeBuilder.createReferenceField(name, new StaticDataFetcher(serviceObjects), createService(name, curInterface, typeMapping)));
+				} else if (isMutation){
+					String name = getMutationName(serviceReference, curInterface);
+					mutationTypeBuilder.field(GraphqlSchemaTypeBuilder.createReferenceField(name, new StaticDataFetcher(serviceObjects), createService(name, curInterface, typeMapping)));
 				}
 			}
 			types.addAll(typeMapping.values());
@@ -97,15 +113,59 @@ public class ServiceSchemaBuilder {
 	}
 	
 	/**
+	 * Decides if the Interface should be handled as a Query 
 	 * @param curInterface
 	 * @param serviceReference2
 	 * @return
 	 */
-	private boolean isDeclaredInterface(Class<?> curInterface, ServiceReference<Object> serviceReference) {
+	private boolean isDeclaredQueryInterface(Class<?> curInterface, ServiceReference<Object> serviceReference) {
+		return isDeclaredInterfaceForProperty(curInterface, serviceReference, GeckoGraphQLConstants.GRAPHQL_WHITEBOARD_QUERY_SERVICE);
+	}
+
+	/**
+	 * Decides if the Interface should be handled as a Mutation 
+	 * @param curInterface
+	 * @param serviceReference
+	 * @return
+	 */
+	private boolean isDeclaredMutationInterface(Class<?> curInterface, ServiceReference<Object> serviceReference) {
+		return isDeclaredInterfaceForProperty(curInterface, serviceReference, GeckoGraphQLConstants.GRAPHQL_WHITEBOARD_MUTATION_SERVICE);
+	}
+
+	/**
+	 * Looks if the given Interfacce is mentioned in the given Service property 
+	 * @param curInterface
+	 * @param serviceReference
+	 * @return
+	 */
+	private boolean isDeclaredInterfaceForProperty(Class<?> curInterface, ServiceReference<Object> serviceReference, String property) {
 		String[] objectClasses = (String[]) serviceReference.getProperty(Constants.OBJECTCLASS);
-		
+		String[] queryInterfaces = (String[]) serviceReference.getProperty(property);
+		if(queryInterfaces == null) {
+			return false;
+		}
 		for(String objectClass : objectClasses) {
-			if(curInterface.getName().equals(objectClass)) {
+			String intefaceName = curInterface.getName();
+			if(intefaceName.equals(objectClass) && containsInterface(queryInterfaces, intefaceName)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	
+	
+	/**
+	 * @param queryInterfaces
+	 * @param intefaceName
+	 * @return
+	 */
+	private boolean containsInterface(String[] interfaces, String intefaceName) {
+		if(interfaces[0] == "*") {
+			return true;
+		}
+		for(String name : interfaces) {
+			if(intefaceName.equals(name)) {
 				return true;
 			}
 		}
@@ -116,8 +176,21 @@ public class ServiceSchemaBuilder {
 	 * @param serviceReference2
 	 * @return
 	 */
-	private String getServiceName(ServiceReference<Object> serviceReference, Class<?> theInterface) {
-		String name = (String) serviceReference.getProperty(GeckoGraphQLConstants.GRAPHQL_SERVICE_NAME);
+	private String getQueryName(ServiceReference<Object> serviceReference, Class<?> theInterface) {
+		String name = (String) serviceReference.getProperty(GeckoGraphQLConstants.GRAPHQL_QUERY_SERVICE_NAME);
+		if(name == null) {
+			name = theInterface.getSimpleName(); 
+		}
+		return name;
+	}
+
+	/**
+	 * @param serviceReference2
+	 * @return
+	 */
+	private String getMutationName(ServiceReference<Object> serviceReference, Class<?> theInterface) {
+		String name = (String) serviceReference.getProperty(GeckoGraphQLConstants.GRAPHQL_MUTATION_SERVICE_NAME);
+		
 		if(name == null) {
 			name = theInterface.getSimpleName(); 
 		}

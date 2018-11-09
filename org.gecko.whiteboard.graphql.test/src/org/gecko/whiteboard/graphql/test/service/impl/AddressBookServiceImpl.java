@@ -18,9 +18,10 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.gecko.whiteboard.graphql.annotation.GraphqlArgument;
-import org.gecko.whiteboard.graphql.annotation.GraphqlService;
-import org.gecko.whiteboard.graphql.annotation.GraphqlServiceName;
+import org.gecko.whiteboard.graphql.annotation.GraphqlMutationService;
+import org.gecko.whiteboard.graphql.annotation.GraphqlMutationServiceName;
+import org.gecko.whiteboard.graphql.annotation.GraphqlQueryService;
+import org.gecko.whiteboard.graphql.annotation.GraphqlQueryServiceName;
 import org.gecko.whiteboard.graphql.test.dto.Address;
 import org.gecko.whiteboard.graphql.test.dto.Contact;
 import org.gecko.whiteboard.graphql.test.dto.ContactType;
@@ -38,8 +39,10 @@ import org.osgi.service.component.annotations.Component;
  */
 @Component(
 		)
-//@GraphqlServiceName("TestService")
-@GraphqlService
+@GraphqlQueryServiceName("TestQuery")
+@GraphqlMutationServiceName("TestMutation")
+@GraphqlQueryService(value ="org.gecko.whiteboard.graphql.test.service.api.AddressBookService")
+@GraphqlMutationService(value = "org.gecko.whiteboard.graphql.test.service.api.AnotherInterface")
 public class AddressBookServiceImpl implements AddressBookService, AnotherInterface{
 
 	List<Address> addresses = new LinkedList<Address>();

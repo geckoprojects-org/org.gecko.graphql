@@ -25,19 +25,18 @@ import org.osgi.service.component.annotations.ComponentPropertyType;
 @Retention(CLASS)
 @Target({ TYPE, PACKAGE })
 /**
- * Sets the {@link GeckoGraphQLConstants#GRAPHQL_WHITEBOARD_SERVICE_NAME} constant, and thus sets a name for the Service in the schema.
+ * Acts as a Marker, so a GraphQLWhiteboard can pick up the Service. A name is required to be used in the GraphQL Schema.
  * @author Juergen Albert
  * @since 5 Nov 2018
  */
 @ComponentPropertyType
-public @interface GraphqlServiceName {
+public @interface GraphqlQueryService {
 
 	/**
 	 * Prefix for the property name. This value is prepended to each property
 	 * name.
 	 */
-	String PREFIX_ = "osgi.";
-
-	public String value();
-	
+ 	String PREFIX_ = "osgi.";
+ 	
+	public String[] value() default {"*"};
 }

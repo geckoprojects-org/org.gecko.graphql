@@ -34,10 +34,16 @@ public class GeckoGraphQLConstants {
 	public static final String GRAPHQL_WHITEBOARD_TARGET = "osgi.graphql.target";
 
 	/** Defines the name of the Service in the GraphQL whiteboard, communicated to the outside world as part of the query or mutation  */
-	public static final String GRAPHQL_SERVICE_NAME = "osgi.graphql.service.name";
+	public static final String GRAPHQL_QUERY_SERVICE_NAME = "osgi.graphql.query.service.name";
+
+	/** Defines the name of the Service in the GraphQL whiteboard, communicated to the outside world as part of the query or mutation  */
+	public static final String GRAPHQL_MUTATION_SERVICE_NAME = "osgi.graphql.mutation.service.name";
 	
-	/** A marker property, that identifies the Service as a GraphQL whiteboard service */
-	public static final String GRAPHQL_WHITEBOARD_SERVICE = "osgi.graphql.service";
+	/** Identifies a Graphql  Service, that should act as a query */
+	public static final String GRAPHQL_WHITEBOARD_QUERY_SERVICE = "osgi.graphql.query.service";
+
+	/** Identifies a Graphql  Service, that should act as a mutation */
+	public static final String GRAPHQL_WHITEBOARD_MUTATION_SERVICE = "osgi.graphql.mutation.service";
 	
 	
 }
