@@ -22,10 +22,11 @@ import java.util.List;
 public class Address {
 
 	private List<Person> inhabitants = new LinkedList<Person>();
-	private String number;
+	private String streetNumber;
 	private String street;
 	private String city;
 	private String zipCode;
+	private String id;
 
 	/**
 	 * Returns the inhabitants.
@@ -52,7 +53,7 @@ public class Address {
 	 * @return the number
 	 */
 	public String getNumber() {
-		return number;
+		return streetNumber;
 	}
 
 	/**
@@ -61,7 +62,7 @@ public class Address {
 	 * @param number the number to set
 	 */
 	public void setNumber(String number) {
-		this.number = number;
+		this.streetNumber = number;
 	}
 
 	/**
@@ -118,4 +119,21 @@ public class Address {
 		this.zipCode = zipCode;
 	}
 
+	/**
+	 * Returns the id.
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
+
+	/**
+	 * Sets the id.
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	
 }

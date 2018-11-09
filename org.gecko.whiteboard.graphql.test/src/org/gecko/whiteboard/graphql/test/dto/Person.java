@@ -25,6 +25,7 @@ public class Person {
 	private String firstName;
 	private String lastName;
 	private List<Contact> contacts = new LinkedList<>();
+	private String id;
 	/**
 	 * Returns the address.
 	 * @return the address
@@ -82,6 +83,20 @@ public class Person {
 	public void setContacts(List<Contact> contacts) {
 		this.contacts.clear();
 		this.contacts.addAll(contacts);
+	}
+	/**
+	 * Returns the id.
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
+	}
+	/**
+	 * Sets the id.
+	 * @param id the id to set
+	 */
+	public void setId(String id) {
+		this.id = id;
 	}
 	
 	

@@ -14,6 +14,7 @@ package org.gecko.whiteboard.graphql.test.service.api;
 import java.util.List;
 import java.util.Optional;
 
+import org.gecko.whiteboard.graphql.annotation.GraphqlArgument;
 import org.gecko.whiteboard.graphql.test.dto.Address;
 import org.gecko.whiteboard.graphql.test.dto.Person;
 
@@ -30,7 +31,7 @@ public interface AddressBookService {
 	public List<Address> getAdressesByStreet(String name);
 	public List<Address> getAdressesByQuery(MyQuery query);
 	
-	public Optional<Person> getPersonByName(String firstName, String lastName);
+	public Optional<Person> getPersonByName(@GraphqlArgument("firstName") String firstName, String lastName);
 	public List<Person> getAllPersons();
 	public Person savePerson(Person person);
 	

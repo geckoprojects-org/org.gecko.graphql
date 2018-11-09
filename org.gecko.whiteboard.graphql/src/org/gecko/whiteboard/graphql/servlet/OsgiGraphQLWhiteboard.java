@@ -1,25 +1,38 @@
-package org.gecko.whiteboard.graphql;
+package org.gecko.whiteboard.graphql.servlet
+;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import static org.gecko.whiteboard.graphql.GeckoGraphQLConstants.*;
+
+import org.gecko.whiteboard.graphql.GraphqlSchemaTypeBuilder;
+import org.gecko.whiteboard.graphql.GraphqlServiceRuntime;
+import org.gecko.whiteboard.graphql.dto.RuntimeDTO;
 import org.gecko.whiteboard.graphql.service.ServiceSchemaBuilder;
 import org.osgi.annotation.bundle.Capability;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceObjects;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -65,23 +78,24 @@ import graphql.servlet.InstrumentationProvider;
 import graphql.servlet.NoOpInstrumentationProvider;
 
 @Component(
-		name = "GeckoGraphQLWhiteboard",
+		name = GECKO_GRAPHQL_WHITEBOARD_COMPONENT_NAME,
         service={Servlet.class},
         property = {"jmx.objectname=graphql.servlet:type=graphql"},
         scope=ServiceScope.PROTOTYPE,
         configurationPolicy=ConfigurationPolicy.REQUIRE
 )
-@HttpWhiteboardServletPattern("/graphql/*")
+@HttpWhiteboardServletPattern(DEFAULT_SERVLET_PATTERN)
 @RequireHttpWhiteboard
-@Capability(namespace=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name="osgi.graphql", version="1.0.0")
-public class OsgiGraphQLWhiteboard extends AbstractGraphQLHttpServlet implements ServiceTrackerCustomizer<Object, Object> {
+@Capability(namespace=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name= OSGI_GRAPHQL_CAPABILITY_NAME, version="1.0.0")
+public class OsgiGraphQLWhiteboard extends AbstractGraphQLHttpServlet implements ServiceTrackerCustomizer<Object, Object>, GraphqlServiceRuntime {
 
-    /** serialVersionUID */
+	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
 	private final List<GraphQLQueryProvider> queryProviders = new ArrayList<>();
     private final List<GraphQLMutationProvider> mutationProviders = new ArrayList<>();
     private final List<GraphQLTypesProvider> typesProviders = new ArrayList<>();
     private final Map<ServiceReference<Object>, ServiceObjects<Object>> serviceReferences = new HashMap<>();
+    private final List<GraphqlSchemaTypeBuilder> typeBuilder = new LinkedList<>();
 
     private final GraphQLQueryInvoker queryInvoker;
     private final GraphQLInvocationInputFactory invocationInputFactory;
@@ -97,7 +111,12 @@ public class OsgiGraphQLWhiteboard extends AbstractGraphQLHttpServlet implements
     private GraphQLSchemaProvider schemaProvider;
 	private ServiceTracker<Object, Object> serviceTracker;
 	private BundleContext bundleContext;
+	
+	private Hashtable<String, Object> properties = new Hashtable<>();
 
+	private AtomicLong changeCount = new AtomicLong(0);
+	private ServiceRegistration<GraphqlServiceRuntime> runtimeRegistration;
+	
     /* 
      * (non-Javadoc)
      * @see graphql.servlet.AbstractGraphQLHttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
@@ -145,8 +164,14 @@ public class OsgiGraphQLWhiteboard extends AbstractGraphQLHttpServlet implements
         return graphQLObjectMapper;
     }
 
-    public OsgiGraphQLWhiteboard() {
-        updateSchema();
+    @Activate
+    public OsgiGraphQLWhiteboard(ComponentContext componentContext) throws InvalidSyntaxException {
+    	bundleContext = componentContext.getBundleContext();
+    	copyProperties(componentContext);
+    	serviceTracker = new ServiceTracker<Object, Object>(bundleContext, FrameworkUtil.createFilter("(" + GRAPHQL_WHITEBOARD_SERVICE + "=true)"), this);
+    	serviceTracker.open();
+    	
+    	updateSchema();
         this.queryInvoker = GraphQLQueryInvoker.newBuilder()
             .withPreparsedDocumentProvider(this::getPreparsedDocumentProvider)
             .withInstrumentation(() -> this.getInstrumentationProvider().getInstrumentation())
@@ -163,16 +188,28 @@ public class OsgiGraphQLWhiteboard extends AbstractGraphQLHttpServlet implements
         //this.graphQLObjectMapper.getJacksonMapper().registerModule(new EMFModule());
     }
     
-    @Activate
-    public void activate(ComponentContext componentContext) throws InvalidSyntaxException {
-    	bundleContext = componentContext.getBundleContext();
-    	serviceTracker = new ServiceTracker<Object, Object>(bundleContext, FrameworkUtil.createFilter("(graphql.service.name=*)"), this);
-    	serviceTracker.open();
-    }
     
-    @Deactivate
+    /**
+	 * @param componentContext
+	 */
+	private void copyProperties(ComponentContext componentContext) {
+		Dictionary<String, Object> componentProperties = componentContext.getProperties();
+		Enumeration<String> keys = componentProperties.keys();
+		while(keys.hasMoreElements()) {
+			String key = keys.nextElement();
+			properties.put(key, componentProperties.get(key));
+		}
+		properties.put(Constants.SERVICE_CHANGECOUNT, changeCount.get());
+	}
+
+	@Deactivate
     public void deactivate() {
     	serviceTracker.close();
+    	serviceTracker = null;
+    	if(runtimeRegistration != null) {
+    		runtimeRegistration.unregister();
+    		runtimeRegistration = null;
+    	}
     }
 
     protected void updateSchema() {
@@ -205,18 +242,31 @@ public class OsgiGraphQLWhiteboard extends AbstractGraphQLHttpServlet implements
         
         if(!serviceReferences.isEmpty()) {
         	serviceReferences.entrySet().stream()
-        		.map(e -> new ServiceSchemaBuilder(e.getKey(), e.getValue(), queryTypeBuilder, types))
+        		.map(e -> new ServiceSchemaBuilder(e.getKey(), e.getValue(), queryTypeBuilder, types, typeBuilder))
         		.forEach(sb -> sb.build());
         }
         try {
         	this.schemaProvider = new DefaultGraphQLSchemaProvider(GraphQLSchema.newSchema().query(queryTypeBuilder.build()).mutation(mutationType).additionalTypes(types).build());
+        	updateRuntime();
         	log.info("Schema generation sucessfull");
         } catch(AssertException e) {
         	log.warn("The current Configuration is invalid: " + e.getMessage());
         }
     }
 
-    @Reference(cardinality = ReferenceCardinality.MULTIPLE, policyOption = ReferencePolicyOption.GREEDY)
+    /**
+	 * Updates the runtime properties or registers the Runtime, if it wasn't set already
+	 */
+	private void updateRuntime() {
+		if(runtimeRegistration == null) {
+			runtimeRegistration = bundleContext.registerService(GraphqlServiceRuntime.class, this, properties);
+		} else {
+			properties.put(Constants.SERVICE_CHANGECOUNT, changeCount.incrementAndGet());
+			runtimeRegistration.setProperties(properties);
+		}
+	}
+
+	@Reference(cardinality = ReferenceCardinality.MULTIPLE, policyOption = ReferencePolicyOption.GREEDY)
     public void bindProvider(GraphQLProvider provider) {
         if (provider instanceof GraphQLQueryProvider) {
             queryProviders.add((GraphQLQueryProvider) provider);
@@ -392,5 +442,26 @@ public class OsgiGraphQLWhiteboard extends AbstractGraphQLHttpServlet implements
 			remove.ungetService(service);
 		}
 		updateSchema();
+	}
+	
+	@Reference(cardinality=ReferenceCardinality.MULTIPLE, policyOption=ReferencePolicyOption.GREEDY)
+	public void bindGraphqlSechemaTypeBuilder (GraphqlSchemaTypeBuilder typeBuilder) {
+		this.typeBuilder.add(typeBuilder);
+		updateSchema();
+	}
+
+	public void unbindGraphqlSechemaTypeBuilder (GraphqlSchemaTypeBuilder typeBuilder) {
+		this.typeBuilder.remove(typeBuilder);
+		updateSchema();
+	}
+
+	/* 
+	 * (non-Javadoc)
+	 * @see org.gecko.whiteboard.graphql.GraphqlServiceRuntime#getRuntimeDTO()
+	 */
+	@Override
+	public RuntimeDTO getRuntimeDTO() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
