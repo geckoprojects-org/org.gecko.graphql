@@ -1,6 +1,12 @@
 package org.gecko.whiteboard.graphql.servlet
 ;
 
+import static org.gecko.whiteboard.graphql.GeckoGraphQLConstants.DEFAULT_SERVLET_PATTERN;
+import static org.gecko.whiteboard.graphql.GeckoGraphQLConstants.GECKO_GRAPHQL_WHITEBOARD_COMPONENT_NAME;
+import static org.gecko.whiteboard.graphql.GeckoGraphQLConstants.GRAPHQL_WHITEBOARD_MUTATION_SERVICE;
+import static org.gecko.whiteboard.graphql.GeckoGraphQLConstants.GRAPHQL_WHITEBOARD_QUERY_SERVICE;
+import static org.gecko.whiteboard.graphql.GeckoGraphQLConstants.OSGI_GRAPHQL_CAPABILITY_NAME;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -19,8 +25,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import static org.gecko.whiteboard.graphql.GeckoGraphQLConstants.*;
-
 import org.gecko.whiteboard.graphql.GraphqlSchemaTypeBuilder;
 import org.gecko.whiteboard.graphql.GraphqlServiceRuntime;
 import org.gecko.whiteboard.graphql.dto.RuntimeDTO;
@@ -33,6 +37,7 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceObjects;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.namespace.implementation.ImplementationNamespace;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -47,7 +52,6 @@ import org.osgi.service.http.whiteboard.annotations.RequireHttpWhiteboard;
 import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletPattern;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
-import org.osgi.namespace.implementation.ImplementationNamespace;
 
 import graphql.AssertException;
 import graphql.execution.preparsed.NoOpPreparsedDocumentProvider;
@@ -416,11 +420,30 @@ public class OsgiGraphqlWhiteboard extends AbstractGraphQLHttpServlet implements
 	 */
 	@Override
 	public Object addingService(ServiceReference<Object> reference) {
+//		wirePotentialRemoteService(reference);
 		ServiceObjects<Object> serviceObjects = bundleContext.getServiceObjects(reference);
 		serviceReferences.put(reference, serviceObjects);
 		updateSchema();
-		return serviceObjects.getService();
+		return bundleContext.getService(reference);
 	}
+
+//	/**
+//	 * @param reference
+//	 */
+//	private void wirePotentialRemoteService(ServiceReference<Object> reference) {
+//		String[] keys = reference.getPropertyKeys();
+//		
+//		Arrays.asList(keys).stream().filter(k -> k.startsWith(RemoteConstants.ENDPOINT_PACKAGE_VERSION_)).forEach(k -> {
+//			String packageName = k.substring(RemoteConstants.ENDPOINT_PACKAGE_VERSION_.length());
+//			Version version = (Version) reference.getProperty(k);
+//			
+//			for(Bundle bundle : bundleContext.getBundles()) {
+//				BundleWiring bundleWiring = bundle.adapt(BundleWiring.class);
+//				bundleWiring.getCapabilities("osgi.wiring.package")
+//			}
+//		});
+//		
+//	}
 
 	/* 
 	 * (non-Javadoc)
@@ -438,10 +461,9 @@ public class OsgiGraphqlWhiteboard extends AbstractGraphQLHttpServlet implements
 	 */
 	@Override
 	public void removedService(ServiceReference<Object> reference, Object service) {
-		ServiceObjects<Object> remove = serviceReferences.remove(reference);
-		if(remove != null) {
-			remove.ungetService(service);
-		}
+		serviceReferences.remove(reference);
+		bundleContext.ungetService(reference);
+		
 		updateSchema();
 	}
 	

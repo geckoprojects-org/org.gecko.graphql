@@ -21,7 +21,6 @@ import org.gecko.whiteboard.graphql.GraphqlSchemaTypeBuilder;
 
 import graphql.Scalars;
 import graphql.schema.DataFetcher;
-import graphql.schema.GraphQLArgument;
 import graphql.schema.GraphQLEnumType;
 import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLInputObjectField;
@@ -46,8 +45,8 @@ public class DefaultGraphqlTypeBuilder implements GraphqlSchemaTypeBuilder {
 	 * @see org.gecko.whiteboard.graphql.GraphqlSchemaTypeBuilder#canHandle(java.lang.reflect.Type)
 	 */
 	@Override
-	public boolean canHandle(Type type) {
-		return true;
+	public boolean canHandle(Type type, boolean inputType) {
+		return !inputType;
 	}
 
 	/* 
@@ -173,36 +172,7 @@ public class DefaultGraphqlTypeBuilder implements GraphqlSchemaTypeBuilder {
 				.type((GraphQLInputType) type);
 		return builder.build();
 	}
-
-	/**
-	 * @param string
-	 * @return
-	 */
-	private GraphQLFieldDefinition createReferenceField(String name, DataFetcher<?> datafetcher, GraphQLOutputType type) {
-		GraphQLFieldDefinition.Builder builder = GraphQLFieldDefinition.newFieldDefinition()
-				.name(name)
-				.dataFetcher(datafetcher)
-				.type(type);
-		return builder.build();
-	}
-
-	private GraphQLFieldDefinition createOperation(String name, Map<String, GraphQLInputType> parameters, DataFetcher<?> datafetcher, GraphQLOutputType type) {
-		GraphQLFieldDefinition.Builder builder = GraphQLFieldDefinition.newFieldDefinition()
-				.name(name)
-				.dataFetcher(datafetcher)
-				.type(type);
-		parameters.entrySet().stream().map(e -> this.createArgument(e.getKey(), e.getValue())).forEach(builder::argument);
-		return builder.build();
-	}
 	
-	private GraphQLArgument createArgument(String name, GraphQLInputType type) {
-		return GraphQLArgument.newArgument()
-				.name(name)
-				.type(type)
-				.build();
-		
-	}
-
 	static GraphQLType getGraphQLScalarType(Class<?> instanceClass) {
 		if (instanceClass == Integer.TYPE || instanceClass == Integer.class || instanceClass == Long.TYPE || instanceClass == Long.class) {
 			return Scalars.GraphQLInt;

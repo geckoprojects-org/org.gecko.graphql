@@ -31,7 +31,7 @@ import graphql.schema.GraphQLType;
  */
 public interface GraphqlSchemaTypeBuilder {
 	
-	public boolean canHandle(Type type);
+	public boolean canHandle(Type type, boolean inputType);
 	
 	public GraphQLType buildType(Type type, Map<Object, GraphQLType> typeMapping, boolean inputType); 
 	

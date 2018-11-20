@@ -2,11 +2,11 @@
 	osgi.annotation;version=7.0,\
 	osgi.core;version=7.0,\
 	osgi.cmpn;version=7.0,\
-	com.graphql-java,\
 	com.graphql-java-kickstart.graphql-java-servlet,\
 	org.apache.felix.http.servlet-api,\
 	javax.websocket-api,\
-	slf4j.api
+	slf4j.api,\
+	com.graphql-java
 
 -testpath: \
 	${junit}

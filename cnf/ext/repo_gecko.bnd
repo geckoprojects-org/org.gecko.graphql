@@ -1,4 +1,4 @@
-geckoVersion: release
+geckoVersion: snapshot
 
 -plugin.gecko: \
 	aQute.bnd.repository.osgi.OSGiRepository;\

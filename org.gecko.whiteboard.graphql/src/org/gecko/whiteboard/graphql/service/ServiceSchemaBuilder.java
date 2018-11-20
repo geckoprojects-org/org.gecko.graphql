@@ -24,7 +24,9 @@ import java.util.Set;
 import org.gecko.whiteboard.graphql.GeckoGraphQLConstants;
 import org.gecko.whiteboard.graphql.GraphqlSchemaTypeBuilder;
 import org.gecko.whiteboard.graphql.annotation.GraphqlArgument;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
+import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceObjects;
 import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
@@ -60,6 +62,8 @@ public class ServiceSchemaBuilder {
 	
 	private static final Logger LOG = LoggerFactory.getLogger(ServiceSchemaBuilder.class);
 	
+	private BundleContext ctx = FrameworkUtil.getBundle(getClass()).getBundleContext();
+	
 	/**
 	 * Creates a new instance.
 	 * @param serviceReference
@@ -84,9 +88,11 @@ public class ServiceSchemaBuilder {
 	 * Builds the query and mutation Schema
 	 */
 	public void build() {
-		Object service = serviceObjects.getService();
+		Object service = ctx.getService(serviceReference);
 		try {
 			List<Class<?>> interfaces = GraphqlSchemaTypeBuilder.getAllInterfaces(service.getClass());
+//			List<Class<?>> interfaces = getServiceInterfaces(serviceReference);
+			
 			for(Class<?> curInterface : interfaces) {
 				boolean isQuery = isDeclaredQueryInterface(curInterface, serviceReference);
 				boolean isMutation = isDeclaredMutationInterface(curInterface, serviceReference);
@@ -104,14 +110,32 @@ public class ServiceSchemaBuilder {
 			}
 			types.addAll(typeMapping.values());
 		} catch (Throwable e) {
-			System.err.println("Args... " + e.getMessage());
-			e.printStackTrace();
-			// TODO: handle exception
+			LOG.error("Args... " + e.getMessage(), e);
 		} finally {
-			serviceObjects.ungetService(service);
+			ctx.ungetService(serviceReference);
 		}
 	}
 	
+//	/**
+//	 * @param serviceReference2
+//	 * @return
+//	 */
+//	private List<Class<?>> getServiceInterfaces(ServiceReference<Object> serviceReference) {
+//		String[] objectClasses = (String[]) serviceReference.getProperty(Constants.OBJECTCLASS);
+//		List<Class<?>> interfaces = new ArrayList<Class<?>>(objectClasses.length);
+//		Bundle bundle = FrameworkUtil.getBundle(getClass());
+//		for(String objectClass : objectClasses) {
+//			try {
+//				BundleWiring bundleWiring = serviceReference.getBundle().adapt(BundleWiring.class);
+//				interfaces.add(bundleWiring.getClassLoader().loadClass(objectClass));
+//			} catch (ClassNotFoundException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
+//		return interfaces;
+//	}
+
 	/**
 	 * Decides if the Interface should be handled as a Query 
 	 * @param curInterface
@@ -161,7 +185,7 @@ public class ServiceSchemaBuilder {
 	 * @return
 	 */
 	private boolean containsInterface(String[] interfaces, String intefaceName) {
-		if(interfaces[0] == "*") {
+		if(interfaces[0].equals("*")) {
 			return true;
 		}
 		for(String name : interfaces) {
@@ -196,8 +220,6 @@ public class ServiceSchemaBuilder {
 		}
 		return name;
 	}
-
-	
 	
 	/**
 	 * Uses Reflection to build a Schema for the given Service Interface
@@ -225,11 +247,21 @@ public class ServiceSchemaBuilder {
 				Class<?> parameterType = p.getType();
 					GraphQLType basicType = GraphqlSchemaTypeBuilder.getGraphQLScalarType(parameterType);
 					if(basicType == null) {
-						//TODO: Add logger here and DTO here
-						System.err.println(methodName + " parameter " + parameterName + " is a complex type, which is not allowed for query objects. Thus the Method will be ignored");
-						ignore = true;
+						boolean hasHandler = schemaTypeBuilder
+							.stream()
+							.filter(stb -> stb.canHandle(parameterType, true))
+							.map(stb -> Boolean.TRUE)
+							.findFirst()
+							.orElseGet(() -> defaultBuilder.canHandle(parameterType, true));
+						if(hasHandler) {
+							parameters.put(parameterName, (GraphQLInputType) createType(parameterType, typeMapping, true));
+						} else {
+							LOG.error("{} parameter {} is a complex type and no handler is available. Thus the Method will be ignored", method, parameterName);
+							ignore = true;
+						}
+					} else {
+						parameters.put(parameterName, (GraphQLInputType) basicType);
 					}
-					parameters.put(parameterName, (GraphQLInputType) createType(parameterType, typeMapping, true));
 			}
 			if(!ignore) {
 				GraphQLFieldDefinition operation = createOperation(methodName, parameters, new DataFetcher<Object>() {
@@ -282,9 +314,11 @@ public class ServiceSchemaBuilder {
 	 * @return
 	 */
 	private GraphQLType createType(Type type, Map<Object, GraphQLType> typeMapping, boolean inputType) {
-		GraphqlSchemaTypeBuilder builder = schemaTypeBuilder.stream().filter(stb -> stb.canHandle(type)).findFirst().orElseGet(() -> defaultBuilder);
+		GraphqlSchemaTypeBuilder builder = schemaTypeBuilder.stream().filter(stb -> stb.canHandle(type, inputType)).findFirst().orElseGet(() -> defaultBuilder);
 		return builder.buildType(type, typeMapping, inputType);
 	}
+	
+	
 	
 	private GraphQLFieldDefinition createOperation(String name, Map<String, GraphQLInputType> parameters, DataFetcher<?> datafetcher, GraphQLOutputType type) {
 		GraphQLFieldDefinition.Builder builder = GraphQLFieldDefinition.newFieldDefinition()
