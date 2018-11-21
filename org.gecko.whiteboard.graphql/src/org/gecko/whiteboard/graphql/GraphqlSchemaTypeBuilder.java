@@ -14,9 +14,12 @@ package org.gecko.whiteboard.graphql;
 import java.lang.reflect.Type;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import org.gecko.whiteboard.graphql.schema.GeckoScalars;
 
 import graphql.Scalars;
 import graphql.schema.DataFetcher;
@@ -54,6 +57,8 @@ public interface GraphqlSchemaTypeBuilder {
 			return Scalars.GraphQLChar;
 		} else if (String.class == instanceClass) {
 			return Scalars.GraphQLString;
+		} else if (Date.class == instanceClass) {
+			return GeckoScalars.GraphQLDate;
 		}
 		return null;
 	}
