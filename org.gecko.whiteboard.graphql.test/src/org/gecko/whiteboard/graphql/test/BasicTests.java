@@ -114,7 +114,7 @@ public class BasicTests extends AbstractOSGiTest{
 	 * @throws TimeoutException
 	 */
 	@Test
-	public void testMiltipleServiceInterfaces() throws IOException, InvalidSyntaxException, InterruptedException, ExecutionException, TimeoutException {
+	public void testMultipleServiceInterfaces() throws IOException, InvalidSyntaxException, InterruptedException, ExecutionException, TimeoutException {
 		Dictionary<String, String> options = new Hashtable<String, String>();
 		options.put("id", "my.graphql.servlet");
 		Configuration configuration = createConfigForCleanup("GeckoGraphQLWhiteboard", "?", options);
@@ -148,7 +148,7 @@ public class BasicTests extends AbstractOSGiTest{
 	 * @throws TimeoutException
 	 */
 	@Test
-	public void testMiltipleServiceInterfacesWithServiceNameProperty() throws IOException, InvalidSyntaxException, InterruptedException, ExecutionException, TimeoutException {
+	public void testMultipleServiceInterfacesWithServiceNameProperty() throws IOException, InvalidSyntaxException, InterruptedException, ExecutionException, TimeoutException {
 		Dictionary<String, String> options = new Hashtable<String, String>();
 		options.put("id", "my.graphql.servlet");
 		Configuration configuration = createConfigForCleanup("GeckoGraphQLWhiteboard", "?", options);

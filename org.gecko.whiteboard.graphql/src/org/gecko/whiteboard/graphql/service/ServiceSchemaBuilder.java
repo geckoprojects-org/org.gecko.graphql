@@ -272,7 +272,7 @@ public class ServiceSchemaBuilder {
 						Object[] parameters = new Object[method.getParameterCount()];
 						for (int i = 0; i < method.getParameters().length; i++) {
 							Parameter parameter = method.getParameters()[i];
-							parameters[i] = environment.getArguments().get(parameter.getName());
+							parameters[i] = environment.getArguments().get(getParameterName(parameter));
 						}
 						Object toInvokeOn = serviceObjects.getService();
 						try {
