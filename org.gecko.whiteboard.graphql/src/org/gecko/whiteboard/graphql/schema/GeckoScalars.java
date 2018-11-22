@@ -35,7 +35,7 @@ public class GeckoScalars {
     /**
      * This represents the "Boolean" type as defined in the graphql specification : http://facebook.github.io/graphql/#sec-Boolean
      */
-    public static final GraphQLScalarType GraphQLDate = new GraphQLScalarType("Date", "Built-in Date", new Coercing<Date, String>() {
+    public static final GraphQLScalarType GraphQLDate = new GraphQLScalarType("Date", "Built-in Date with the following pattern yyyy-MM-dd'T'HH:mm:ss.SSSZ an example would lokk like this: 2018-11-18T13:45:00.000+0100", new Coercing<Date, String>() {
 
     	private final DateFormat formater = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
     	
