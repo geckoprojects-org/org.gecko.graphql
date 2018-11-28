@@ -67,7 +67,7 @@ public class BasicTests extends AbstractOSGiTest{
 	 * 1. Create a Configuration
 	 * 2. Check if a Servlet with a custom property is registered
 	 * 3. Check if a GraphQLServiceRuntime service is registered with the custom property
-	 * 4. Check if a request to http://localhost:8081/graphql/schema.json returns a Status 200
+	 * 4. Check if a request to http://localhost:8181/graphql/schema.json returns a Status 200
 	 * @throws IOException
 	 * @throws InvalidSyntaxException
 	 * @throws InterruptedException
@@ -101,7 +101,7 @@ public class BasicTests extends AbstractOSGiTest{
 		assertEquals(1, serviceChecker2.getCreateCount());
 		
 		
-		ContentResponse get = client.GET("http://localhost:8081/graphql/schema.json");
+		ContentResponse get = client.GET("http://localhost:8181/graphql/schema.json");
 		assertEquals(200, get.getStatus());
 	}
 	
@@ -157,7 +157,7 @@ public class BasicTests extends AbstractOSGiTest{
 		assertEquals(1L, changeCount);
 		
 		// check if http request delivers status 200.
-		ContentResponse get = client.GET("http://localhost:8081/graphql/schema.json");
+		ContentResponse get = client.GET("http://localhost:8181/graphql/schema.json");
 		assertEquals(200, get.getStatus());
 		// Check if AddressBookService appears in query element
 		JsonNode json = parseJSON(get.getContentAsString());
@@ -223,7 +223,7 @@ public class BasicTests extends AbstractOSGiTest{
 		CountDownLatch latch = new CountDownLatch(1);
 		latch.await(1, TimeUnit.SECONDS);
 		// check for status 200 of http request
-		ContentResponse get = client.GET("http://localhost:8081/graphql/schema.json");
+		ContentResponse get = client.GET("http://localhost:8181/graphql/schema.json");
 		assertEquals(200, get.getStatus());
 		// Check if both interfaces are found as individual query objects.
 		JsonNode json = parseJSON(get.getContentAsString());
@@ -354,7 +354,7 @@ public class BasicTests extends AbstractOSGiTest{
 		CountDownLatch latch = new CountDownLatch(1);
 		latch.await(1, TimeUnit.SECONDS);
 		// check for status 200 of http request
-		ContentResponse get = client.GET("http://localhost:8081/graphql/schema.json");
+		ContentResponse get = client.GET("http://localhost:8181/graphql/schema.json");
 		assertEquals(200, get.getStatus());
 		JsonNode json = parseJSON(get.getContentAsString());
 		assertNotNull(json);
@@ -422,7 +422,7 @@ public class BasicTests extends AbstractOSGiTest{
 		CountDownLatch latch = new CountDownLatch(1);
 		latch.await(1, TimeUnit.SECONDS);
 		// check for status 200 of http request
-		ContentResponse get = client.GET("http://localhost:8081/graphql/schema.json");
+		ContentResponse get = client.GET("http://localhost:8181/graphql/schema.json");
 		assertEquals(200, get.getStatus());
 		JsonNode json = parseJSON(get.getContentAsString());
 		assertNotNull(json);

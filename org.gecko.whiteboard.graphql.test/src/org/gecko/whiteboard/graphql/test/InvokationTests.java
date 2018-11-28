@@ -119,7 +119,7 @@ public class InvokationTests extends AbstractOSGiTest{
 		registerServiceForCleanup(testServiceImpl, properties, TestService.class);
 		
 		assertTrue(serviceChecker.waitModify());
-		Request post = client.POST("http://localhost:8081/graphql");
+		Request post = client.POST("http://localhost:8181/graphql");
 		post.content(new StringContentProvider("{\n" + 
 				"  \"query\": \"query {\\n  TestService{\\n    testMethodWithDataFetchingEnvironment\\n  }\\n}\"\n" + 
 				"}"), "application/json");
@@ -139,7 +139,7 @@ public class InvokationTests extends AbstractOSGiTest{
 		
 		assertTrue(envLatch.await(1, TimeUnit.SECONDS));
 		
-		post = client.POST("http://localhost:8081/graphql");
+		post = client.POST("http://localhost:8181/graphql");
 		post.content(new StringContentProvider("{\n" + 
 				"  \"query\": \"query {\\n  TestService{\\n    testMethodWithDataFetchingEnvironmentWithParam(arg0 : \\\"test\\\")\\n  }\\n}\"\n" + 
 				"}"), "application/json");

@@ -28,7 +28,7 @@ Test-Cases: ${classes;CONCRETE;ANNOTATED;org.junit.runner.RunWith}
 	org.gecko.emf.osgi.json
 
 -runproperties: \
-	org.osgi.service.http.port=8081
+	org.osgi.service.http.port=8181
 
 javac.source: 1.8
 javac.target: 1.8
