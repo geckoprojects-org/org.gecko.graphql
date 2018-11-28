@@ -117,7 +117,7 @@ public class AddressBookServiceImpl implements AddressBookService, AnotherInterf
 	 * @see org.gecko.whiteboard.graphql.test.service.api.AddressBookService#getAllAdresses()
 	 */
 	@Override
-	public List<Address> getAllAdresses() {
+	public List<Address> getAllAddresses() {
 		return addresses;
 	}
 
@@ -126,7 +126,7 @@ public class AddressBookServiceImpl implements AddressBookService, AnotherInterf
 	 * @see org.gecko.whiteboard.graphql.test.service.api.AddressBookService#getAdressesByStreet(java.lang.String)
 	 */
 	@Override
-	public List<Address> getAdressesByStreet(String name) {
+	public List<Address> getAddressesByStreet(String name) {
 		return addresses.stream().filter(a -> a.getStreet().toLowerCase().equals(name.toLowerCase())).collect(Collectors.toList());
 	}
 
@@ -135,7 +135,7 @@ public class AddressBookServiceImpl implements AddressBookService, AnotherInterf
 	 * @see org.gecko.whiteboard.graphql.test.service.api.AddressBookService#getAdressesByQuery(org.gecko.whiteboard.graphql.test.service.api.Query)
 	 */
 	@Override
-	public List<Address> getAdressesByQuery(MyQuery query) {
+	public List<Address> getAddressesByQuery(MyQuery query) {
 		// TODO Auto-generated method stub
 		return null;
 	}

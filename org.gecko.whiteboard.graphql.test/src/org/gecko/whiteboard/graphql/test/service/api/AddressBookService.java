@@ -27,9 +27,9 @@ public interface AddressBookService {
 	
 	public Address saveAddress(Address toSave);
 	
-	public List<Address> getAllAdresses();
-	public List<Address> getAdressesByStreet(String name);
-	public List<Address> getAdressesByQuery(MyQuery query);
+	public List<Address> getAllAddresses();
+	public List<Address> getAddressesByStreet(String name);
+	public List<Address> getAddressesByQuery(MyQuery query);
 	
 	public Optional<Person> getPersonByName(@GraphqlArgument("firstName") String firstName, String lastName);
 	public List<Person> getAllPersons();

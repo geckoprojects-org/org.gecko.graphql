@@ -216,7 +216,7 @@ public class OsgiGraphqlWhiteboard extends AbstractGraphQLHttpServlet implements
     	}
     }
 
-    protected void updateSchema() {
+    protected synchronized void updateSchema() {
         final GraphQLObjectType.Builder queryTypeBuilder = GraphQLObjectType.newObject().name("Query").description("Root query type");
 
         for (GraphQLQueryProvider provider : queryProviders) {
@@ -243,8 +243,10 @@ public class OsgiGraphqlWhiteboard extends AbstractGraphQLHttpServlet implements
 //            }
         }
         
-        if(!serviceReferences.isEmpty()) {
-        	serviceReferences.entrySet().stream()
+        Map<ServiceReference<Object>, ServiceObjects<Object>> copiedServiceMap = new HashMap<ServiceReference<Object>, ServiceObjects<Object>>(serviceReferences);
+        
+        if(!copiedServiceMap.isEmpty()) {
+        	copiedServiceMap.entrySet().stream()
         		.map(e -> new ServiceSchemaBuilder(e.getKey(), e.getValue(), queryTypeBuilder, mutationTypeBuilder, types, typeBuilder))
         		.forEach(sb -> sb.build());
         }
