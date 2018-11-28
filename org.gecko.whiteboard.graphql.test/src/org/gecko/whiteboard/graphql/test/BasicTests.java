@@ -32,11 +32,16 @@ import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.gecko.util.test.common.service.ServiceChecker;
 import org.gecko.util.test.common.test.AbstractOSGiTest;
+import org.gecko.whiteboard.graphql.GraphqlServiceRuntime;
+import org.gecko.whiteboard.graphql.annotation.GraphqlQueryService;
+import org.gecko.whiteboard.graphql.test.service.api.AddressBookService;
+import org.gecko.whiteboard.graphql.test.service.impl.AddressBookServiceImpl;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.cm.Configuration;
@@ -57,13 +62,22 @@ public class BasicTests extends AbstractOSGiTest{
 		super(FrameworkUtil.getBundle(BasicTests.class).getBundleContext());
 	}
 
+	/**
+	 * 1. Create a Configuration
+	 * 2. Check if a Servlet with a custom property is registered
+	 * 3. Check if a GraphQLServiceRuntime service is registered with the custom property
+	 * 4. Check if a request to http://localhost:8080/graphql/schema.json returns a Status 200
+	 * @throws IOException
+	 * @throws InvalidSyntaxException
+	 * @throws InterruptedException
+	 */
 	@Test
 	public void testGraphQLServlet() throws IOException, InvalidSyntaxException, InterruptedException {
 		Dictionary<String, String> options = new Hashtable<String, String>();
 		options.put("id", "my.graphql.servlet");
 		Configuration configuration = createConfigForCleanup("GeckoGraphQLWhiteboard", "?", options);
 		
-		ServiceChecker<Object> serviceChecker = createdCheckerTrackedForCleanUp("(id=my.graphql.servlet)");
+		ServiceChecker<Object> serviceChecker = createdCheckerTrackedForCleanUp("(&((objectClass=org.gecko.whiteboard.graphql.GraphqlServiceRuntime)(id=my.graphql.servlet)))");
 		serviceChecker.setCreateCount(1);
 		serviceChecker.setCreateTimeout(10);
 		serviceChecker.start();
@@ -72,7 +86,13 @@ public class BasicTests extends AbstractOSGiTest{
 	}
 
 	/**
-	 * Look if the service with the marker annotation will be picked up
+	 * 1. Create a GraqphQLWhiteboard
+	 * 2. Manually register the {@link AddressBookServiceImpl} as a {@link AddressBookService} with the the {@link GraphqlQueryService} properties
+	 * 3. make sure the {@link Constants#SERVICE_CHANGECOUNT} of the {@link GraphqlServiceRuntime} increments
+	 * 4. parse the Schema look if a {@link AddressBookService} appears in the query element
+	 * 5. unregister the service
+	 * 6. make sure the {@link Constants#SERVICE_CHANGECOUNT} of the {@link GraphqlServiceRuntime} increments
+	 * 
 	 * @throws IOException
 	 * @throws InvalidSyntaxException
 	 * @throws InterruptedException
