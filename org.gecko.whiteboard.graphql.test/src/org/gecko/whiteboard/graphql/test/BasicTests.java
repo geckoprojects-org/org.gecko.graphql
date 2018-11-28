@@ -104,6 +104,7 @@ public class BasicTests extends AbstractOSGiTest{
 		ContentResponse get = client.GET("http://localhost:8081/graphql/schema.json");
 		assertEquals(200, get.getStatus());
 	}
+	
 
 	/**
 	 * 1. Create a GraqphQLWhiteboard
