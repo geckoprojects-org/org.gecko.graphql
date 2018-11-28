@@ -37,12 +37,12 @@ import org.osgi.service.component.annotations.Component;
  * @author jalbert
  * @since 2 Nov 2018
  */
-@Component(
-		)
-@GraphqlQueryServiceName("TestQuery")
-@GraphqlMutationServiceName("TestMutation")
-@GraphqlQueryService(value ="org.gecko.whiteboard.graphql.test.service.api.AddressBookService")
-@GraphqlMutationService(value = "org.gecko.whiteboard.graphql.test.service.api.AnotherInterface")
+//@Component(
+//		)
+//@GraphqlQueryServiceName("TestQuery")
+//@GraphqlMutationServiceName("TestMutation")
+//@GraphqlQueryService(value ="org.gecko.whiteboard.graphql.test.service.api.AddressBookService")
+//@GraphqlMutationService(value = "org.gecko.whiteboard.graphql.test.service.api.AnotherInterface")
 public class AddressBookServiceImpl implements AddressBookService, AnotherInterface{
 
 	List<Address> addresses = new LinkedList<Address>();

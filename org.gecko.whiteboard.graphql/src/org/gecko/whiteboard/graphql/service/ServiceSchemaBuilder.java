@@ -164,10 +164,17 @@ public class ServiceSchemaBuilder {
 	 */
 	private boolean isDeclaredInterfaceForProperty(Class<?> curInterface, ServiceReference<Object> serviceReference, String property) {
 		String[] objectClasses = (String[]) serviceReference.getProperty(Constants.OBJECTCLASS);
-		String[] queryInterfaces = (String[]) serviceReference.getProperty(property);
-		if(queryInterfaces == null) {
+		Object queryInterfacesUntyped = serviceReference.getProperty(property);
+		if(queryInterfacesUntyped == null) {
 			return false;
 		}
+		String[] queryInterfaces = null;
+		if(queryInterfacesUntyped instanceof String[]) {
+			queryInterfaces = (String[]) queryInterfacesUntyped;
+		} else {
+			queryInterfaces = new String[] {queryInterfacesUntyped.toString()};
+		}
+
 		for(String objectClass : objectClasses) {
 			String intefaceName = curInterface.getName();
 			if(intefaceName.equals(objectClass) && containsInterface(queryInterfaces, intefaceName)) {
@@ -243,6 +250,9 @@ public class ServiceSchemaBuilder {
 			Map<String, GraphQLInputType> parameters = new HashMap<String, GraphQLInputType>();
 			boolean ignore = false;
 			for(Parameter p : method.getParameters()) {
+				if(p.getType().equals(DataFetchingEnvironment.class)) {
+					continue;
+				}
 				String parameterName = getParameterName(p);
 				Class<?> parameterType = p.getType();
 					GraphQLType basicType = GraphqlSchemaTypeBuilder.getGraphQLScalarType(parameterType);
@@ -272,7 +282,11 @@ public class ServiceSchemaBuilder {
 						Object[] parameters = new Object[method.getParameterCount()];
 						for (int i = 0; i < method.getParameters().length; i++) {
 							Parameter parameter = method.getParameters()[i];
-							parameters[i] = environment.getArguments().get(getParameterName(parameter));
+							if(parameter.getType().equals(DataFetchingEnvironment.class)) {
+								parameters[i] = environment;
+							} else {
+								parameters[i] = environment.getArguments().get(getParameterName(parameter));
+							}
 						}
 						Object toInvokeOn = serviceObjects.getService();
 						try {
