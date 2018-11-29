@@ -38,5 +38,11 @@ geckoVersion: snapshot
 		max.stale=-1;\
 		readonly = true;\
 		name = "GeckoEMFAddons";\
-		cache=${build}/cache/GeckoEMFAddons
+		cache=${build}/cache/GeckoEMFAddons,\
+	aQute.bnd.repository.maven.provider.MavenBndRepository; \
+		releaseUrl=http://devel.data-in-motion.biz/nexus/repository/maven-releases/; \
+		snapshotUrl=http://devel.data-in-motion.biz/nexus/repository/maven-snapshots/; \
+		index=${.}/repo_gecko_graphql.maven;\
+		name = "GeckoGraphQL"
+		
 		
