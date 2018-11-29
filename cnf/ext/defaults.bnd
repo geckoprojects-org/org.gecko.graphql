@@ -8,7 +8,7 @@ javac.debug:  on
 Bundle-License: Eclipse Public License 1.0
 Bundle-Copyright:Data In Motion GmbH all rights reserved
 Bundle-Vendor: Data In Motion GmbH
-Bundle-ContactAddress: info2@data-in-motion.biz
+Bundle-ContactAddress: info@data-in-motion.biz
 Bundle-Icon: icons/gecko.ico;size=64
 
 #if you want bnd to tell you more during the build
@@ -30,13 +30,13 @@ Bundle-Icon: icons/gecko.ico;size=64
 junit: org.apache.servicemix.bundles.junit;version="[4.11,5)"
 
 -groupid: org.gecko.graphql
--releaserepo: Release, GeckoGraphQL
+-releaserepo: Release,GeckoGraphQL
 -pom: version=${versionmask;===s;${@version}}
 -maven-release: pom
 
 # Enable semantic versioning for all bundles after the first release version is available
 #-baselinerepo: GeckoGraphQL
--baseline: *
+#-baseline: *
 
 # Ignore files for baselining
 #-diffignore: *.xml
