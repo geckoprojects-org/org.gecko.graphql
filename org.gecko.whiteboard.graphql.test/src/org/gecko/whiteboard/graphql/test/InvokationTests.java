@@ -66,7 +66,8 @@ public class InvokationTests extends AbstractOSGiTest{
 	public void testGraphQLPureOSGiService() throws IOException, InvalidSyntaxException, InterruptedException, ExecutionException, TimeoutException {
 		Dictionary<String, Object> options = new Hashtable<String, Object>();
 		options.put("id", "my.graphql.servlet");
-		Configuration configuration = createConfigForCleanup("GeckoGraphQLWhiteboard", "?", options);
+		options.put(GeckoGraphQLConstants.TRACING_ENABLED, "true");
+		Configuration configuration = createConfigForCleanup(GeckoGraphQLConstants.GECKO_GRAPHQL_WHITEBOARD_COMPONENT_NAME, "?", options);
 		
 		ServiceChecker<Object> serviceChecker = createdCheckerTrackedForCleanUp("(id=my.graphql.servlet)");
 		serviceChecker.setCreateExpectationCount(1);
@@ -107,7 +108,7 @@ public class InvokationTests extends AbstractOSGiTest{
 		registerServiceForCleanup(testServiceImpl, properties, TestService.class);
 		
 		assertTrue(serviceChecker.awaitModification());
-		Request post = client.POST("http://localhost:8081/graphql");
+		Request post = client.POST("http://localhost:8181/graphql");
 		post.content(new StringContentProvider("{\n" + 
 				"  \"query\": \"query {\\n  TestService{\\n    testMethodWithDataFetchingEnvironment\\n  }\\n}\"\n" + 
 				"}"), "application/json");
@@ -127,7 +128,7 @@ public class InvokationTests extends AbstractOSGiTest{
 		
 		assertTrue(envLatch.await(1, TimeUnit.SECONDS));
 		
-		post = client.POST("http://localhost:8081/graphql");
+		post = client.POST("http://localhost:8181/graphql");
 		post.content(new StringContentProvider("{\n" + 
 				"  \"query\": \"query {\\n  TestService{\\n    testMethodWithDataFetchingEnvironmentWithParam(arg0 : \\\"test\\\")\\n  }\\n}\"\n" + 
 				"}"), "application/json");
