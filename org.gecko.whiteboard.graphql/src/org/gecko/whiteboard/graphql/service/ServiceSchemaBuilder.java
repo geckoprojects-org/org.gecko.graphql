@@ -15,6 +15,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
+import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -33,14 +34,17 @@ import org.osgi.framework.ServiceReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import graphql.Scalars;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLArgument;
 import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLInputType;
+import graphql.schema.GraphQLNonNull;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLObjectType.Builder;
 import graphql.schema.GraphQLOutputType;
+import graphql.schema.GraphQLScalarType;
 import graphql.schema.GraphQLType;
 import graphql.schema.StaticDataFetcher;
 
@@ -376,9 +380,24 @@ public class ServiceSchemaBuilder {
 	}
 	
 	private GraphQLArgument createArgument(String name, GraphQLInputType type) {
+		GraphQLInputType typeToUse = type;
+		if(type instanceof GraphQLScalarType) {
+			switch (type.getName()) {
+				case "Int":
+				case "Float":
+				case "Short":
+				case "Long":
+				case "Boolean":
+				case "Byte":
+				case "Char":
+					typeToUse = GraphQLNonNull.nonNull(type);
+				default:
+					break;
+			}
+		}
 		return GraphQLArgument.newArgument()
 				.name(name)
-				.type(type)
+				.type(typeToUse)
 				.build();
 		
 	}
