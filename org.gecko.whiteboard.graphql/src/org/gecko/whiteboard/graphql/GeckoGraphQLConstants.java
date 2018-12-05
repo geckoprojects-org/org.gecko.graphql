@@ -44,6 +44,9 @@ public class GeckoGraphQLConstants {
 
 	/** Identifies a Graphql  Service, that should act as a mutation */
 	public static final String GRAPHQL_WHITEBOARD_MUTATION_SERVICE = "osgi.graphql.mutation.service";
+
+	/** Enables request tracing in a GraphQL Whiteboard */
+	public static final String TRACING_ENABLED = "osgi.graphql.tracing.enabled";
 	
 	
 }

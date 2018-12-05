@@ -78,7 +78,8 @@ public class InvokationTests extends AbstractOSGiTest{
 	public void testGraphQLPureOSGiService() throws IOException, InvalidSyntaxException, InterruptedException, ExecutionException, TimeoutException {
 		Dictionary<String, String> options = new Hashtable<String, String>();
 		options.put("id", "my.graphql.servlet");
-		Configuration configuration = createConfigForCleanup("GeckoGraphQLWhiteboard", "?", options);
+		options.put(GeckoGraphQLConstants.TRACING_ENABLED, "true");
+		Configuration configuration = createConfigForCleanup(GeckoGraphQLConstants.GECKO_GRAPHQL_WHITEBOARD_COMPONENT_NAME, "?", options);
 		
 		ServiceChecker<Object> serviceChecker = createdCheckerTrackedForCleanUp("(id=my.graphql.servlet)");
 		serviceChecker.setCreateCount(1);

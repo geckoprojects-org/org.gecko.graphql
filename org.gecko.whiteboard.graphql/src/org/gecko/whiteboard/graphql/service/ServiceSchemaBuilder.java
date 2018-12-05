@@ -24,6 +24,7 @@ import java.util.Set;
 import org.gecko.whiteboard.graphql.GeckoGraphQLConstants;
 import org.gecko.whiteboard.graphql.GraphqlSchemaTypeBuilder;
 import org.gecko.whiteboard.graphql.annotation.GraphqlArgument;
+import org.gecko.whiteboard.graphql.annotation.GraphqlDocumentation;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
@@ -249,6 +250,7 @@ public class ServiceSchemaBuilder {
 			GraphQLOutputType returnType = (GraphQLOutputType) createType(method.getGenericReturnType(), typeMapping, false);
 			Map<String, GraphQLInputType> parameters = new HashMap<String, GraphQLInputType>();
 			boolean ignore = false;
+			String methodDocumentation = getDocumentation(method);
 			for(Parameter p : method.getParameters()) {
 				if(p.getType().equals(DataFetchingEnvironment.class)) {
 					continue;
@@ -274,7 +276,7 @@ public class ServiceSchemaBuilder {
 					}
 			}
 			if(!ignore) {
-				GraphQLFieldDefinition operation = createOperation(methodName, parameters, new DataFetcher<Object>() {
+				GraphQLFieldDefinition operation = createOperation(methodName, methodDocumentation, parameters, new DataFetcher<Object>() {
 
 					@Override
 					public Object get(DataFetchingEnvironment environment) {
@@ -310,12 +312,41 @@ public class ServiceSchemaBuilder {
 	}
 	
 	/**
-	 * @param p
+	 * Looks if the parameter is annotated with {@link GraphqlArgument} and uses this value. If not the parameter name is returned.
+	 * @param p the parameter we want the name for
 	 * @return
 	 */
 	private String getParameterName(Parameter p) {
 		String name = p.getName();
 		GraphqlArgument argAnnotation = p.getAnnotation(GraphqlArgument.class);
+		if(argAnnotation != null) {
+			return argAnnotation.value();
+		}
+		return name;
+	}
+
+	/**
+	 * Looks if the parameter is annotated with {@link GraphqlDocumentation} and uses this value. If not the parameter name is returned.
+	 * @param p the parameter we want the name for
+	 * @return
+	 */
+	private String getDocumentation(Parameter p) {
+		String name = null;
+		GraphqlDocumentation argAnnotation = p.getAnnotation(GraphqlDocumentation.class);
+		if(argAnnotation != null) {
+			return argAnnotation.value();
+		}
+		return name;
+	}
+
+	/**
+	 * Looks if the method is annotated with {@link GraphqlDocumentation} and returns this value
+	 * @param p the parameter we want the name for
+	 * @return
+	 */
+	private String getDocumentation(Method method) {
+		String name = null;
+		GraphqlDocumentation argAnnotation = method.getAnnotation(GraphqlDocumentation.class);
 		if(argAnnotation != null) {
 			return argAnnotation.value();
 		}
@@ -334,9 +365,10 @@ public class ServiceSchemaBuilder {
 	
 	
 	
-	private GraphQLFieldDefinition createOperation(String name, Map<String, GraphQLInputType> parameters, DataFetcher<?> datafetcher, GraphQLOutputType type) {
+	private GraphQLFieldDefinition createOperation(String name, String methodDocumentation, Map<String, GraphQLInputType> parameters, DataFetcher<?> datafetcher, GraphQLOutputType type) {
 		GraphQLFieldDefinition.Builder builder = GraphQLFieldDefinition.newFieldDefinition()
 				.name(name)
+				.description(methodDocumentation)
 				.dataFetcher(datafetcher)
 				.type(type);
 		parameters.entrySet().stream().map(e -> this.createArgument(e.getKey(), e.getValue())).forEach(builder::argument);

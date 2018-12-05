@@ -25,9 +25,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.gecko.whiteboard.graphql.GeckoGraphQLConstants;
 import org.gecko.whiteboard.graphql.GraphqlSchemaTypeBuilder;
 import org.gecko.whiteboard.graphql.GraphqlServiceRuntime;
 import org.gecko.whiteboard.graphql.dto.RuntimeDTO;
+import org.gecko.whiteboard.graphql.instrumentation.TracingInstrumentationProvider;
 import org.gecko.whiteboard.graphql.service.ServiceSchemaBuilder;
 import org.osgi.annotation.bundle.Capability;
 import org.osgi.framework.BundleContext;
@@ -174,6 +176,10 @@ public class OsgiGraphqlWhiteboard extends AbstractGraphQLHttpServlet implements
     	copyProperties(componentContext);
     	serviceTracker = new ServiceTracker<Object, Object>(bundleContext, FrameworkUtil.createFilter("(|(" + GRAPHQL_WHITEBOARD_QUERY_SERVICE + "=*)(" + GRAPHQL_WHITEBOARD_MUTATION_SERVICE + "=*))"), this);
     	serviceTracker.open();
+    	Object tracingEnabled = componentContext.getProperties().get(GeckoGraphQLConstants.TRACING_ENABLED);
+    	if(tracingEnabled != null && Boolean.parseBoolean(tracingEnabled.toString())) {
+    		this.instrumentationProvider = new TracingInstrumentationProvider(); 
+    	}
     	
     	updateSchema();
         this.queryInvoker = GraphQLQueryInvoker.newBuilder()
@@ -189,7 +195,6 @@ public class OsgiGraphqlWhiteboard extends AbstractGraphQLHttpServlet implements
         this.graphQLObjectMapper = GraphQLObjectMapper.newBuilder()
             .withGraphQLErrorHandler(this::getErrorHandler)
             .build();
-        //this.graphQLObjectMapper.getJacksonMapper().registerModule(new EMFModule());
     }
     
     
@@ -233,14 +238,9 @@ public class OsgiGraphqlWhiteboard extends AbstractGraphQLHttpServlet implements
         final GraphQLObjectType.Builder mutationTypeBuilder = GraphQLObjectType.newObject().name("Mutation").description("Root mutation type");
 
         if (!mutationProviders.isEmpty()) {
-
             for (GraphQLMutationProvider provider : mutationProviders) {
                 provider.getMutations().forEach(mutationTypeBuilder::field);
             }
-
-//            if (!mutationTypeBuilder.build().getFieldDefinitions().isEmpty()) {
-//                mutationType = mutationTypeBuilder.build();
-//            }
         }
         
         Map<ServiceReference<Object>, ServiceObjects<Object>> copiedServiceMap = new HashMap<ServiceReference<Object>, ServiceObjects<Object>>(serviceReferences);
