@@ -31,8 +31,8 @@ import java.util.concurrent.TimeoutException;
 
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
-import org.gecko.util.test.common.service.ServiceChecker;
-import org.gecko.util.test.common.test.AbstractOSGiTest;
+import org.gecko.util.test.AbstractOSGiTest;
+import org.gecko.util.test.ServiceChecker;
 import org.gecko.whiteboard.graphql.GeckoGraphQLConstants;
 import org.gecko.whiteboard.graphql.GraphqlServiceRuntime;
 import org.gecko.whiteboard.graphql.annotation.GraphqlQueryService;
@@ -76,7 +76,7 @@ public class BasicTests extends AbstractOSGiTest{
 	 */
 	@Test
 	public void testGraphQLServlet() throws IOException, InvalidSyntaxException, InterruptedException, ExecutionException, TimeoutException {
-		Dictionary<String, String> options = new Hashtable<String, String>();
+		Dictionary<String, Object> options = new Hashtable<String, Object>();
 		options.put("id", "my.graphql.servlet");
 		Configuration configuration = createConfigForCleanup("GeckoGraphQLWhiteboard", "?", options);
 		
@@ -84,21 +84,21 @@ public class BasicTests extends AbstractOSGiTest{
 		
 		// check if GraphQlServiceRuntime is registered.
 		ServiceChecker<Object> serviceChecker = createdCheckerTrackedForCleanUp("(&(objectClass=org.gecko.whiteboard.graphql.GraphqlServiceRuntime)(id=my.graphql.servlet))");
-		serviceChecker.setCreateCount(1);
+		serviceChecker.setCreateExpectationCount(1);
 		serviceChecker.setCreateTimeout(10);
 		serviceChecker.start();
 	
-		assertTrue(serviceChecker.waitCreate());
-		assertEquals(1, serviceChecker.getCreateCount());
+		assertTrue(serviceChecker.awaitCreation());
+		assertEquals(1, serviceChecker.getCreateExpectationCount());
 		
 		// check if a Servlet is registered.
 		ServiceChecker<Object> serviceChecker2 = createdCheckerTrackedForCleanUp("(&(objectClass=javax.servlet.Servlet)(id=my.graphql.servlet))");
-		serviceChecker2.setCreateCount(1);
+		serviceChecker2.setCreateExpectationCount(1);
 		serviceChecker2.setCreateTimeout(10);
 		serviceChecker2.start();
 	
-		assertTrue(serviceChecker2.waitCreate());
-		assertEquals(1, serviceChecker2.getCreateCount());
+		assertTrue(serviceChecker2.awaitCreation());
+		assertEquals(1, serviceChecker2.getCreateExpectationCount());
 		
 		
 		ContentResponse get = client.GET("http://localhost:8081/graphql/schema.json");
@@ -124,18 +124,18 @@ public class BasicTests extends AbstractOSGiTest{
 	public void testGraphQLPureOSGiService() throws IOException, InvalidSyntaxException, InterruptedException, ExecutionException, TimeoutException {
 		// create service checker.
 		ServiceChecker<Object> serviceChecker = createdCheckerTrackedForCleanUp("(&(objectClass=org.gecko.whiteboard.graphql.GraphqlServiceRuntime)(id=my.graphql.servlet))");
-		serviceChecker.setCreateCount(1);
+		serviceChecker.setCreateExpectationCount(1);
 		serviceChecker.setCreateTimeout(1);
 		serviceChecker.start();
 
-		assertFalse(serviceChecker.waitCreate());
+		assertFalse(serviceChecker.awaitCreation());
 		
 		// Create GraphQL Whiteboard.
-		Dictionary<String, String> options = new Hashtable<String, String>();
+		Dictionary<String, Object> options = new Hashtable<String, Object>();
 		options.put("id", "my.graphql.servlet");
 		Configuration configuration = createConfigForCleanup("GeckoGraphQLWhiteboard", "?", options);
 		
-		assertTrue(serviceChecker.waitCreate());
+		assertTrue(serviceChecker.awaitCreation());
 		
 		ServiceReference<GraphqlServiceRuntime> serviceReference = getServiceReference(GraphqlServiceRuntime.class);
 
@@ -148,10 +148,10 @@ public class BasicTests extends AbstractOSGiTest{
 		addressBookProps.put(GeckoGraphQLConstants.GRAPHQL_WHITEBOARD_QUERY_SERVICE, new String[]{"*"});
 		AddressBookServiceImpl addressBookServiceImpl = new AddressBookServiceImpl();
 		serviceChecker.stop();
-		serviceChecker.setModifyCount(1);
+		serviceChecker.setModifyExpectationCount(1);
 		serviceChecker.start();
 		registerServiceForCleanup(addressBookServiceImpl, addressBookProps, AddressBookService.class);
-		assertTrue(serviceChecker.waitModify());
+		assertTrue(serviceChecker.awaitModification());
 		// make sure the SERVICE_CHANGECOUNT of the GraphqlServiceRuntime increments.
 		changeCount = (long) serviceReference.getProperty(Constants.SERVICE_CHANGECOUNT);
 		assertEquals(1L, changeCount);
@@ -168,7 +168,7 @@ public class BasicTests extends AbstractOSGiTest{
 		unregisterService(addressBookServiceImpl);
 		// make sure the change count increments
 		serviceChecker.stop();
-		serviceChecker.setModifyCount(1);
+		serviceChecker.setModifyExpectationCount(1);
 		serviceChecker.start();
 		changeCount = (long) serviceReference.getProperty(Constants.SERVICE_CHANGECOUNT);
 		assertEquals(2L, changeCount);
@@ -189,16 +189,16 @@ public class BasicTests extends AbstractOSGiTest{
 	@Test
 	public void testMultipleServiceInterfaces2()
 			throws IOException, InvalidSyntaxException, InterruptedException, ExecutionException, TimeoutException {
-		Dictionary<String, String> options = new Hashtable<String, String>();
+		Dictionary<String, Object> options = new Hashtable<String, Object>();
 		options.put("id", "my.graphql.servlet");
 		Configuration configuration = createConfigForCleanup("GeckoGraphQLWhiteboard", "?", options);
 
 		ServiceChecker<Object> serviceChecker = createdCheckerTrackedForCleanUp("(id=my.graphql.servlet)");
-		serviceChecker.setCreateCount(1);
+		serviceChecker.setCreateExpectationCount(1);
 		serviceChecker.setCreateTimeout(10);
 		serviceChecker.start();
 
-		assertTrue(serviceChecker.waitCreate());
+		assertTrue(serviceChecker.awaitCreation());
 
 		// register AddressBookServiceImpl as a AddressBookService under two interfaces
 		// properties.
@@ -206,18 +206,18 @@ public class BasicTests extends AbstractOSGiTest{
 		addressBookProps.put(GeckoGraphQLConstants.GRAPHQL_WHITEBOARD_QUERY_SERVICE, new String[] { AddressBookService.class.getName() });
 		AddressBookServiceImpl addressBookServiceImpl = new AddressBookServiceImpl();
 		serviceChecker.stop();
-		serviceChecker.setModifyCount(1);
+		serviceChecker.setModifyExpectationCount(1);
 		serviceChecker.start();
 		registerServiceForCleanup(addressBookServiceImpl, addressBookProps, AddressBookService.class);
-		assertTrue(serviceChecker.waitModify());
+		assertTrue(serviceChecker.awaitModification());
 		Dictionary<String, Object> addressBookProps2 = new Hashtable<String, Object>();
 		addressBookProps2.put(GeckoGraphQLConstants.GRAPHQL_WHITEBOARD_MUTATION_SERVICE, new String[] { AnotherInterface.class.getName() });
 		serviceChecker.stop();
-		serviceChecker.setModifyCount(1);
+		serviceChecker.setModifyExpectationCount(1);
 		serviceChecker.start();
 		AddressBookServiceImpl addressBookServiceImpl2 = new AddressBookServiceImpl();
 		registerServiceForCleanup(addressBookServiceImpl2, addressBookProps2, AnotherInterface.class);
-		assertTrue(serviceChecker.waitModify());
+		assertTrue(serviceChecker.awaitModification());
 
 
 		CountDownLatch latch = new CountDownLatch(1);
@@ -315,16 +315,16 @@ public class BasicTests extends AbstractOSGiTest{
 	@Test
 	public void testMultipleServiceInterfacesWithServiceNameProperty()
 			throws IOException, InvalidSyntaxException, InterruptedException, ExecutionException, TimeoutException {
-		Dictionary<String, String> options = new Hashtable<String, String>();
+		Dictionary<String, Object> options = new Hashtable<String, Object>();
 		options.put("id", "my.graphql.servlet");
 		Configuration configuration = createConfigForCleanup("GeckoGraphQLWhiteboard", "?", options);
 
 		ServiceChecker<Object> serviceChecker = createdCheckerTrackedForCleanUp("(id=my.graphql.servlet)");
-		serviceChecker.setCreateCount(1);
+		serviceChecker.setCreateExpectationCount(1);
 		serviceChecker.setCreateTimeout(10);
 		serviceChecker.start();
 
-		assertTrue(serviceChecker.waitCreate());
+		assertTrue(serviceChecker.awaitCreation());
 
 		// register AddressBookServiceImpl as a AddressBookService under two interfaces
 		// properties.
@@ -335,10 +335,10 @@ public class BasicTests extends AbstractOSGiTest{
 		
 		AddressBookServiceImpl addressBookServiceImpl = new AddressBookServiceImpl();
 		serviceChecker.stop();
-		serviceChecker.setModifyCount(1);
+		serviceChecker.setModifyExpectationCount(1);
 		serviceChecker.start();
 		registerServiceForCleanup(addressBookServiceImpl, addressBookProps, AddressBookService.class.getName(), AnotherInterface.class.getName());
-		assertTrue(serviceChecker.waitModify());
+		assertTrue(serviceChecker.awaitModification());
 		
 		// build List of all methods that should be included.
 		List<String> expectedMethods = new ArrayList<String>();
@@ -375,16 +375,16 @@ public class BasicTests extends AbstractOSGiTest{
 	@Test
 	public void testMultipleServiceInterfacesInOneQuery()
 			throws IOException, InvalidSyntaxException, InterruptedException, ExecutionException, TimeoutException {
-		Dictionary<String, String> options = new Hashtable<String, String>();
+		Dictionary<String, Object> options = new Hashtable<String, Object>();
 		options.put("id", "my.graphql.servlet");
 		Configuration configuration = createConfigForCleanup("GeckoGraphQLWhiteboard", "?", options);
 
 		ServiceChecker<Object> serviceChecker = createdCheckerTrackedForCleanUp("(id=my.graphql.servlet)");
-		serviceChecker.setCreateCount(1);
+		serviceChecker.setCreateExpectationCount(1);
 		serviceChecker.setCreateTimeout(10);
 		serviceChecker.start();
 
-		assertTrue(serviceChecker.waitCreate());
+		assertTrue(serviceChecker.awaitCreation());
 
 		// register AddressBookServiceImpl as a AddressBookService under two interfaces
 		// properties.
@@ -393,19 +393,19 @@ public class BasicTests extends AbstractOSGiTest{
 				new String[] { AddressBookService.class.getName() });
 		AddressBookServiceImpl addressBookServiceImpl = new AddressBookServiceImpl();
 		serviceChecker.stop();
-		serviceChecker.setModifyCount(1);
+		serviceChecker.setModifyExpectationCount(1);
 		serviceChecker.start();
 		registerServiceForCleanup(addressBookServiceImpl, addressBookProps, AddressBookService.class);
-		assertTrue(serviceChecker.waitModify());
+		assertTrue(serviceChecker.awaitModification());
 		Dictionary<String, Object> addressBookProps2 = new Hashtable<String, Object>();
 		addressBookProps2.put(GeckoGraphQLConstants.GRAPHQL_WHITEBOARD_QUERY_SERVICE,
 				new String[] { AnotherInterface.class.getName() });
 		serviceChecker.stop();
-		serviceChecker.setModifyCount(1);
+		serviceChecker.setModifyExpectationCount(1);
 		serviceChecker.start();
 		AddressBookServiceImpl addressBookServiceImpl2 = new AddressBookServiceImpl();
 		registerServiceForCleanup(addressBookServiceImpl2, addressBookProps2, AnotherInterface.class);
-		assertTrue(serviceChecker.waitModify());
+		assertTrue(serviceChecker.awaitModification());
 		
 		// create Lists of expected methods.
 		List<String> addressBookServiceMethods = new ArrayList<String>();
