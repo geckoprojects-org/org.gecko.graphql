@@ -11,6 +11,9 @@
  */
 package org.gecko.whiteboard.graphql.test.objects;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * 
  * @author ChristophDockhorn
@@ -129,6 +132,8 @@ public class Country {
 		return country;
 	}
 	
-	
+	public List<Country> returnListOfCountries () {
+		return new ArrayList<Country>();
+	}
 
 }

@@ -26,7 +26,7 @@ public enum Continent {
 		this.key = key;
 	}
 	
-	public Continent getContinent(String continent) {
+	public static Continent getContinent(String continent) {
 		if ("Africa".equalsIgnoreCase(continent)) {
 			return AFRICA;
 		}
