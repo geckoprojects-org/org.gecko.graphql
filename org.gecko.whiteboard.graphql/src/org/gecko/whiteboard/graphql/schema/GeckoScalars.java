@@ -46,14 +46,14 @@ public class GeckoScalars {
             	try {
 					return formater.parse(input.toString());
 				} catch (ParseException e) {
-                    throw new AssertException("The Date String " + input.toString() + " appeared not to be of the expected format yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+                    throw new CoercingParseLiteralException("The Date String " + input.toString() + " appeared not to be of the expected format yyyy-MM-dd'T'HH:mm:ss.SSSZ");
 				}
             } else if (input instanceof Number) {
                 BigDecimal value;
                 try {
                     value = new BigDecimal(input.toString());
                 } catch (NumberFormatException e) {
-                    throw new AssertException("Internal error: should never happen");
+                    throw new CoercingParseLiteralException("Internal error: should never happen");
                 }
                 return new Date(value.longValue());
             } else {

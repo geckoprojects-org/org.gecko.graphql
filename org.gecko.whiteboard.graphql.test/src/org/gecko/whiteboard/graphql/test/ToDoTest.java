@@ -28,5 +28,13 @@ public class ToDoTest {
 	public void testScalarTypesAsMethodParametersAreMandatory() {
 		
 	}
+
+	/**
+	 * We need a Service that throws an exception, when a method is called. We have to make sure, that the error 
+	 * message will be transported as an error response. This will most likely right now. 
+	 */
+	public void testExceptionHandling() {
+		
+	}
 	
 }
