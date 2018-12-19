@@ -22,10 +22,19 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 @Target({ PARAMETER })
 /**
- * An Annotation to carry argument names
- * @author jalbert
+ * An Annotation to carry argument names and additional Options
+ * @author Juergen Albert
  * @since 7 Nov 2018
  */
 public @interface GraphqlArgument {
+	
+	/**
+	 * @return the name of the argument
+	 */
 	public String value();
+	
+	/**
+	 * @return marks an argument as optional
+	 */
+	public boolean optional() default false;
 }

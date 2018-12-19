@@ -20,6 +20,7 @@ import static org.junit.Assert.fail;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.concurrent.CountDownLatch;
@@ -160,11 +161,94 @@ public class InvokationTests extends AbstractOSGiTest{
 		
 		assertTrue(envWithParamLatch.await(1, TimeUnit.SECONDS));
 	}
+
+	@Test
+	public void testDate() throws IOException, InvalidSyntaxException, InterruptedException, ExecutionException, TimeoutException {
+		Dictionary<String, String> options = new Hashtable<String, String>();
+		options.put("id", "my.graphql.servlet");
+		options.put(GeckoGraphQLConstants.TRACING_ENABLED, "true");
+		Configuration configuration = createConfigForCleanup(GeckoGraphQLConstants.GECKO_GRAPHQL_WHITEBOARD_COMPONENT_NAME, "?", options);
+		
+		ServiceChecker<Object> serviceChecker = createdCheckerTrackedForCleanUp("(id=my.graphql.servlet)");
+		serviceChecker.setCreateCount(1);
+		serviceChecker.setCreateTimeout(10);
+		serviceChecker.start();
+		
+		assertTrue(serviceChecker.waitCreate());
+		
+		CountDownLatch envWithParamLatch = new CountDownLatch(1);
+		CountDownLatch envLatch = new CountDownLatch(1);
+		
+		DateTestService testServiceImpl = new DateTestService() {
+
+			@Override
+			public String testDate(Date date) {
+				return date.toString();
+			}
+			
+			
+		};
+		
+		Dictionary<String, Object> properties = new Hashtable<>();
+		
+		properties.put(GeckoGraphQLConstants.GRAPHQL_WHITEBOARD_QUERY_SERVICE, "*");
+		
+		serviceChecker.stop();
+		serviceChecker.setModifyCount(1);
+		serviceChecker.start();
+		
+		registerServiceForCleanup(testServiceImpl, properties, DateTestService.class);
+		
+		assertTrue(serviceChecker.waitModify());
+		Request post = client.POST("http://localhost:8181/graphql");
+		post.content(new StringContentProvider("{\n" + 
+				"  \"query\": \"query {\\n  TestService{\\n    testMethodWithDataFetchingEnvironment\\n  }\\n}\"\n" + 
+				"}"), "application/json");
+		ContentResponse response = post.send();
+		
+		assertEquals(200, response.getStatus());
+		
+		//TODO we will need to parse the content and look if the response conatins our expected response String
+		
+//		assertEquals("{" + 
+//				"  \"data\": {" + 
+//				"    \"TestService\": {\n" + 
+//				"      \"testMethodWithDataFetchingEnvironment\": \"Response\"\n" + 
+//				"    }\n" + 
+//				"  }\n" + 
+//				"}", response.getContentAsString());
+		
+		assertTrue(envLatch.await(1, TimeUnit.SECONDS));
+		
+		post = client.POST("http://localhost:8181/graphql");
+		post.content(new StringContentProvider("{\n" + 
+				"  \"query\": \"query {\\n  TestService{\\n    testMethodWithDataFetchingEnvironmentWithParam(arg0 : \\\"test\\\")\\n  }\\n}\"\n" + 
+				"}"), "application/json");
+		response = post.send();
+		
+		assertEquals(200, response.getStatus());
+		
+		//TODO we will need to parse the content and look if the response conatins our expected response String
+		
+//		assertEquals("{" + 
+//				"  \"data\": {" + 
+//				"    \"TestService\": {\n" + 
+//				"      \"testMethodWithDataFetchingEnvironment\": \"Response\"\n" + 
+//				"    }\n" + 
+//				"  }\n" + 
+//				"}", response.getContentAsString());
+		
+		assertTrue(envWithParamLatch.await(1, TimeUnit.SECONDS));
+	}
 	
 	public static interface TestService{
 		public String testMethodWithDataFetchingEnvironment(DataFetchingEnvironment env);
 
 		public String testMethodWithDataFetchingEnvironmentWithParam(String input, DataFetchingEnvironment env);
+	}
+
+	public static interface DateTestService{
+		public String testDate(Date date);
 	}
 
 	/* 

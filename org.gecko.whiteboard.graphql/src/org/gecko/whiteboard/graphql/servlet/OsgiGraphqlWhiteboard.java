@@ -1,5 +1,15 @@
-package org.gecko.whiteboard.graphql.servlet
-;
+/**
+ * Copyright (c) 2012 - 2018 Data In Motion and others.
+ * All rights reserved. 
+ * 
+ * This program and the accompanying materials are made available under the terms of the 
+ * Eclipse Public License v1.0 which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors:
+ *     Data In Motion - initial API and implementation
+ */
+package org.gecko.whiteboard.graphql.servlet;
 
 import static org.gecko.whiteboard.graphql.GeckoGraphQLConstants.DEFAULT_SERVLET_PATTERN;
 import static org.gecko.whiteboard.graphql.GeckoGraphQLConstants.GECKO_GRAPHQL_WHITEBOARD_COMPONENT_NAME;
@@ -83,6 +93,11 @@ import graphql.servlet.GraphQLTypesProvider;
 import graphql.servlet.InstrumentationProvider;
 import graphql.servlet.NoOpInstrumentationProvider;
 
+/**
+ * 
+ * @author Juergen Albert
+ * @since 19 Dec 2018
+ */
 @Component(
 		name = GECKO_GRAPHQL_WHITEBOARD_COMPONENT_NAME,
         service={Servlet.class},
@@ -422,30 +437,11 @@ public class OsgiGraphqlWhiteboard extends AbstractGraphQLHttpServlet implements
 	 */
 	@Override
 	public Object addingService(ServiceReference<Object> reference) {
-//		wirePotentialRemoteService(reference);
 		ServiceObjects<Object> serviceObjects = bundleContext.getServiceObjects(reference);
 		serviceReferences.put(reference, serviceObjects);
 		updateSchema();
 		return bundleContext.getService(reference);
 	}
-
-//	/**
-//	 * @param reference
-//	 */
-//	private void wirePotentialRemoteService(ServiceReference<Object> reference) {
-//		String[] keys = reference.getPropertyKeys();
-//		
-//		Arrays.asList(keys).stream().filter(k -> k.startsWith(RemoteConstants.ENDPOINT_PACKAGE_VERSION_)).forEach(k -> {
-//			String packageName = k.substring(RemoteConstants.ENDPOINT_PACKAGE_VERSION_.length());
-//			Version version = (Version) reference.getProperty(k);
-//			
-//			for(Bundle bundle : bundleContext.getBundles()) {
-//				BundleWiring bundleWiring = bundle.adapt(BundleWiring.class);
-//				bundleWiring.getCapabilities("osgi.wiring.package")
-//			}
-//		});
-//		
-//	}
 
 	/* 
 	 * (non-Javadoc)

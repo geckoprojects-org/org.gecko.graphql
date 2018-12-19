@@ -15,7 +15,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
-import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -31,10 +31,10 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceObjects;
 import org.osgi.framework.ServiceReference;
+import org.osgi.framework.wiring.BundleWiring;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import graphql.Scalars;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLArgument;
@@ -44,19 +44,18 @@ import graphql.schema.GraphQLNonNull;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLObjectType.Builder;
 import graphql.schema.GraphQLOutputType;
-import graphql.schema.GraphQLScalarType;
 import graphql.schema.GraphQLType;
 import graphql.schema.StaticDataFetcher;
 
 /**
- * 
- * @author jalbert
+ * Builds the schema out of a Service reference
+ * @author Juergen Albert
  * @since 2 Nov 2018
  */
 public class ServiceSchemaBuilder {
 
-	private final ServiceReference<Object> serviceReference;
-	private final ServiceObjects<Object> serviceObjects;
+	private ServiceReference<Object> serviceReference;
+	private ServiceObjects<Object> serviceObjects;
 	private final Builder queryTypeBuilder;
 	private final Builder mutationTypeBuilder;
 	private final Set<GraphQLType> types;
@@ -90,9 +89,34 @@ public class ServiceSchemaBuilder {
 	}
 
 	/**
+	 * Creates a new instance.
+	 * @param serviceReference
+	 * @param serviceObjects
+	 * @param queryTypeBuilder
+	 * @param mutationTypeBuilder 
+	 * @param types
+	 * @param typeBuilder 
+	 */
+	public ServiceSchemaBuilder(Builder queryTypeBuilder,
+			Builder mutationTypeBuilder, Set<GraphQLType> types, List<GraphqlSchemaTypeBuilder> typeBuilder) {
+		this.queryTypeBuilder = queryTypeBuilder;
+		this.mutationTypeBuilder = mutationTypeBuilder;
+		this.types = types;
+		types.forEach(type -> typeMapping.put(type.getName(), type));
+		schemaTypeBuilder.addAll(typeBuilder);
+	}
+
+	/**
 	 * Builds the query and mutation Schema
 	 */
 	public void build() {
+		build(serviceReference, serviceObjects);
+	}
+	
+	/**
+	 * Builds the query and mutation Schema
+	 */
+	public void build(ServiceReference<Object> serviceReference, ServiceObjects<Object> serviceObjects) {
 		Object service = ctx.getService(serviceReference);
 		try {
 			List<Class<?>> interfaces = GraphqlSchemaTypeBuilder.getAllInterfaces(service.getClass());
@@ -119,6 +143,25 @@ public class ServiceSchemaBuilder {
 		} finally {
 			ctx.ungetService(serviceReference);
 		}
+	}
+	
+	/**
+	 * Tries to get all declared object classes
+	 * @param serviceReference the
+	 * @return
+	 */
+	private List<Class<?>> getDeclaredObjectClasses(ServiceReference<Object> serviceReference) {
+		String[] objectClasses = (String[]) serviceReference.getProperty(Constants.OBJECTCLASS);
+		List<Class<?>> interfaces = new ArrayList<Class<?>>(objectClasses.length);
+		for(String objectClass : objectClasses) {
+			try {
+				BundleWiring bundleWiring = serviceReference.getBundle().adapt(BundleWiring.class);
+				interfaces.add(bundleWiring.getClassLoader().loadClass(objectClass));
+			} catch (ClassNotFoundException e) {
+				throw new RuntimeException("Cant load class for ObjectClass", e);
+			}
+		}
+		return interfaces;
 	}
 	
 	/**
@@ -213,6 +256,33 @@ public class ServiceSchemaBuilder {
 		return name;
 	}
 	
+	private static final class ParameterContext {
+		
+		private Parameter parameter;
+		private GraphQLInputType type;
+
+		public ParameterContext(Parameter parameter, GraphQLInputType type) {
+			this.parameter = parameter;
+			this.type = type;
+		}
+		
+		/**
+		 * Returns the type.
+		 * @return the type
+		 */
+		public GraphQLInputType getType() {
+			return type;
+		}
+		
+		/**
+		 * Returns the parameter.
+		 * @return the parameter
+		 */
+		public Parameter getParameter() {
+			return parameter;
+		}
+	}
+	
 	/**
 	 * Uses Reflection to build a Schema for the given Service Interface
 	 * @param name the name of the Service
@@ -232,7 +302,7 @@ public class ServiceSchemaBuilder {
 			String methodName = method.getName();
 			
 			GraphQLOutputType returnType = (GraphQLOutputType) createType(method.getGenericReturnType(), typeMapping, false);
-			Map<String, GraphQLInputType> parameters = new HashMap<String, GraphQLInputType>();
+			Map<String, ParameterContext> parameters = new HashMap<>();
 			boolean ignore = false;
 			String methodDocumentation = getDocumentation(method);
 			for(Parameter p : method.getParameters()) {
@@ -250,13 +320,13 @@ public class ServiceSchemaBuilder {
 							.findFirst()
 							.orElseGet(() -> defaultBuilder.canHandle(parameterType, true));
 						if(hasHandler) {
-							parameters.put(parameterName, (GraphQLInputType) createType(parameterType, typeMapping, true));
+							parameters.put(parameterName, new ParameterContext(p, (GraphQLInputType) createType(parameterType, typeMapping, true)));
 						} else {
 							LOG.error("{} parameter {} is a complex type and no handler is available. Thus the Method will be ignored", method, parameterName);
 							ignore = true;
 						}
 					} else {
-						parameters.put(parameterName, (GraphQLInputType) basicType);
+						parameters.put(parameterName, new ParameterContext(p,(GraphQLInputType) basicType));
 					}
 			}
 			if(!ignore) {
@@ -310,6 +380,19 @@ public class ServiceSchemaBuilder {
 	}
 
 	/**
+	 * Looks if the parameter is annotated with {@link GraphqlArgument} and if the value is declared optional. By Default, every parameter is mandatory.
+	 * @param p the parameter we want the name for
+	 * @return
+	 */
+	private boolean isParameterOptional(Parameter p) {
+		GraphqlArgument argAnnotation = p.getAnnotation(GraphqlArgument.class);
+		if(argAnnotation != null) {
+			return argAnnotation.optional();
+		}
+		return false;
+	}
+
+	/**
 	 * Looks if the parameter is annotated with {@link GraphqlDocumentation} and uses this value. If not the parameter name is returned.
 	 * @param p the parameter we want the name for
 	 * @return
@@ -325,7 +408,7 @@ public class ServiceSchemaBuilder {
 
 	/**
 	 * Looks if the method is annotated with {@link GraphqlDocumentation} and returns this value
-	 * @param p the parameter we want the name for
+	 * @param parameter the parameter we want the name for
 	 * @return
 	 */
 	private String getDocumentation(Method method) {
@@ -349,7 +432,7 @@ public class ServiceSchemaBuilder {
 	
 	
 	
-	private GraphQLFieldDefinition createOperation(String name, String methodDocumentation, Map<String, GraphQLInputType> parameters, DataFetcher<?> datafetcher, GraphQLOutputType type) {
+	private GraphQLFieldDefinition createOperation(String name, String methodDocumentation, Map<String, ParameterContext> parameters, DataFetcher<?> datafetcher, GraphQLOutputType type) {
 		GraphQLFieldDefinition.Builder builder = GraphQLFieldDefinition.newFieldDefinition()
 				.name(name)
 				.description(methodDocumentation)
@@ -359,10 +442,15 @@ public class ServiceSchemaBuilder {
 		return builder.build();
 	}
 	
-	private GraphQLArgument createArgument(String name, GraphQLInputType type) {
-		GraphQLInputType typeToUse = type;
-		if(type instanceof GraphQLScalarType) {
-			switch (type.getName()) {
+	/**
+	 * Creates the argument for an Operation
+	 * @param name the name of the parameter
+	 * @param context the {@link ParameterContext} containing the {@link GraphQLInputType} and the {@link Parameter} 
+	 * @return the {@link GraphQLArgument}
+	 */
+	private GraphQLArgument createArgument(String name, ParameterContext context) {
+		GraphQLInputType typeToUse = context.getType();
+			switch (typeToUse.getName()) {
 				case "Int":
 				case "Float":
 				case "Short":
@@ -370,13 +458,18 @@ public class ServiceSchemaBuilder {
 				case "Boolean":
 				case "Byte":
 				case "Char":
-					typeToUse = GraphQLNonNull.nonNull(type);
+					typeToUse = GraphQLNonNull.nonNull(typeToUse);
+					break;
 				default:
+					if(!isParameterOptional(context.parameter)) {
+						typeToUse = GraphQLNonNull.nonNull(typeToUse);
+					}
 					break;
 			}
-		}
+		
 		return GraphQLArgument.newArgument()
 				.name(name)
+				.description(getDocumentation(context.getParameter()))
 				.type(typeToUse)
 				.build();
 		
