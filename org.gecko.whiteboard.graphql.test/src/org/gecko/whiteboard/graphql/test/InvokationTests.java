@@ -50,6 +50,9 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.cm.Configuration;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLSchema;
 import graphql.schema.idl.SchemaParser;
@@ -202,43 +205,31 @@ public class InvokationTests extends AbstractOSGiTest{
 		assertTrue(serviceChecker.waitModify());
 		Request post = client.POST("http://localhost:8181/graphql");
 		post.content(new StringContentProvider("{\n" + 
-				"  \"query\": \"query {\\n  TestService{\\n    testMethodWithDataFetchingEnvironment\\n  }\\n}\"\n" + 
+				"  \"query\": \"query {\\n  DateTestService{\\n    testDate(arg0 : \\\"2018-11-18T13:45:00.000+0100\\\")\\n  }\\n}\\n\",\n" + 
+				"  \"variables\": {}\n" + 
 				"}"), "application/json");
 		ContentResponse response = post.send();
 		
 		assertEquals(200, response.getStatus());
+		JsonNode json = parseJSON(response.getContentAsString());
 		
-		//TODO we will need to parse the content and look if the response conatins our expected response String
+		JsonNode dataNode = json.get("data");
+		assertNotNull(dataNode);
+		JsonNode serviceNode = dataNode.get("DateTestService");
+		assertNotNull(serviceNode);
 		
-//		assertEquals("{" + 
-//				"  \"data\": {" + 
-//				"    \"TestService\": {\n" + 
-//				"      \"testMethodWithDataFetchingEnvironment\": \"Response\"\n" + 
-//				"    }\n" + 
-//				"  }\n" + 
-//				"}", response.getContentAsString());
+		JsonNode resultNode = serviceNode.get("testDate");
+		assertNotNull(resultNode);
+		assertEquals("Sun Nov 18 13:45:00 CET 2018", resultNode.asText());
 		
-		assertTrue(envLatch.await(1, TimeUnit.SECONDS));
+	}
+	
+	// Helper method to parse JSON.
+	public JsonNode parseJSON(String input) throws IOException {
+		ObjectMapper mapp = new ObjectMapper();
 		
-		post = client.POST("http://localhost:8181/graphql");
-		post.content(new StringContentProvider("{\n" + 
-				"  \"query\": \"query {\\n  TestService{\\n    testMethodWithDataFetchingEnvironmentWithParam(arg0 : \\\"test\\\")\\n  }\\n}\"\n" + 
-				"}"), "application/json");
-		response = post.send();
-		
-		assertEquals(200, response.getStatus());
-		
-		//TODO we will need to parse the content and look if the response conatins our expected response String
-		
-//		assertEquals("{" + 
-//				"  \"data\": {" + 
-//				"    \"TestService\": {\n" + 
-//				"      \"testMethodWithDataFetchingEnvironment\": \"Response\"\n" + 
-//				"    }\n" + 
-//				"  }\n" + 
-//				"}", response.getContentAsString());
-		
-		assertTrue(envWithParamLatch.await(1, TimeUnit.SECONDS));
+		JsonNode jsonNode = mapp.reader().readTree(input);
+		return jsonNode;
 	}
 	
 	public static interface TestService{

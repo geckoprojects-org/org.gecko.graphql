@@ -55,7 +55,6 @@ import graphql.schema.StaticDataFetcher;
 public class ServiceSchemaBuilder {
 
 	private ServiceReference<Object> serviceReference;
-	private ServiceObjects<Object> serviceObjects;
 	private final Builder queryTypeBuilder;
 	private final Builder mutationTypeBuilder;
 	private final Set<GraphQLType> types;
@@ -84,12 +83,12 @@ public class ServiceSchemaBuilder {
 		schemaTypeBuilder.addAll(typeBuilder);
 	}
 
-	/**
-	 * Builds the query and mutation Schema
-	 */
-	public void build() {
-		build(serviceReference, serviceObjects);
-	}
+//	/**
+//	 * Builds the query and mutation Schema
+//	 */
+//	public void build() {
+//		build(serviceReference, serviceObjects);
+//	}
 
 	public void build(Map.Entry<ServiceReference<Object>, ServiceObjects<Object>> entry) {
 		build(entry.getKey(), entry.getValue());
@@ -238,6 +237,48 @@ public class ServiceSchemaBuilder {
 		return name;
 	}
 	
+	/**
+	 * 
+	 * @author jalbert
+	 * @since 9 Jan 2019
+	 */
+	private final class DataFetcherImplementation implements DataFetcher<Object> {
+		/** method */
+		private final Method method;
+
+		/**
+		 * Creates a new instance.
+		 * @param method
+		 */
+		private DataFetcherImplementation(Method method) {
+			this.method = method;
+		}
+
+		@Override
+		public Object get(DataFetchingEnvironment environment) {
+			ServiceObjects<Object> serviceObjects = environment.getSource();
+			Object[] parameters = new Object[method.getParameterCount()];
+			for (int i = 0; i < method.getParameters().length; i++) {
+				Parameter parameter = method.getParameters()[i];
+				if(parameter.getType().equals(DataFetchingEnvironment.class)) {
+					parameters[i] = environment;
+				} else {
+					parameters[i] = environment.getArguments().get(getParameterName(parameter));
+				}
+			}
+			Object toInvokeOn = serviceObjects.getService();
+			try {
+				Object result = method.invoke(toInvokeOn, parameters);
+				return result;
+			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+				e.printStackTrace();
+			} finally {
+				serviceObjects.ungetService(toInvokeOn);
+			}
+			return null;
+		}
+	}
+
 	private static final class ParameterContext {
 		
 		private Parameter parameter;
@@ -312,32 +353,7 @@ public class ServiceSchemaBuilder {
 					}
 			}
 			if(!ignore) {
-				GraphQLFieldDefinition operation = createOperation(methodName, methodDocumentation, parameters, new DataFetcher<Object>() {
-
-					@Override
-					public Object get(DataFetchingEnvironment environment) {
-						ServiceObjects<?> serviceObjects = environment.getSource();
-						Object[] parameters = new Object[method.getParameterCount()];
-						for (int i = 0; i < method.getParameters().length; i++) {
-							Parameter parameter = method.getParameters()[i];
-							if(parameter.getType().equals(DataFetchingEnvironment.class)) {
-								parameters[i] = environment;
-							} else {
-								parameters[i] = environment.getArguments().get(getParameterName(parameter));
-							}
-						}
-						Object toInvokeOn = serviceObjects.getService();
-						try {
-							Object result = method.invoke(toInvokeOn, parameters);
-							return result;
-						} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-							e.printStackTrace();
-						} finally {
-							ServiceSchemaBuilder.this.serviceObjects.ungetService(toInvokeOn);
-						}
-						return null;
-					}
-				}, returnType);
+				GraphQLFieldDefinition operation = createOperation(methodName, methodDocumentation, parameters, new DataFetcherImplementation(method), returnType);
 				serviceBuilder.field(operation);
 			}
 		}
