@@ -261,9 +261,8 @@ public class OsgiGraphqlWhiteboard extends AbstractGraphQLHttpServlet implements
         Map<ServiceReference<Object>, ServiceObjects<Object>> copiedServiceMap = new HashMap<ServiceReference<Object>, ServiceObjects<Object>>(serviceReferences);
         
         if(!copiedServiceMap.isEmpty()) {
-        	copiedServiceMap.entrySet().stream()
-        		.map(e -> new ServiceSchemaBuilder(e.getKey(), e.getValue(), queryTypeBuilder, mutationTypeBuilder, types, typeBuilder))
-        		.forEach(sb -> sb.build());
+        	ServiceSchemaBuilder sb = new ServiceSchemaBuilder(queryTypeBuilder, mutationTypeBuilder, types, typeBuilder);
+        	copiedServiceMap.forEach(sb::build);
         }
         try {
         	GraphQLObjectType query = queryTypeBuilder.build();

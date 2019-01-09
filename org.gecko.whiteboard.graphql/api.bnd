@@ -4,4 +4,5 @@ Export-Package: \
 	org.gecko.whiteboard.graphql.annotation,\
 	org.gecko.whiteboard.graphql,\
 	org.gecko.whiteboard.graphql.dto,\
-	org.gecko.whiteboard.graphql.schema
+	org.gecko.whiteboard.graphql.schema,\
+	org.gecko.whiteboard.graphql.annotation.v2

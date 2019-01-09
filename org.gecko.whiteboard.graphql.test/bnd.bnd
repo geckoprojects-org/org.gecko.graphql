@@ -25,7 +25,8 @@ Test-Cases: ${classes;CONCRETE;ANNOTATED;org.junit.runner.RunWith}
 	com.fasterxml.jackson.core.jackson-core,\
 	com.fasterxml.jackson.core.jackson-databind,\
 	com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider,\
-	org.gecko.emf.osgi.json
+	org.gecko.emf.osgi.json,\
+	org.gecko.util.test
 
 -runproperties: \
 	org.osgi.service.http.port=8181

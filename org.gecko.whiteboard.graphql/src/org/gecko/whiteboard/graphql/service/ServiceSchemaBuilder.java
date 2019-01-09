@@ -70,28 +70,6 @@ public class ServiceSchemaBuilder {
 	
 	/**
 	 * Creates a new instance.
-	 * @param serviceReference
-	 * @param serviceObjects
-	 * @param queryTypeBuilder
-	 * @param mutationTypeBuilder 
-	 * @param types
-	 * @param typeBuilder 
-	 */
-	public ServiceSchemaBuilder(ServiceReference<Object> serviceReference, ServiceObjects<Object> serviceObjects, Builder queryTypeBuilder,
-			Builder mutationTypeBuilder, Set<GraphQLType> types, List<GraphqlSchemaTypeBuilder> typeBuilder) {
-				this.serviceReference = serviceReference;
-				this.serviceObjects = serviceObjects;
-				this.queryTypeBuilder = queryTypeBuilder;
-				this.mutationTypeBuilder = mutationTypeBuilder;
-				this.types = types;
-				types.forEach(type -> typeMapping.put(type.getName(), type));
-				schemaTypeBuilder.addAll(typeBuilder);
-	}
-
-	/**
-	 * Creates a new instance.
-	 * @param serviceReference
-	 * @param serviceObjects
 	 * @param queryTypeBuilder
 	 * @param mutationTypeBuilder 
 	 * @param types
@@ -112,15 +90,19 @@ public class ServiceSchemaBuilder {
 	public void build() {
 		build(serviceReference, serviceObjects);
 	}
+
+	public void build(Map.Entry<ServiceReference<Object>, ServiceObjects<Object>> entry) {
+		build(entry.getKey(), entry.getValue());
+	}
 	
 	/**
 	 * Builds the query and mutation Schema
 	 */
 	public void build(ServiceReference<Object> serviceReference, ServiceObjects<Object> serviceObjects) {
-		Object service = ctx.getService(serviceReference);
+//		Object service = ctx.getService(serviceReference);
 		try {
-			List<Class<?>> interfaces = GraphqlSchemaTypeBuilder.getAllInterfaces(service.getClass());
-//			List<Class<?>> interfaces = getServiceInterfaces(serviceReference);
+//			List<Class<?>> interfaces = GraphqlSchemaTypeBuilder.getAllInterfaces(service.getClass());
+			List<Class<?>> interfaces = getDeclaredObjectClasses(serviceReference);
 			
 			for(Class<?> curInterface : interfaces) {
 				boolean isQuery = isDeclaredQueryInterface(curInterface, serviceReference);
@@ -450,28 +432,27 @@ public class ServiceSchemaBuilder {
 	 */
 	private GraphQLArgument createArgument(String name, ParameterContext context) {
 		GraphQLInputType typeToUse = context.getType();
-			switch (typeToUse.getName()) {
-				case "Int":
-				case "Float":
-				case "Short":
-				case "Long":
-				case "Boolean":
-				case "Byte":
-				case "Char":
+		switch (typeToUse.getName()) {
+			case "Int":
+			case "Float":
+			case "Short":
+			case "Long":
+			case "Boolean":
+			case "Byte":
+			case "Char":
+				typeToUse = GraphQLNonNull.nonNull(typeToUse);
+				break;
+			default:
+				if(!isParameterOptional(context.parameter)) {
 					typeToUse = GraphQLNonNull.nonNull(typeToUse);
-					break;
-				default:
-					if(!isParameterOptional(context.parameter)) {
-						typeToUse = GraphQLNonNull.nonNull(typeToUse);
-					}
-					break;
-			}
+				}
+				break;
+		}
 		
 		return GraphQLArgument.newArgument()
 				.name(name)
 				.description(getDocumentation(context.getParameter()))
 				.type(typeToUse)
 				.build();
-		
 	}
 }
