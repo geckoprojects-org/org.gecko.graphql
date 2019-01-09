@@ -19,6 +19,8 @@ import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Dictionary;
@@ -202,10 +204,13 @@ public class InvokationTests extends AbstractOSGiTest{
 		
 		registerServiceForCleanup(testServiceImpl, properties, DateTestService.class);
 		
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+		Date date = new Date();
+		
 		assertTrue(serviceChecker.waitModify());
 		Request post = client.POST("http://localhost:8181/graphql");
 		post.content(new StringContentProvider("{\n" + 
-				"  \"query\": \"query {\\n  DateTestService{\\n    testDate(arg0 : \\\"2018-11-18T13:45:00.000+0100\\\")\\n  }\\n}\\n\",\n" + 
+				"  \"query\": \"query {\\n  DateTestService{\\n    testDate(arg0 : \\\"" + dateFormat.format(date) + "\\\")\\n  }\\n}\\n\",\n" + 
 				"  \"variables\": {}\n" + 
 				"}"), "application/json");
 		ContentResponse response = post.send();
@@ -220,7 +225,7 @@ public class InvokationTests extends AbstractOSGiTest{
 		
 		JsonNode resultNode = serviceNode.get("testDate");
 		assertNotNull(resultNode);
-		assertEquals("Sun Nov 18 13:45:00 CET 2018", resultNode.asText());
+		assertEquals(date.toString(), resultNode.asText());
 		
 	}
 	
