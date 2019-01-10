@@ -42,6 +42,7 @@ import org.eclipse.jetty.client.util.StringContentProvider;
 import org.gecko.util.test.common.service.ServiceChecker;
 import org.gecko.util.test.common.test.AbstractOSGiTest;
 import org.gecko.whiteboard.graphql.GeckoGraphQLConstants;
+import org.gecko.whiteboard.graphql.annotation.GraphqlArgument;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -228,6 +229,70 @@ public class InvokationTests extends AbstractOSGiTest{
 		assertEquals(date.toString(), resultNode.asText());
 		
 	}
+
+	@Test
+	public void testNativeTypeWrapper() throws IOException, InvalidSyntaxException, InterruptedException, ExecutionException, TimeoutException {
+		Dictionary<String, String> options = new Hashtable<String, String>();
+		options.put("id", "my.graphql.servlet");
+		options.put(GeckoGraphQLConstants.TRACING_ENABLED, "true");
+		Configuration configuration = createConfigForCleanup(GeckoGraphQLConstants.GECKO_GRAPHQL_WHITEBOARD_COMPONENT_NAME, "?", options);
+		
+		ServiceChecker<Object> serviceChecker = createdCheckerTrackedForCleanUp("(id=my.graphql.servlet)");
+		serviceChecker.setCreateCount(1);
+		serviceChecker.setCreateTimeout(10);
+		serviceChecker.start();
+		
+		assertTrue(serviceChecker.waitCreate());
+		
+		CountDownLatch envWithParamLatch = new CountDownLatch(1);
+		CountDownLatch envLatch = new CountDownLatch(1);
+		
+		IntegerService testServiceImpl = new IntegerService() {
+			
+			@Override
+			public String testInt(int test) {
+				return Integer.toString(test);
+			}
+
+			@Override
+			public String testInteger(Integer test) {
+				return test == null ? "empty" : test.toString();
+			}
+			
+			
+		};
+		
+		Dictionary<String, Object> properties = new Hashtable<>();
+		
+		properties.put(GeckoGraphQLConstants.GRAPHQL_WHITEBOARD_QUERY_SERVICE, "*");
+		
+		serviceChecker.stop();
+		serviceChecker.setModifyCount(1);
+		serviceChecker.start();
+		
+		registerServiceForCleanup(testServiceImpl, properties, IntegerService.class);
+		
+		assertTrue(serviceChecker.waitModify());
+		Request post = client.POST("http://localhost:8181/graphql");
+		post.content(new StringContentProvider("{\n" + 
+				"  \"query\": \"query {\\n  IntegerService{\\n    testInteger\\n  }\\n}\\n\",\n" + 
+				"  \"variables\": {}\n" + 
+				"}"), "application/json");
+		ContentResponse response = post.send();
+		
+		assertEquals(200, response.getStatus());
+		JsonNode json = parseJSON(response.getContentAsString());
+		
+		JsonNode dataNode = json.get("data");
+		assertNotNull(dataNode);
+		JsonNode serviceNode = dataNode.get("IntegerService");
+		assertNotNull(serviceNode);
+		
+		JsonNode resultNode = serviceNode.get("testInteger");
+		assertNotNull(resultNode);
+		assertEquals("empty", resultNode.asText());
+		
+	}
 	
 	// Helper method to parse JSON.
 	public JsonNode parseJSON(String input) throws IOException {
@@ -241,6 +306,12 @@ public class InvokationTests extends AbstractOSGiTest{
 		public String testMethodWithDataFetchingEnvironment(DataFetchingEnvironment env);
 
 		public String testMethodWithDataFetchingEnvironmentWithParam(String input, DataFetchingEnvironment env);
+	}
+
+	public static interface IntegerService{
+		public String testInt(@GraphqlArgument("test") int test);
+
+		public String testInteger(@GraphqlArgument(value = "test", optional = true ) Integer test);
 	}
 
 	public static interface DateTestService{

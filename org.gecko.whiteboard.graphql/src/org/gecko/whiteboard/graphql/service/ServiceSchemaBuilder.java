@@ -448,14 +448,15 @@ public class ServiceSchemaBuilder {
 	 */
 	private GraphQLArgument createArgument(String name, ParameterContext context) {
 		GraphQLInputType typeToUse = context.getType();
-		switch (typeToUse.getName()) {
-			case "Int":
-			case "Float":
-			case "Short":
-			case "Long":
-			case "Boolean":
-			case "Byte":
-			case "Char":
+		System.out.println(context.getParameter().getType().getName());
+		switch (context.getParameter().getType().getName()) {
+			case "int":
+			case "float":
+			case "short":
+			case "long":
+			case "boolean":
+			case "byte":
+			case "char":
 				typeToUse = GraphQLNonNull.nonNull(typeToUse);
 				break;
 			default:
