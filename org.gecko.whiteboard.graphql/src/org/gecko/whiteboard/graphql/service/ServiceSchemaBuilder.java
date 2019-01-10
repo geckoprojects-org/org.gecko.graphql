@@ -255,7 +255,7 @@ public class ServiceSchemaBuilder {
 		}
 
 		@Override
-		public Object get(DataFetchingEnvironment environment) {
+		public Object get(DataFetchingEnvironment environment) throws Exception {
 			ServiceObjects<Object> serviceObjects = environment.getSource();
 			Object[] parameters = new Object[method.getParameterCount()];
 			for (int i = 0; i < method.getParameters().length; i++) {
@@ -270,12 +270,13 @@ public class ServiceSchemaBuilder {
 			try {
 				Object result = method.invoke(toInvokeOn, parameters);
 				return result;
-			} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-				e.printStackTrace();
+			} catch (InvocationTargetException  e) {
+				throw (Exception) e.getTargetException();
+			} catch (IllegalAccessException | IllegalArgumentException e) {
+				throw e;
 			} finally {
 				serviceObjects.ungetService(toInvokeOn);
 			}
-			return null;
 		}
 	}
 
