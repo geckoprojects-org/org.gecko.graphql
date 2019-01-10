@@ -347,15 +347,8 @@ public class InvokationTests extends AbstractOSGiTest{
 		assertEquals(200, response.getStatus());
 		JsonNode json = parseJSON(response.getContentAsString());
 		
-		JsonNode dataNode = json.get("data");
+		JsonNode dataNode = json.get("errors");
 		assertNotNull(dataNode);
-		JsonNode serviceNode = dataNode.get("IntegerService");
-		assertNotNull(serviceNode);
-		
-		JsonNode resultNode = serviceNode.get("testInteger");
-		assertNotNull(resultNode);
-		assertEquals("empty", resultNode.asText());
-		
 	}
 	
 	// Helper method to parse JSON.
