@@ -1,6 +1,6 @@
 com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.9.2
 com.google.guava:guava:20.0
-com.graphql-java:graphql-java:11
+com.graphql-java:graphql-java:11.0
 com.graphql-java:java-dataloader:2.2.0
 com.graphql-java-kickstart:graphql-java-servlet:6.2.0
 com.graphql-java-kickstart:graphql-java-tools:5.3.5
