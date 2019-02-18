@@ -12,6 +12,7 @@
 package org.gecko.whiteboard.graphql.test;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -55,6 +56,8 @@ import org.osgi.service.cm.Configuration;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.MissingNode;
+import com.fasterxml.jackson.databind.node.NullNode;
 
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLSchema;
@@ -353,8 +356,11 @@ public class InvokationTests extends AbstractOSGiTest{
 		assertNotNull(serviceNode);
 		
 		JsonNode resultNode = serviceNode.get("testInteger");
-		assertNotNull(resultNode);
-		assertEquals("empty", resultNode.asText());
+		assertTrue(resultNode instanceof NullNode);
+		
+		JsonNode errorNode = json.get("error");
+		
+		assertFalse(errorNode instanceof MissingNode);
 		
 	}
 	
