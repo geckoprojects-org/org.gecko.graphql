@@ -14,8 +14,10 @@ package org.gecko.whiteboard.graphql.service;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
+import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -40,6 +42,7 @@ import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLArgument;
 import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLInputType;
+import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLNonNull;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLObjectType.Builder;
@@ -54,7 +57,6 @@ import graphql.schema.StaticDataFetcher;
  */
 public class ServiceSchemaBuilder {
 
-	private ServiceReference<Object> serviceReference;
 	private final Builder queryTypeBuilder;
 	private final Builder mutationTypeBuilder;
 	private final Set<GraphQLType> types;
@@ -333,25 +335,37 @@ public class ServiceSchemaBuilder {
 				if(p.getType().equals(DataFetchingEnvironment.class)) {
 					continue;
 				}
+				
 				String parameterName = getParameterName(p);
-				Class<?> parameterType = p.getType();
-					GraphQLType basicType = GraphqlSchemaTypeBuilder.getGraphQLScalarType(parameterType);
-					if(basicType == null) {
-						boolean hasHandler = schemaTypeBuilder
-							.stream()
-							.filter(stb -> stb.canHandle(parameterType, true))
-							.map(stb -> Boolean.TRUE)
-							.findFirst()
-							.orElseGet(() -> defaultBuilder.canHandle(parameterType, true));
-						if(hasHandler) {
-							parameters.put(parameterName, new ParameterContext(p, (GraphQLInputType) createType(parameterType, typeMapping, true)));
-						} else {
-							LOG.error("{} parameter {} is a complex type and no handler is available. Thus the Method will be ignored", method, parameterName);
-							ignore = true;
-						}
-					} else {
-						parameters.put(parameterName, new ParameterContext(p,(GraphQLInputType) basicType));
+				final Type parameterType = Collection.class.isAssignableFrom(p.getType()) ? p.getParameterizedType() : p.getType();
+				GraphQLType basicType = null;
+				if(Collection.class.isAssignableFrom(p.getType())) {
+					Type theType = ((ParameterizedType) parameterType).getActualTypeArguments()[0];
+					
+					basicType = GraphqlSchemaTypeBuilder.getGraphQLScalarType((Class<?>) theType);
+					if(basicType != null) {
+						basicType = GraphQLList.list(basicType);
 					}
+					
+				} else {
+					basicType = GraphqlSchemaTypeBuilder.getGraphQLScalarType(p.getType());
+				}
+				if(basicType == null) {
+					boolean hasHandler = schemaTypeBuilder
+						.stream()
+						.filter(stb -> stb.canHandle(parameterType, true))
+						.map(stb -> Boolean.TRUE)
+						.findFirst()
+						.orElseGet(() -> defaultBuilder.canHandle(parameterType, true));
+					if(hasHandler) {
+						parameters.put(parameterName, new ParameterContext(p, (GraphQLInputType) createType(parameterType, typeMapping, true)));
+					} else {
+						LOG.error("{} parameter {} is a complex type and no handler is available. Thus the Method will be ignored", method, parameterName);
+						ignore = true;
+					}
+				} else {
+					parameters.put(parameterName, new ParameterContext(p,(GraphQLInputType) basicType));
+				}
 			}
 			if(!ignore) {
 				GraphQLFieldDefinition operation = createOperation(methodName, methodDocumentation, parameters, new DataFetcherImplementation(method), returnType);

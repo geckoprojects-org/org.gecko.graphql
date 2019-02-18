@@ -19,6 +19,7 @@ import static org.junit.Assert.assertTrue;
 import java.io.IOException;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
@@ -40,17 +41,19 @@ import org.osgi.service.cm.Configuration;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.MissingNode;
 
 @RunWith(MockitoJUnitRunner.class)
-public class VariableTests extends AbstractOSGiTest{
+public class MethodParameterTests extends AbstractOSGiTest{
 
 	private HttpClient client;
 
 	/**
 	 * Creates a new instance.
 	 */
-	public VariableTests() {
-		super(FrameworkUtil.getBundle(VariableTests.class).getBundleContext());
+	public MethodParameterTests() {
+		super(FrameworkUtil.getBundle(MethodParameterTests.class).getBundleContext());
 	}
 
 	/**
@@ -62,7 +65,7 @@ public class VariableTests extends AbstractOSGiTest{
 	 * @throws TimeoutException
 	 */
 	@Test
-	public void testVariableSubstitution() throws IOException, InvalidSyntaxException, InterruptedException, ExecutionException, TimeoutException {
+	public void testListParameters() throws IOException, InvalidSyntaxException, InterruptedException, ExecutionException, TimeoutException {
 		Dictionary<String, Object> options = new Hashtable<>();
 		options.put("id", "my.graphql.servlet");
 		options.put(GeckoGraphQLConstants.TRACING_ENABLED, "true");
@@ -75,13 +78,12 @@ public class VariableTests extends AbstractOSGiTest{
 		
 		assertTrue(serviceChecker.awaitCreation());
 		
-		CountDownLatch envWithParamLatch = new CountDownLatch(1);
 		
 		TestService testServiceImpl = new TestService() {
 
 			@Override
-			public String testMethod(String fizz, String buzz) {
-				return fizz + "_" + buzz;
+			public String testMethod(List<String> fizz) {
+				return "Size " + fizz.size();
 			}
 		};
 	
@@ -99,11 +101,8 @@ public class VariableTests extends AbstractOSGiTest{
 		
 		Request post = client.POST("http://localhost:8181/graphql");
 		post.content(new StringContentProvider("{\n" + 
-				"  \"query\": \"query _($fizz:String!, $buzz:String!){\\n TestService{\\n  testMethod(fizz : $fizz, buzz : $buzz)\\n}\\n}\",\n" + 
-				"  \"variables\": {\n" + 
-				"    \"fizz\": \"foo\",\n" + 
-				"    \"buzz\": \"bar\"\n" + 
-				"  }\n" + 
+				"  \"query\": \"query {\\n  TestService{\\n    testMethod(fizz : [\\\"test\\\", \\\"test2\\\"])\\n  }\\n}\",\n" + 
+				"  \"variables\": {}\n" + 
 				"}"), "application/json");
 		ContentResponse response = post.send();
 		
@@ -115,7 +114,68 @@ public class VariableTests extends AbstractOSGiTest{
 		assertNotNull(data);
 		JsonNode method = data.path("TestService").path("testMethod");
 		assertNotNull(method);
-		assertEquals("foo_bar", method.asText());
+		assertEquals("Size 2", method.asText());
+	}
+
+	/**
+	 * Look if the service with the marker annotation will be picked up
+	 * @throws IOException
+	 * @throws InvalidSyntaxException
+	 * @throws InterruptedException
+	 * @throws ExecutionException
+	 * @throws TimeoutException
+	 */
+	@Test
+	public void testListReturn() throws IOException, InvalidSyntaxException, InterruptedException, ExecutionException, TimeoutException {
+		Dictionary<String, Object> options = new Hashtable<>();
+		options.put("id", "my.graphql.servlet");
+		options.put(GeckoGraphQLConstants.TRACING_ENABLED, "true");
+		Configuration configuration = createConfigForCleanup(GeckoGraphQLConstants.GECKO_GRAPHQL_WHITEBOARD_COMPONENT_NAME, "?", options);
+		
+		ServiceChecker<Object> serviceChecker = createdCheckerTrackedForCleanUp("(id=my.graphql.servlet)");
+		serviceChecker.setCreateExpectationCount(1);
+		serviceChecker.setCreateTimeout(10);
+		serviceChecker.start();
+		
+		assertTrue(serviceChecker.awaitCreation());
+		
+		
+		ListReturnTestService testServiceImpl = new ListReturnTestService() {
+			
+			@Override
+			public List<String> testMethod(List<String> fizz) {
+				return fizz;
+			}
+		};
+		
+		Dictionary<String, Object> properties = new Hashtable<>();
+		
+		properties.put(GeckoGraphQLConstants.GRAPHQL_WHITEBOARD_QUERY_SERVICE, "*");
+		
+		serviceChecker.stop();
+		serviceChecker.setModifyExpectationCount(1);
+		serviceChecker.start();
+		
+		registerServiceForCleanup(testServiceImpl, properties, ListReturnTestService.class);
+		
+		assertTrue(serviceChecker.awaitModification());
+		
+		Request post = client.POST("http://localhost:8181/graphql");
+		post.content(new StringContentProvider("{\n" + 
+				"  \"query\": \"query {\\n  ListReturnTestService{\\n    testMethod(fizz : [\\\"test\\\", \\\"test2\\\"])\\n  }\\n}\",\n" + 
+				"  \"variables\": {}\n" + 
+				"}"), "application/json");
+		ContentResponse response = post.send();
+		
+		assertEquals(200, response.getStatus());
+		
+		JsonNode reply = parseJSON(response.getContentAsString());
+		
+		JsonNode data = reply.path("data");
+		assertNotNull(data);
+		JsonNode method = data.path("ListReturnTestService").path("testMethod");
+		assertTrue(method instanceof ArrayNode);
+		assertEquals(2, ((ArrayNode) method).size());
 	}
 
 	// Helper method to parse JSON.
@@ -127,7 +187,11 @@ public class VariableTests extends AbstractOSGiTest{
 	}
 	
 	public static interface TestService{
-		public String testMethod(@GraphqlArgument("fizz") String fizz, @GraphqlArgument("buzz") String buzz);
+		public String testMethod(@GraphqlArgument("fizz") List<String> fizz);
+	}
+
+	public static interface ListReturnTestService{
+		public List<String> testMethod(@GraphqlArgument("fizz") List<String> fizz);
 	}
 
 	/* 

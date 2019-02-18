@@ -428,8 +428,6 @@ public class BasicTests extends AbstractOSGiTest{
 		assertNotNull(json);
 		hasAllMethods(json, "AddressBookService", addressBookServiceMethods);
 		hasAllMethods(json, "AnotherInterface", anotherInterfaceMethods);
-		
-		
 	}
 
 	/* 
