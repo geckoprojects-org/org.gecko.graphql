@@ -62,8 +62,8 @@ javac.target: 1.8
 	javax.servlet;version='[3.1.0,3.1.1)',\
 	org.gecko.whiteboard.graphql.api;version=snapshot,\
 	org.gecko.whiteboard.graphql.impl;version=snapshot,\
-	com.graphql-java;version='[2018.0.0,2018.0.1)',\
-	org.gecko.util.test;version='[1.0.1,1.0.2)'
+	org.gecko.util.test;version='[1.0.1,1.0.2)',\
+	com.graphql-java;version='[11.0.0,11.0.1)'
 
 Bundle-Version: 1.0.0.SNAPSHOT
 Private-Package: \
