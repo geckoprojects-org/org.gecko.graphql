@@ -9,7 +9,7 @@ import org.osgi.framework.dto.ServiceReferenceDTO;
  * @NotThreadSafe
  * @author $Id: 1ce50780721d79f0a239ca29d2c575a2ccd4b442 $
  */
-public class RuntimeDTO extends DTO {
+public class GraphQLRuntimeDTO extends DTO {
 
 	/**
 	 * The DTO for the corresponding {@code GraphQLServiceRuntime}. This value is

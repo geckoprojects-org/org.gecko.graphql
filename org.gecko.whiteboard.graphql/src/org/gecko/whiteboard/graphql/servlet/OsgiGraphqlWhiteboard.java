@@ -38,7 +38,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.gecko.whiteboard.graphql.GeckoGraphQLConstants;
 import org.gecko.whiteboard.graphql.GraphqlSchemaTypeBuilder;
 import org.gecko.whiteboard.graphql.GraphqlServiceRuntime;
-import org.gecko.whiteboard.graphql.dto.RuntimeDTO;
+import org.gecko.whiteboard.graphql.dto.GraphQLRuntimeDTO;
 import org.gecko.whiteboard.graphql.instrumentation.TracingInstrumentationProvider;
 import org.gecko.whiteboard.graphql.service.ServiceSchemaBuilder;
 import org.osgi.annotation.bundle.Capability;
@@ -480,7 +480,7 @@ public class OsgiGraphqlWhiteboard extends AbstractGraphQLHttpServlet implements
 	 * @see org.gecko.whiteboard.graphql.GraphqlServiceRuntime#getRuntimeDTO()
 	 */
 	@Override
-	public RuntimeDTO getRuntimeDTO() {
+	public GraphQLRuntimeDTO getRuntimeDTO() {
 		// TODO Auto-generated method stub
 		return null;
 	}

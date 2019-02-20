@@ -63,7 +63,8 @@ javac.target: 1.8
 	org.gecko.whiteboard.graphql.api;version=snapshot,\
 	org.gecko.whiteboard.graphql.impl;version=snapshot,\
 	org.gecko.util.test;version='[1.0.1,1.0.2)',\
-	com.graphql-java;version='[11.0.0,11.0.1)'
+	com.graphql-java;version='[11.0.0,11.0.1)',\
+	org.gecko.whiteboard.osgi.runtime.graph;version=snapshot
 
 Bundle-Version: 1.0.0.SNAPSHOT
 Private-Package: \
@@ -88,5 +89,6 @@ Export-Package: \
 	org.gecko.whiteboard.graphql.test.dto,\
 	org.gecko.whiteboard.graphql.test.service.api
 -runrequires: \
-	bnd.identity;id='org.gecko.whiteboard.graphql.test'
+	bnd.identity;id='org.gecko.whiteboard.graphql.test',\
+	bnd.identity;id='org.gecko.whiteboard.osgi.runtime.graph'
 -runee: JavaSE-1.8

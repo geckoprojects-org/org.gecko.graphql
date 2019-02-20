@@ -11,7 +11,7 @@
  */
 package org.gecko.whiteboard.graphql;
 
-import org.gecko.whiteboard.graphql.dto.RuntimeDTO;
+import org.gecko.whiteboard.graphql.dto.GraphQLRuntimeDTO;
 
 /**
  * The GraphQLServiceRuntime service represents the runtime information of a
@@ -32,6 +32,6 @@ public interface GraphqlServiceRuntime {
 	 * 
 	 * @return The runtime DTO.
 	 */
-	RuntimeDTO getRuntimeDTO();
+	GraphQLRuntimeDTO getRuntimeDTO();
 	
 }
