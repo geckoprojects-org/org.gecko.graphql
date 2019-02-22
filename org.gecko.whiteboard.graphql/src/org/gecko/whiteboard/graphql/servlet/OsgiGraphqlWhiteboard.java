@@ -7,7 +7,8 @@
  * http://www.eclipse.org/legal/epl-v10.html
  * 
  * Contributors:
- *     Data In Motion - initial API and implementation
+ *     All Contributers of https://github.com/graphql-java-kickstart/graphql-java-servlet
+ *     Data In Motion - initial implementation of the GraphQL Whiteboard
  */
 package org.gecko.whiteboard.graphql.servlet;
 
@@ -92,9 +93,11 @@ import graphql.servlet.GraphQLServletListener;
 import graphql.servlet.GraphQLTypesProvider;
 import graphql.servlet.InstrumentationProvider;
 import graphql.servlet.NoOpInstrumentationProvider;
+import graphql.servlet.OsgiGraphQLHttpServlet;
 
 /**
- * 
+ * This GraphQL Whiteboard originally is a fork of the {@link OsgiGraphQLHttpServlet}.
+ *  
  * @author Juergen Albert
  * @since 19 Dec 2018
  */
@@ -483,5 +486,14 @@ public class OsgiGraphqlWhiteboard extends AbstractGraphQLHttpServlet implements
 	public RuntimeDTO getRuntimeDTO() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	/* 
+	 * (non-Javadoc)
+	 * @see graphql.servlet.AbstractGraphQLHttpServlet#isAsyncServletMode()
+	 */
+	@Override
+	protected boolean isAsyncServletMode() {
+		return false;
 	}
 }
