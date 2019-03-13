@@ -11,6 +11,7 @@
  */
 package org.gecko.whiteboard.graphql.service;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -18,6 +19,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.gecko.whiteboard.graphql.GraphqlSchemaTypeBuilder;
+import org.gecko.whiteboard.graphql.exception.SchemaParsingException;
 
 import graphql.Scalars;
 import graphql.schema.DataFetcher;
@@ -54,7 +56,7 @@ public class DefaultGraphqlTypeBuilder implements GraphqlSchemaTypeBuilder {
 	 * @see org.gecko.whiteboard.graphql.GraphqlSchemaTypeBuilder#buildType(java.lang.reflect.Type, java.util.Map, boolean)
 	 */
 	@Override
-	public GraphQLType buildType(Type type, Map<Object, GraphQLType> typeMapping, boolean inputType) {
+	public GraphQLType buildType(Type type, Map<Object, GraphQLType> typeMapping, boolean inputType) throws SchemaParsingException {
 		if(type instanceof ParameterizedType) {
 			ParameterizedType parameterizedType = (ParameterizedType) type;
 			Class<?> rawType = (Class<?>) parameterizedType.getRawType();
@@ -66,41 +68,63 @@ public class DefaultGraphqlTypeBuilder implements GraphqlSchemaTypeBuilder {
 				return createType;
 			}
 		}
+		
+		
+		
 
-		GraphQLType scalarType = getGraphQLScalarType((Class<?>) type);
+		GraphQLType scalarType = GraphqlSchemaTypeBuilder.getGraphQLScalarType((Class<?>) type);
 		if(scalarType != null) {
 			return scalarType;
 		}
 
 		String name = ((Class<?>) type).getSimpleName();
-		if(inputType) {
-			name += "Input";
-		}
-		
-		GraphQLType result = typeMapping.get(name);
-		if(result != null) {
-			if(result instanceof GraphQLObjectType) {
-				return GraphQLTypeReference.typeRef(result.getName());
+		try {
+			if (inputType) {
+				name += "Input";
 			}
-			return result;
-		}
-		
-		Class<?> clazzType = (Class<?>) type;
 
-		if(clazzType.isEnum()) {
-			GraphQLEnumType.Builder typeBuilder = GraphQLEnumType.newEnum().name(clazzType.getSimpleName());
-			for (Object object : clazzType.getEnumConstants()) {
-				typeBuilder.value(object.toString());
+			GraphQLType result = typeMapping.get(name);
+			if (result != null) {
+				if (result instanceof GraphQLObjectType) {
+					return GraphQLTypeReference.typeRef(result.getName());
+				}
+				return result;
 			}
-			GraphQLEnumType theEnum = typeBuilder.build();
-			typeMapping.put(clazzType.getSimpleName(), theEnum);
-			return theEnum;
+
+			Class<?> clazzType = (Class<?>) type;
 			
-		}
-		if(!inputType) {
-			buildObjectType(typeMapping, inputType, clazzType, name);
-		} else {
-			buildInputObjectType(typeMapping, inputType, clazzType, name);
+			//check for array
+			//if array, get array type -> call buildType with found type -> wrap type in list
+			if (clazzType.isArray()) {
+				Class<?> array = getArrayType(clazzType);
+				
+				GraphQLType createType = buildType(array.getComponentType(), typeMapping, inputType);
+				createType = createType instanceof GraphQLObjectType  ? GraphQLTypeReference.typeRef(((GraphQLObjectType) createType).getName()) : createType;
+				if(Collection.class.isAssignableFrom(type.getClass())) {
+					return GraphQLList.list(createType);
+				} else {
+					return createType;
+				}
+			}
+
+			if (clazzType.isEnum()) {
+				GraphQLEnumType.Builder typeBuilder = GraphQLEnumType.newEnum().name(clazzType.getSimpleName());
+				for (Object object : clazzType.getEnumConstants()) {
+					typeBuilder.value(object.toString());
+				}
+				GraphQLEnumType theEnum = typeBuilder.build();
+				typeMapping.put(clazzType.getSimpleName(), theEnum);
+				return theEnum;
+
+			}
+
+			if (!inputType) {
+				buildObjectType(typeMapping, inputType, clazzType, name);
+			} else {
+				buildInputObjectType(typeMapping, inputType, clazzType, name);
+			}
+		} catch (Exception e) {
+			throw new SchemaParsingException("Type: " + name, e);
 		}
 		return GraphQLTypeReference.typeRef(name);
 	}
@@ -110,9 +134,10 @@ public class DefaultGraphqlTypeBuilder implements GraphqlSchemaTypeBuilder {
 	 * @param inputType
 	 * @param clazzType
 	 * @return
+	 * @throws SchemaParsingException 
 	 */
 	private GraphQLObjectType buildObjectType(Map<Object, GraphQLType> typeMapping, boolean inputType,
-			Class<?> clazzType, String name) {
+			Class<?> clazzType, String name) throws SchemaParsingException {
 		graphql.schema.GraphQLObjectType.Builder typeBuilder = GraphQLObjectType.newObject()
 				.name(name);
 		GraphQLObjectType theType = typeBuilder.build();
@@ -121,8 +146,12 @@ public class DefaultGraphqlTypeBuilder implements GraphqlSchemaTypeBuilder {
 		for(Field f : clazzType.getDeclaredFields()) {
 			Type fieldType = f.getGenericType();
 			String fieldName = f.getName();
-			GraphQLType createType = buildType(fieldType, typeMapping, inputType);
-			typeBuilder.field(createField(fieldName, new PropertyDataFetcher<String>(fieldName), createType));
+			try {
+				GraphQLType createType = buildType(fieldType, typeMapping, inputType);
+				typeBuilder.field(createField(fieldName, new PropertyDataFetcher<String>(fieldName), createType));
+			} catch (Exception e) {
+				throw new SchemaParsingException(fieldName, e);
+			}
 		}
 		GraphQLObjectType objectType = typeBuilder.build();
 		typeMapping.put(name, objectType);
@@ -134,9 +163,10 @@ public class DefaultGraphqlTypeBuilder implements GraphqlSchemaTypeBuilder {
 	 * @param inputType
 	 * @param clazzType
 	 * @return
+	 * @throws SchemaParsingException 
 	 */
 	private GraphQLInputObjectType buildInputObjectType(Map<Object, GraphQLType> typeMapping, boolean inputType,
-			Class<?> clazzType, String name) {
+			Class<?> clazzType, String name) throws SchemaParsingException {
 		graphql.schema.GraphQLInputObjectType.Builder typeBuilder = GraphQLInputObjectType.newInputObject()
 				.name(name);
 		for(Field f : clazzType.getDeclaredFields()) {
@@ -184,6 +214,41 @@ public class DefaultGraphqlTypeBuilder implements GraphqlSchemaTypeBuilder {
 			return Scalars.GraphQLString;
 		}
 		return null;
+	}
+	
+	
+	
+	
+	private Class<?> getArrayType(Class<?> type) {
+
+		Class<?> componentType = type.getComponentType();
+		
+		if (componentType.isPrimitive()) {
+			if (boolean.class.isAssignableFrom(componentType)) {
+				return boolean[].class;
+			} else if (byte.class.isAssignableFrom(componentType)) {
+				return byte[].class;
+			} else if (char.class.isAssignableFrom(componentType)) {
+				return char[].class;
+			} else if (double.class.isAssignableFrom(componentType)) {
+				return double[].class;
+			} else if (float.class.isAssignableFrom(componentType)) {
+				return float[].class;
+			} else if (int.class.isAssignableFrom(componentType)) {
+				return int[].class;
+			} else if (long.class.isAssignableFrom(componentType)) {
+				return long[].class;
+			} else if (short.class.isAssignableFrom(componentType)) {
+				return short[].class;
+			}
+		} else {
+			if (String.class.isAssignableFrom(componentType)) {
+				return String[].class;
+			}
+
+		}
+		return componentType;
+
 	}
 
 

@@ -26,6 +26,7 @@ import org.gecko.whiteboard.graphql.GeckoGraphQLConstants;
 import org.gecko.whiteboard.graphql.GraphqlSchemaTypeBuilder;
 import org.gecko.whiteboard.graphql.annotation.GraphqlArgument;
 import org.gecko.whiteboard.graphql.annotation.GraphqlDocumentation;
+import org.gecko.whiteboard.graphql.exception.SchemaParsingException;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
@@ -115,7 +116,7 @@ public class ServiceSchemaBuilder {
 			}
 			types.addAll(typeMapping.values());
 		} catch (Throwable e) {
-			LOG.error("Args... " + e.getMessage(), e);
+			LOG.error("Error while building. Path: " + e.getMessage(), e);
 		} finally {
 			ctx.ungetService(serviceReference);
 		}
@@ -219,8 +220,9 @@ public class ServiceSchemaBuilder {
 	 * @param curInterface the interface we want to map
 	 * @param typeMapping the list of the 
 	 * @return the Object type of th service
+	 * @throws SchemaParsingException 
 	 */
-	private GraphQLObjectType createService(String name, Class<?> curInterface, Map<Object, GraphQLType> typeMapping) {
+	private GraphQLObjectType createService(String name, Class<?> curInterface, Map<Object, GraphQLType> typeMapping) throws SchemaParsingException {
 		GraphQLType existingType = typeMapping.get(name);
 		graphql.schema.GraphQLObjectType.Builder serviceBuilder = null;
 		if(existingType != null) {
@@ -231,33 +233,38 @@ public class ServiceSchemaBuilder {
 		for(Method method : curInterface.getMethods()) {
 			String methodName = method.getName();
 			
-			GraphQLOutputType returnType = (GraphQLOutputType) createType(method.getGenericReturnType(), typeMapping, false);
+			GraphQLOutputType returnType;
+			try {
+				returnType = (GraphQLOutputType) createType(method.getGenericReturnType(), typeMapping, false);
+			} catch (Exception e1) {
+				throw new SchemaParsingException("Interface: " + curInterface.getName() + " -> Method: " + method.getName(), e1);
+			}
 			Map<String, GraphQLInputType> parameters = new HashMap<String, GraphQLInputType>();
 			boolean ignore = false;
 			String methodDocumentation = getDocumentation(method);
-			for(Parameter p : method.getParameters()) {
-				if(p.getType().equals(DataFetchingEnvironment.class)) {
+			for (Parameter p : method.getParameters()) {
+				if (p.getType().equals(DataFetchingEnvironment.class)) {
 					continue;
 				}
 				String parameterName = getParameterName(p);
 				Class<?> parameterType = p.getType();
-					GraphQLType basicType = GraphqlSchemaTypeBuilder.getGraphQLScalarType(parameterType);
-					if(basicType == null) {
-						boolean hasHandler = schemaTypeBuilder
-							.stream()
-							.filter(stb -> stb.canHandle(parameterType, true))
-							.map(stb -> Boolean.TRUE)
-							.findFirst()
+				GraphQLType basicType = GraphqlSchemaTypeBuilder.getGraphQLScalarType(parameterType);
+				if (basicType == null) {
+					boolean hasHandler = schemaTypeBuilder.stream().filter(stb -> stb.canHandle(parameterType, true))
+							.map(stb -> Boolean.TRUE).findFirst()
 							.orElseGet(() -> defaultBuilder.canHandle(parameterType, true));
-						if(hasHandler) {
-							parameters.put(parameterName, (GraphQLInputType) createType(parameterType, typeMapping, true));
-						} else {
-							LOG.error("{} parameter {} is a complex type and no handler is available. Thus the Method will be ignored", method, parameterName);
-							ignore = true;
-						}
+					if (hasHandler) {
+						parameters.put(parameterName, (GraphQLInputType) createType(parameterType, typeMapping, true));
 					} else {
-						parameters.put(parameterName, (GraphQLInputType) basicType);
+						LOG.error(
+								"{} parameter {} is a complex type and no handler is available. Thus the Method will be ignored",
+								method, parameterName);
+						ignore = true;
 					}
+				} else {
+					parameters.put(parameterName, (GraphQLInputType) basicType);
+				}
+
 			}
 			if(!ignore) {
 				GraphQLFieldDefinition operation = createOperation(methodName, methodDocumentation, parameters, new DataFetcher<Object>() {
@@ -341,8 +348,9 @@ public class ServiceSchemaBuilder {
 	 * @param clazzType
 	 * @param typeMapping2
 	 * @return
+	 * @throws SchemaParsingException 
 	 */
-	private GraphQLType createType(Type type, Map<Object, GraphQLType> typeMapping, boolean inputType) {
+	private GraphQLType createType(Type type, Map<Object, GraphQLType> typeMapping, boolean inputType) throws SchemaParsingException {
 		GraphqlSchemaTypeBuilder builder = schemaTypeBuilder.stream().filter(stb -> stb.canHandle(type, inputType)).findFirst().orElseGet(() -> defaultBuilder);
 		return builder.buildType(type, typeMapping, inputType);
 	}

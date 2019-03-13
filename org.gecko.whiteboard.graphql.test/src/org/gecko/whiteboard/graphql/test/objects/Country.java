@@ -12,10 +12,11 @@
 package org.gecko.whiteboard.graphql.test.objects;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
- * 
+ * POJO for testing purposes.
  * @author ChristophDockhorn
  * @since 05.12.2018
  */
@@ -23,11 +24,19 @@ public class Country {
 	
 	
 
-	private String name;
+	public String name;
 	private String language;
 	private int sizeInSqurKm;
-	private int inhabitants;
+	private long inhabitants;
+	public boolean isMemberOfUnSecurityCouncil;
 	private Continent continent;
+	private City capital;
+	private byte numberOfOfficialLanguages;
+	private short embassiesWorldwide;
+	private float avgAge;
+	private double avgWageInDollars;
+	private List<City> majorCities;
+	public Date nationalHoliday;
 	
 	
 	/**
@@ -106,7 +115,7 @@ public class Country {
 	 * Returns the inhabitants.
 	 * @return the inhabitants
 	 */
-	public int getInhabitants() {
+	public long getInhabitants() {
 		return inhabitants;
 	}
 
@@ -115,7 +124,7 @@ public class Country {
 	 * Sets the inhabitants.
 	 * @param inhabitants the inhabitants to set
 	 */
-	public void setInhabitants(int inhabitants) {
+	public void setInhabitants(long inhabitants) {
 		this.inhabitants = inhabitants;
 	}
 
@@ -136,4 +145,150 @@ public class Country {
 		return new ArrayList<Country>();
 	}
 
+
+	/**
+	 * Returns the isMemberOfUnSecurityCouncil.
+	 * @return the isMemberOfUnSecurityCouncil
+	 */
+	public boolean isMemberOfUnSecurityCouncil() {
+		return isMemberOfUnSecurityCouncil;
+	}
+
+
+	/**
+	 * Sets the isMemberOfUnSecurityCouncil.
+	 * @param isMemberOfUnSecurityCouncil the isMemberOfUnSecurityCouncil to set
+	 */
+	public void setMemberOfUnSecurityCouncil(boolean isMemberOfUnSecurityCouncil) {
+		this.isMemberOfUnSecurityCouncil = isMemberOfUnSecurityCouncil;
+	}
+
+
+	/**
+	 * Returns the embassiesWorldwide.
+	 * @return the embassiesWorldwide
+	 */
+	public short getEmbassiesWorldwide() {
+		return embassiesWorldwide;
+	}
+
+
+	/**
+	 * Sets the embassiesWorldwide.
+	 * @param embassiesWorldwide the embassiesWorldwide to set
+	 */
+	public void setEmbassiesWorldwide(short embassiesWorldwide) {
+		this.embassiesWorldwide = embassiesWorldwide;
+	}
+
+
+	/**
+	 * Returns the avgAge.
+	 * @return the avgAge
+	 */
+	public float getAvgAge() {
+		return avgAge;
+	}
+
+
+	/**
+	 * Sets the avgAge.
+	 * @param avgAge the avgAge to set
+	 */
+	public void setAvgAge(float avgAge) {
+		this.avgAge = avgAge;
+	}
+
+
+	/**
+	 * Returns the avgWageInDollars.
+	 * @return the avgWageInDollars
+	 */
+	public double getAvgWageInDollars() {
+		return avgWageInDollars;
+	}
+
+
+	/**
+	 * Sets the avgWageInDollars.
+	 * @param avgWageInDollars the avgWageInDollars to set
+	 */
+	public void setAvgWageInDollars(double avgWageInDollars) {
+		this.avgWageInDollars = avgWageInDollars;
+	}
+
+
+	/**
+	 * Returns the numberOfOfficialLanguages.
+	 * @return the numberOfOfficialLanguages
+	 */
+	public byte getNumberOfOfficialLanguages() {
+		return numberOfOfficialLanguages;
+	}
+
+
+	/**
+	 * Sets the numberOfOfficialLanguages.
+	 * @param numberOfOfficialLanguages the numberOfOfficialLanguages to set
+	 */
+	public void setNumberOfOfficialLanguages(byte numberOfOfficialLanguages) {
+		this.numberOfOfficialLanguages = numberOfOfficialLanguages;
+	}
+
+
+	/**
+	 * Returns the nationalHoliday.
+	 * @return the nationalHoliday
+	 */
+	public Date getNationalHoliday() {
+		return nationalHoliday;
+	}
+
+
+	/**
+	 * Sets the nationalHoliday.
+	 * @param nationalHoliday the nationalHoliday to set
+	 */
+	public void setNationalHoliday(Date nationalHoliday) {
+		this.nationalHoliday = nationalHoliday;
+	}
+
+
+	/**
+	 * Returns the capital.
+	 * @return the capital
+	 */
+	public City getCapital() {
+		return capital;
+	}
+
+
+	/**
+	 * Sets the capital.
+	 * @param capital the capital to set
+	 */
+	public void setCapital(City capital) {
+		this.capital = capital;
+	}
+
+
+	/**
+	 * Returns the majorCities.
+	 * @return the majorCities
+	 */
+	public List<City> getMajorCities() {
+		return majorCities;
+	}
+
+
+	/**
+	 * Sets the majorCities.
+	 * @param majorCities the majorCities to set
+	 */
+	public void setMajorCities(List<City> majorCities) {
+		this.majorCities = majorCities;
+	}
+
+	
+	
 }

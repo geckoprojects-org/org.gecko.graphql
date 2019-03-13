@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.gecko.whiteboard.graphql.exception.SchemaParsingException;
 import org.gecko.whiteboard.graphql.schema.GeckoScalars;
 
 import graphql.Scalars;
@@ -36,7 +37,7 @@ public interface GraphqlSchemaTypeBuilder {
 	
 	public boolean canHandle(Type type, boolean inputType);
 	
-	public GraphQLType buildType(Type type, Map<Object, GraphQLType> typeMapping, boolean inputType); 
+	public GraphQLType buildType(Type type, Map<Object, GraphQLType> typeMapping, boolean inputType) throws SchemaParsingException; 
 	
 	public static GraphQLType getGraphQLScalarType(Class<?> instanceClass) {
 		if (instanceClass == Integer.TYPE || instanceClass == Integer.class) {

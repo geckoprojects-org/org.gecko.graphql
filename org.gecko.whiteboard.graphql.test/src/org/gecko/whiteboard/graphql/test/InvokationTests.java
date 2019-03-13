@@ -979,6 +979,8 @@ public class InvokationTests extends AbstractOSGiTest {
 //		assertTrue(latch.await(1, TimeUnit.SECONDS));
 		
 	}
+	
+
 
 	// creates TestService for Test 1.
 	public static interface TestService {
