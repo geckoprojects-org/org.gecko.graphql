@@ -1,0 +1,3 @@
+{
+  "query": "{\n  InhabitantsByteArrayTest {\n    testInhabitantsSchema(arg0: [12, 13]) {\n    \tnumberOfChildren\n      iq\n      catsOwned\n      pizzasEaten\n      weight\n      wages\n      nickNames\n      isCitizen\n    }\n  }\n}\n"
+}

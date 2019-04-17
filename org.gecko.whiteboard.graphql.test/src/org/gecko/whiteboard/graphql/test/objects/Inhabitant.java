@@ -26,6 +26,7 @@ public class Inhabitant {
 	double[] wages;
 	String[] nickNames;
 	boolean[] isCitizen;
+	char[] firstLetter;
 	
 
 	/**
@@ -179,6 +180,26 @@ public class Inhabitant {
 		this.isCitizen = isCitizen;
 	}
 
+
+	/**
+	 * Returns the firstLetter.
+	 * @return the firstLetter
+	 */
+	public char[] getFirstLetter() {
+		return firstLetter;
+	}
+
+
+	/**
+	 * Sets the firstLetter.
+	 * @param firstLetter the firstLetter to set
+	 */
+	public void setFirstLetter(char[] firstLetter) {
+		this.firstLetter = firstLetter;
+	}
+
+	
+	
 
 	
 	

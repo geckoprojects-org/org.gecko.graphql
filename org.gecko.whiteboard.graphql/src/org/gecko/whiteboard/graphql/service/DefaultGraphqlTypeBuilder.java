@@ -48,7 +48,12 @@ public class DefaultGraphqlTypeBuilder implements GraphqlSchemaTypeBuilder {
 	 */
 	@Override
 	public boolean canHandle(Type type, boolean inputType) {
-		return !inputType;
+		Class<?> clazzType = (Class<?>) type;
+		if (clazzType.isArray()) {
+			return inputType;
+		} else {
+			return !inputType;
+		}
 	}
 
 	/* 
@@ -99,12 +104,8 @@ public class DefaultGraphqlTypeBuilder implements GraphqlSchemaTypeBuilder {
 				Class<?> array = getArrayType(clazzType);
 				
 				GraphQLType createType = buildType(array.getComponentType(), typeMapping, inputType);
-				createType = createType instanceof GraphQLObjectType  ? GraphQLTypeReference.typeRef(((GraphQLObjectType) createType).getName()) : createType;
-				if(Collection.class.isAssignableFrom(type.getClass())) {
-					return GraphQLList.list(createType);
-				} else {
-					return createType;
-				}
+				createType = createType instanceof GraphQLObjectType ? GraphQLTypeReference.typeRef(((GraphQLObjectType) createType).getName()) : createType;
+				return GraphQLList.list(createType);
 			}
 
 			if (clazzType.isEnum()) {

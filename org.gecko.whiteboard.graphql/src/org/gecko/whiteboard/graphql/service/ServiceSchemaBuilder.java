@@ -11,11 +11,14 @@
  */
 package org.gecko.whiteboard.graphql.service;
 
+
+import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.Type;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -103,7 +106,7 @@ public class ServiceSchemaBuilder {
 				boolean isQuery = isDeclaredQueryInterface(curInterface, serviceReference);
 				boolean isMutation = isDeclaredMutationInterface(curInterface, serviceReference);
 				if(isQuery && isMutation) {
-					LOG.warn("The Interace {} is marked as query and mutation. You must chose one. The Interface will be ignored", curInterface.getName());
+					LOG.warn("The Interface {} is marked as query and mutation. You must chose one. The Interface will be ignored", curInterface.getName());
 					continue;
 				}
 				if(isQuery) {
@@ -219,7 +222,7 @@ public class ServiceSchemaBuilder {
 	 * @param name the name of the Service
 	 * @param curInterface the interface we want to map
 	 * @param typeMapping the list of the 
-	 * @return the Object type of th service
+	 * @return the Object type of the service
 	 * @throws SchemaParsingException 
 	 */
 	private GraphQLObjectType createService(String name, Class<?> curInterface, Map<Object, GraphQLType> typeMapping) throws SchemaParsingException {
@@ -277,6 +280,9 @@ public class ServiceSchemaBuilder {
 							Parameter parameter = method.getParameters()[i];
 							if(parameter.getType().equals(DataFetchingEnvironment.class)) {
 								parameters[i] = environment;
+							} else if (parameter.getType().isArray()) {
+								List list = (List) environment.getArguments().get(getParameterName(parameter));
+								parameters[i] = convertListToArray(list, parameter.getType());
 							} else {
 								parameters[i] = environment.getArguments().get(getParameterName(parameter));
 							}
@@ -389,4 +395,108 @@ public class ServiceSchemaBuilder {
 				.build();
 		
 	}
+	
+	
+	
+	
+	/*
+	 * Converts List to array.
+	 */
+	private Object convertListToArray (List<?> inList, Class<?> clazz) {
+		Object arg = null;
+		if (!inList.isEmpty()) {
+			arg = toNewArray(inList, clazz);
+			
+		} else {
+			List<?> list = new ArrayList<>();
+			arg = toNewArray(list, clazz);
+		}
+		return arg;
+		
+	}
+
+	/*
+	 * Takes a class as parameter and returns the corresponding 
+	 * array type.
+	 */
+	private Class<?> getArrayType(Class<?> type) {
+
+//		Class<?> componentType = type.getComponentType();
+
+		if (boolean.class.isAssignableFrom(type) || Boolean.class.isAssignableFrom(type)) {
+			return boolean[].class;
+		} else if (byte.class.isAssignableFrom(type) || (Byte.class.isAssignableFrom(type))) {
+			return byte[].class;
+		} else if (char.class.isAssignableFrom(type) || (Character.class.isAssignableFrom(type))) {
+			return char[].class;
+		} else if (float.class.isAssignableFrom(type) || (Float.class.isAssignableFrom(type))) {
+			return float[].class;
+		} else if (double.class.isAssignableFrom(type) || (Double.class.isAssignableFrom(type))) {
+			return double[].class;
+		} else if (int.class.isAssignableFrom(type) || (Integer.class.isAssignableFrom(type))) {
+			return int[].class;
+		} else if (long.class.isAssignableFrom(type) || (Long.class.isAssignableFrom(type))) {
+			return long[].class;
+		} else if (short.class.isAssignableFrom(type) || (Short.class.isAssignableFrom(type))) {
+			return short[].class;
+		} else if (String.class.isAssignableFrom(type)) {
+			return String[].class;
+		}
+		return type;
+	}
+
+	/*
+	 * Takes in list and Class of the preferred array type. Converts the list
+	 * into an array of the specified type.
+	 */
+	public static <P> P toNewArray(List<?> inList, Class<P> arrayType) {
+		if (!arrayType.isArray()) {
+			throw new IllegalArgumentException(arrayType.toString());
+		}
+		Class<?> cType = arrayType.getComponentType();
+		List<?> list = inList;
+		// check if downcast is necessary, just in case of float
+		if (arrayType.equals(float[].class)) {
+			list = castDown(list, arrayType);
+		}
+		
+		P array = arrayType.cast(Array.newInstance(cType, list.size()));
+		
+		for (int i = 0; i < list.size(); i++) {
+			Array.set(array, i, list.get(i));
+		}
+		
+		return array;
+	}
+	
+	/*
+	 * Method to erase the problem that floating point numbers are always considered as doubles.
+	 */
+	private static List<?> castDown(List<?> list, Class<?> arrayType) {
+		
+		List<?> newList = list;
+		if (arrayType.equals(float[].class)) {
+			List<Double> doubles = (List<Double>) newList;
+			List<Float> floatList = new ArrayList<>();
+			for (Double item : doubles) {
+				floatList.add(item.floatValue());
+			}
+			newList = floatList;
+		}
+//
+//		if (arrayType.equals(char[].class)) {
+//			List<String> strings = (List<String>) newList;
+//			List<Character> chars = new ArrayList<>();
+//			for (String item : strings) {
+//				chars.add(item.charAt(0));
+//			}
+//			newList = chars;
+//		}
+		
+		
+		return newList;
+		
+		
+	}
+	
 }

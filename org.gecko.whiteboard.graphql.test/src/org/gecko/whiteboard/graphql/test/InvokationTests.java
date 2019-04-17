@@ -360,8 +360,11 @@ public class InvokationTests extends AbstractOSGiTest {
 		ContentResponse response = post.send();
 
 		assertEquals(200, response.getStatus());
-
+		
 		assertTrue(latch.await(1, TimeUnit.SECONDS));
+		
+		JsonNode json = parseJSON(response.getContentAsString());
+		assertNotNull(json);
 
 	}
 
