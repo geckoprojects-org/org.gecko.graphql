@@ -11,6 +11,8 @@
  */
 package org.gecko.whiteboard.graphql.annotation;
 
+import static org.gecko.whiteboard.graphql.GeckoGraphQLConstants.OSGI_GRAPHQL_CAPABILITY_NAME;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -19,7 +21,6 @@ import java.lang.annotation.Target;
 
 import org.osgi.annotation.bundle.Requirement;
 import org.osgi.namespace.implementation.ImplementationNamespace;
-
 
 /**
  * 
@@ -31,7 +32,7 @@ import org.osgi.namespace.implementation.ImplementationNamespace;
 @Target({
 		ElementType.TYPE, ElementType.PACKAGE
 })
-@Requirement(namespace=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name="osgi.graphql", version="1.0.0")
+@Requirement(namespace=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name=OSGI_GRAPHQL_CAPABILITY_NAME, version="1.0.0")
 public @interface RequireGraphQLWhiteboard {
 
 }
