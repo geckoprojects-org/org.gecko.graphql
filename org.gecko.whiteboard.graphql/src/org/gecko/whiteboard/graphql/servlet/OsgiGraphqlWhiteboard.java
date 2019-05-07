@@ -41,6 +41,7 @@ import org.gecko.whiteboard.graphql.GraphqlServiceRuntime;
 import org.gecko.whiteboard.graphql.dto.RuntimeDTO;
 import org.gecko.whiteboard.graphql.instrumentation.TracingInstrumentationProvider;
 import org.gecko.whiteboard.graphql.service.ServiceSchemaBuilder;
+import org.gecko.whiteboard.graphql.servlet.OsgiGraphqlWhiteboard.GraphqlWhiteboardConfig;
 import org.osgi.annotation.bundle.Capability;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
@@ -62,6 +63,9 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.osgi.service.component.annotations.ServiceScope;
 import org.osgi.service.http.whiteboard.annotations.RequireHttpWhiteboard;
 import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletPattern;
+import org.osgi.service.metatype.annotations.AttributeDefinition;
+import org.osgi.service.metatype.annotations.Designate;
+import org.osgi.service.metatype.annotations.ObjectClassDefinition;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
@@ -108,8 +112,27 @@ import graphql.servlet.NoOpInstrumentationProvider;
 @HttpWhiteboardServletPattern(DEFAULT_SERVLET_PATTERN)
 @RequireHttpWhiteboard
 @Capability(namespace=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name= OSGI_GRAPHQL_CAPABILITY_NAME, version="1.0.0")
+@Designate(factory=true,ocd=GraphqlWhiteboardConfig.class)
 public class OsgiGraphqlWhiteboard extends AbstractGraphQLHttpServlet implements ServiceTrackerCustomizer<Object, Object>, GraphqlServiceRuntime {
 
+	@ObjectClassDefinition
+	@interface GraphqlWhiteboardConfig {
+		@AttributeDefinition(required = false)
+		boolean cors_enable() default true;
+
+		@AttributeDefinition(required = false)
+		String cors_access_control_allow_origin() default "*";
+
+		@AttributeDefinition(required = false)
+		String cors_access_control_allow_headers() default "*";
+
+		@AttributeDefinition(required = false)
+		String cors_access_control_request_method() default "*";
+	}
+
+	@Activate
+	GraphqlWhiteboardConfig config;
+	
 	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
 	private final List<GraphQLQueryProvider> queryProviders = new ArrayList<>();
@@ -144,7 +167,9 @@ public class OsgiGraphqlWhiteboard extends AbstractGraphQLHttpServlet implements
      */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    	resp.setHeader("Access-Control-Allow-Origin", "*");
+		if (config.cors_enable()) {
+			resp.setHeader("Access-Control-Allow-Origin", config.cors_access_control_allow_origin());
+    	}
     	super.doGet(req, resp);
     }
     
@@ -154,7 +179,10 @@ public class OsgiGraphqlWhiteboard extends AbstractGraphQLHttpServlet implements
      */
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    	resp.setHeader("Access-Control-Allow-Origin", "*");
+    	
+		if (config.cors_enable()) {
+			resp.setHeader("Access-Control-Allow-Origin", config.cors_access_control_allow_origin());
+		}
     	super.doPost(req, resp);
     }
     
@@ -164,9 +192,12 @@ public class OsgiGraphqlWhiteboard extends AbstractGraphQLHttpServlet implements
      */
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    	resp.setHeader("Access-Control-Allow-Origin", "*");
-    	resp.setHeader("Access-Control-Allow-Headers", "*");
-    	resp.setHeader("Access-Control-Request-Method", "*");
+		if (config.cors_enable()) {
+
+			resp.setHeader("Access-Control-Allow-Origin", config.cors_access_control_allow_origin());
+			resp.setHeader("Access-Control-Allow-Headers", config.cors_access_control_allow_headers());
+			resp.setHeader("Access-Control-Request-Method", config.cors_access_control_request_method());
+    	}
     	super.service(req, resp);
     }
     
