@@ -1,2 +1,4 @@
-## Place your settings in ext/.
-cnf: ${workspace}/cnf
+## Place your specific settings here.
+## If you use git, you might want to uncomment the following lines:
+# Git-Descriptor: ${system-allow-fail;git describe --dirty --always}
+# Git-SHA: ${system-allow-fail;git rev-list -1 HEAD}

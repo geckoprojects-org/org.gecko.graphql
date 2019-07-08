@@ -1,0 +1,4 @@
+Bundle-Description: JSON mapper component implemented via Gson
+Bundle-Version: 1.0.0.SNAPSHOT
+
+Export-Package: org.gecko.graphql.json.gson

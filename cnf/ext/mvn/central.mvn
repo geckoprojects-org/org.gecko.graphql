@@ -1,0 +1,41 @@
+# OSGi Spec
+org.osgi:osgi.annotation:7.0.0
+org.osgi:osgi.cmpn:7.0.0
+org.osgi:osgi.core:7.0.0
+org.osgi:org.osgi.util.pushstream:1.0.1
+org.osgi:org.osgi.util.function:1.1.0
+org.osgi:org.osgi.util.promise:1.1.1
+
+# Framework
+org.apache.felix:org.apache.felix.configurator:1.0.10
+org.apache.felix:org.apache.felix.configadmin:1.9.16
+org.apache.felix:org.apache.felix.eventadmin:1.5.0
+org.apache.felix:org.apache.felix.framework:6.0.3
+org.apache.felix:org.apache.felix.gogo.shell:1.0.0
+org.apache.felix:org.apache.felix.gogo.jline:1.1.4
+org.jline:jline:jar:3.7.0
+org.apache.felix:org.apache.felix.gogo.runtime:1.1.2
+org.apache.felix:org.apache.felix.gogo.command:1.0.2
+org.apache.felix:org.apache.felix.http.jetty:4.0.10
+org.apache.felix:org.apache.felix.http.servlet-api:1.1.2
+org.apache.felix:org.apache.felix.metatype:1.2.2
+org.apache.felix:org.apache.felix.scr:2.1.16
+
+# junit
+org.apache.servicemix.bundles:org.apache.servicemix.bundles.junit:4.12_1
+
+# Log
+org.slf4j:slf4j-api:1.7.26
+ch.qos.logback:logback-classic:1.2.3
+ch.qos.logback:logback-core:1.2.3
+
+# GraphQl
+com.graphql-java:graphql-java:12.0
+com.graphql-java:java-dataloader:2.2.1
+org.reactivestreams:reactive-streams:jar:1.0.2
+org.antlr:antlr4-runtime:jar:4.7.2
+com.google.code.gson:gson:2.8.5
+
+# StringTemplate
+org.apache.servicemix.bundles:org.apache.servicemix.bundles.stringtemplate:4.1_1
+org.apache.servicemix.bundles:org.apache.servicemix.bundles.antlr-runtime:3.5.2_1

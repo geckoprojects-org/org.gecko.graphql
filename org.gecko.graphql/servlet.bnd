@@ -1,0 +1,6 @@
+Bundle-Name: org.gecko.graphql.servlet
+Bundle-Description: gecko GraphQL Servlet
+Bundle-Version: 1.0.0.SNAPSHOT
+Bundle-Category: graphql
+
+Export-Package: org.gecko.graphql.servlet

@@ -1,0 +1,12 @@
+-buildpath: \
+	osgi.annotation;version=7.0,\
+	osgi.core;version=7.0,\
+	osgi.cmpn;version=7.0,\
+	com.graphql-java;version='[12,13)',\
+	slf4j.api,\
+	org.apache.felix.http.servlet-api,\
+	org.reactivestreams.reactive-streams,\
+	org.dataloader.java-dataloader,\
+	com.google.gson
+
+-sub: *.bnd

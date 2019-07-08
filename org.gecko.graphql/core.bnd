@@ -1,0 +1,7 @@
+Bundle-Version: 1.0.0.SNAPSHOT
+Bundle-SymbolicName: org.gecko.graphql
+Bundle-Name: org.gecko.graphql
+Bundle-Description: gecko GraphQL Core
+Bundle-Category: graphql
+
+Export-Package: org.gecko.graphql

@@ -1,0 +1,6 @@
+Bundle-Name: org.gecko.graphql.annotation
+Bundle-Description: gecko GraphQL Annotations
+Bundle-Version: 1.0.0.SNAPSHOT
+Bundle-Category: graphql
+
+Export-Package: org.gecko.graphql.annotation
