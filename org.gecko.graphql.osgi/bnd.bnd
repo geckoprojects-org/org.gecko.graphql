@@ -7,7 +7,8 @@
 	org.gecko.graphql.annotation;version=latest,\
 	org.gecko.graphql.servlet;version=latest,\
 	org.gecko.graphql;version=latest,\
-	slf4j.api
+	slf4j.api,\
+	org.apache.felix.gogo.runtime
 
 
 -sub: *.bnd

@@ -10,9 +10,10 @@
 	bnd.identity;id='org.apache.felix.gogo.jline',\
 	bnd.identity;id='org.apache.felix.gogo.runtime',\
 	bnd.identity;id='org.apache.felix.http.jetty',\
-	bnd.identity;version='latest';id='org.gecko.graphql.osgi.framework',\
 	bnd.identity;version='latest';id='org.gecko.graphql.json.gson',\
-	bnd.identity;id='org.apache.felix.gogo.shell'
+	bnd.identity;id='org.apache.felix.gogo.shell',\
+	bnd.identity;id='org.gecko.graphql.osgi.gogo',\
+	bnd.identity;id='org.gecko.graphql.osgi.framework'
 
 -runbundles: \
 	ch.qos.logback.classic;version='[1.2.3,1.2.4)',\
@@ -35,5 +36,7 @@
 	org.gecko.graphql.json.gson;version='[1.0.0,1.0.1)',\
 	org.jline;version='[3.7.0,3.7.1)',\
 	org.apache.felix.gogo.shell;version='[1.0.0,1.0.1)',\
-	org.gecko.graphql.servlet;version='[1.0.0,1.0.1)',\
-	org.gecko.graphql.osgi.framework;version='[1.0.0,1.0.1)'
+	org.gecko.graphql.osgi.gogo;version='[1.0.0,1.0.1)',\
+	org.apache.felix.converter;version='[1.0.8,1.0.9)',\
+	org.gecko.graphql.osgi.framework;version='[1.0.0,1.0.1)',\
+	org.gecko.graphql.servlet;version='[1.0.0,1.0.1)'

@@ -12,7 +12,6 @@ import org.osgi.framework.BundleException;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.dto.FrameworkDTO;
 import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,8 +24,8 @@ import graphql.schema.GraphQLArgument;
 import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLNonNull;
 
-@Component(
-		service = SchemaContributor.class)
+//@Component(
+//		service = SchemaContributor.class)
 public class OsgiFrameworkSchemaContributor implements SchemaContributor {
 
 	private static final String STOP_BUNDLE_METHOD = "stopBundle";

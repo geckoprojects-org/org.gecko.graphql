@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.Set;
 
 import graphql.schema.GraphQLFieldDefinition;
+import graphql.schema.GraphQLType;
 
 public interface SchemaContributor {
 
@@ -28,6 +29,11 @@ public interface SchemaContributor {
 
 
 	public default Set<DataFetcherCoordinates<?>> dataFetcherCoordinates() {
+		return Collections.emptySet();
+	}
+
+
+	public default Set<GraphQLType> additionalTypes() {
 		return Collections.emptySet();
 	}
 }

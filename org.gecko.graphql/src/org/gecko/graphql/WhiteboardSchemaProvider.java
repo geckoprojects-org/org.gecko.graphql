@@ -3,6 +3,7 @@ package org.gecko.graphql;
 import static org.gecko.graphql.annotation.GraphqlSchemaProviderType.WHITEBOARD_TYPE;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
@@ -18,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import graphql.schema.GraphQLCodeRegistry;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLSchema;
+import graphql.schema.GraphQLType;
 
 @Component(
 		service = SchemaProvider.class)
@@ -42,7 +44,7 @@ public class WhiteboardSchemaProvider implements SchemaProvider {
 		GraphQLObjectType mutationType = GraphQLObjectType.newObject().name(SchemaContributor.MUTATION).build();
 		GraphQLObjectType queryType = GraphQLObjectType.newObject().name(SchemaContributor.QUERY).build();
 		GraphQLObjectType subscriptionType = GraphQLObjectType.newObject().name(SchemaContributor.SUBSCRIPTION).build();
-
+		final Set<GraphQLType> additionalTypes = new HashSet<GraphQLType>();
 		for (final SchemaContributor contributor : contributors) {
 			mutationType = mutationType.transform(builder -> builder.fields(new ArrayList<>(contributor.mutations())));
 			queryType = queryType.transform(builder -> builder.fields(new ArrayList<>(contributor.queries())));
@@ -51,9 +53,12 @@ public class WhiteboardSchemaProvider implements SchemaProvider {
 			codeRegistry = codeRegistry
 					.transform(builder -> contributor.dataFetcherCoordinates()
 							.forEach(dfc -> builder.dataFetcher(dfc.coordinates(), dfc.dataFetcher())));
+
+			additionalTypes.addAll(contributor.additionalTypes());
 		}
 
 		schema = GraphQLSchema.newSchema()
+				.additionalTypes(additionalTypes)
 				.codeRegistry(codeRegistry)
 				.mutation(mutationType)
 				.query(queryType)
