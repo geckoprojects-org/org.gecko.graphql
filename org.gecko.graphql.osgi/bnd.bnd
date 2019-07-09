@@ -1,0 +1,13 @@
+-buildpath: \
+	osgi.annotation;version=7.0,\
+	osgi.core;version=7.0,\
+	osgi.cmpn;version=7.0,\
+	com.graphql-java,\
+	org.apache.felix.http.servlet-api,\
+	org.gecko.graphql.annotation;version=latest,\
+	org.gecko.graphql.servlet;version=latest,\
+	org.gecko.graphql;version=latest,\
+	slf4j.api
+
+
+-sub: *.bnd
