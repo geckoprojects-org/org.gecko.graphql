@@ -36,9 +36,6 @@ junit: org.apache.servicemix.bundles.junit;version="[4.11,5)"
 # Enable semantic versioning for all bundles
 -baseline: *
 
-# Ignore .jasper files for baselining
-# -diffignore: *.jasper
-
 # define global blacklist
 -runblacklist.default: osgi.identity;filter:='(osgi.identity=osgi.cmpn)'
 

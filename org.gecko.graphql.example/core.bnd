@@ -1,9 +1,8 @@
-Bundle-SymbolicName: org.gecko.graphql.example
 Bundle-Description: gecko GraphQL Example
 Bundle-Name: org.gecko.graphql.example
 Bundle-Version: 1.0.0.SNAPSHOT
 Bundle-Category: graphql
-	
+
 Export-Package: \
 	org.gecko.graphql.example,\
 	org.gecko.graphql.example.model

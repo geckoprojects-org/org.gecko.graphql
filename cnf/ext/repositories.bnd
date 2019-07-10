@@ -1,20 +1,28 @@
-# Bnd Repository Plugins
+# Bnd Repository Plugins    
+-plugin.repo.local: \
+	aQute.bnd.deployer.repository.LocalIndexedRepo;\
+	pretty=true;\
+	readonly=false;\
+	name="Local";\
+	local=${cnf}/repo-local;cache=${cnf}/cache/local
+
+-plugin.repo.release: \
+	aQute.bnd.deployer.repository.LocalIndexedRepo;\
+	pretty=true;\
+	readonly=false;\
+	name="Release";\
+	local=${cnf}/repo-release;cache=${cnf}/cache/release
 
 -plugin.repo.mvn.central: \
     aQute.bnd.repository.maven.provider.MavenBndRepository;\
     local=${cnf}/cache/mvn-central;\
     readonly=true;\
     releaseUrl=https://repo.maven.apache.org/maven2/;\
-    index=${cnf}/ext/mvn/central.mvn;\
+    index=${cnf}/mvn/central.mvn;\
     name=Maven-Central
-    
--plugin.repos: \
-	aQute.bnd.deployer.repository.LocalIndexedRepo;pretty=true;readonly=false;name="Release";local=${cnf}/repo-release;cache=${cnf}/cache/release,\
-	aQute.bnd.deployer.repository.LocalIndexedRepo;pretty=true;readonly=false;name="Local";local=${cnf}/repo-local;cache=${cnf}/cache/local
 
 	
 # Repositories
 #-baselinerepo: ToDo
--releaserepo: Release
 -buildrepo: Local
-
+-releaserepo: Release

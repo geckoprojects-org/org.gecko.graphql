@@ -165,8 +165,8 @@ public class GraphqlServlet extends HttpServlet {
 	private void activate() {
 		LOG.debug("{} activated \n\t    JSON mapper: {}\n\t  query invoker: {}\n\tschema provider: {}",
 				getClass().getSimpleName(),
-				jsonMapper,
-				queryInvoker,
-				schemaProvider);
+				jsonMapper.getClass().getName(),
+				queryInvoker.getClass().getName(),
+				schemaProvider.getClass().getName());
 	}
 }
