@@ -369,4 +369,9 @@ public enum Fixture {
 	public Set<Person> persons() {
 		return persons;
 	}
+
+
+	public Map<Object, Presence> presences() {
+		return presences;
+	}
 }
