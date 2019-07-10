@@ -1,6 +1,7 @@
 package org.gecko.graphql;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 
 import graphql.Scalars;
@@ -14,7 +15,7 @@ import graphql.schema.GraphQLScalarType;
 /**
  * Additional scalar GraphQL types.
  * <p>
- * Containes static {@link GraphQLScalarType} implementations for frequently used Java classes which are not covered by {@link Scalars}, e.g.
+ * Contains static {@link GraphQLScalarType} implementations for frequently used Java classes which are not covered by {@link Scalars}, e.g.
  * {@link java.util.UUID} and classes from {@link java.time}.
  * </p>
  *
@@ -56,6 +57,44 @@ public class ScalarTypes {
 						return localDate.toString();
 					} else {
 						throw new CoercingSerializeException("Unable to serialize as LocalDate: " + localDate);
+					}
+				}
+			})
+			.build();
+
+	public static final GraphQLScalarType LOCAL_DATE_TIME_ISO_8601 = GraphQLScalarType.newScalar()
+			.name(LocalDateTime.class.getSimpleName())
+			.coercing(new Coercing<LocalDateTime, String>() {
+				@Override
+				public LocalDateTime parseLiteral(Object literal) throws CoercingParseLiteralException {
+					if (literal instanceof StringValue) {
+						try {
+							return LocalDateTime.parse(((StringValue) literal).getValue());
+						} catch (final DateTimeParseException dtpe) {
+							throw new CoercingParseLiteralException(dtpe);
+						}
+					} else {
+						throw new CoercingParseLiteralException("Unable to parse as a LocalDateTime literal: " + literal);
+					}
+				}
+
+
+				@Override
+				public LocalDateTime parseValue(Object value) throws CoercingParseValueException {
+					try {
+						return LocalDateTime.parse(String.valueOf(value));
+					} catch (final DateTimeParseException dtpe) {
+						throw new CoercingParseLiteralException(dtpe);
+					}
+				}
+
+
+				@Override
+				public String serialize(Object localDateTime) throws CoercingSerializeException {
+					if (localDateTime instanceof LocalDateTime) {
+						return localDateTime.toString();
+					} else {
+						throw new CoercingSerializeException("Unable to serialize as LocalDateTime: " + localDateTime);
 					}
 				}
 			})

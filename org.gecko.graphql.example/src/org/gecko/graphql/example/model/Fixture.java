@@ -1,6 +1,7 @@
 package org.gecko.graphql.example.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -16,6 +17,7 @@ public enum Fixture {
 	private final Map<Object, Set<Anniversary>> anniversaries = new HashMap<>();
 	private final Map<Object, Set<Contact>> contacts = new HashMap<>();
 	private final Map<Object, Set<Phone>> phones = new HashMap<>();
+	private final Map<Object, Presence> presences = new HashMap<>();
 	private final Map<Object, Set<PersonStatus>> status = new HashMap<>();
 
 	private final Set<Person> persons = new HashSet<>();
@@ -264,6 +266,28 @@ public enum Fixture {
 								.number("0151555555")
 								.type(PhoneType.MOBILE)
 								.build()));
+
+		presences.put(
+				person1.getId(),
+				Presence.builder()
+						.message("AFK")
+						.since(LocalDateTime.now())
+						.status(PresenceType.AWAY)
+						.build());
+		presences.put(
+				person2.getId(),
+				Presence.builder()
+						.message("Abwesend")
+						.since(LocalDateTime.now())
+						.status(PresenceType.OFFLINE)
+						.build());
+		presences.put(
+				person3.getId(),
+				Presence.builder()
+						.message("Anwesend")
+						.since(LocalDateTime.now())
+						.status(PresenceType.ONLINE)
+						.build());
 
 		status.put(
 				person1.getId(),
