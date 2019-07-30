@@ -14,6 +14,7 @@ import org.gecko.graphql.example.model.Contact;
 import org.gecko.graphql.example.model.Person;
 import org.gecko.graphql.example.model.PersonStatus;
 import org.gecko.graphql.example.model.Phone;
+import org.gecko.graphql.example.model.Presence;
 import org.gecko.graphql.example.model.Realm;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -55,6 +56,11 @@ public class PersonSchemaContributor implements SchemaContributor {
 			cardinality = ReferenceCardinality.OPTIONAL,
 			policy = ReferencePolicy.DYNAMIC)
 	private volatile PhoneService phoneService;
+
+	@Reference(
+			cardinality = ReferenceCardinality.OPTIONAL,
+			policy = ReferencePolicy.DYNAMIC)
+	private volatile PresenceService presenceService;
 
 	@Reference
 	private PersonStatusService statusService;
@@ -137,6 +143,22 @@ public class PersonSchemaContributor implements SchemaContributor {
 					@Override
 					public List<Person> get(DataFetchingEnvironment env) throws Exception {
 						return new ArrayList<>(personService.allPersons());
+					}
+				}));
+
+		// data fetcher for a person's presence field using the dynamic PresenceService
+		dataFetcherCoordinates.add(new DataFetcherCoordinates<Presence>(
+				FieldCoordinates.coordinates(Types.PERSON.getName(), Person.Fields.PRESENCE),
+				new DataFetcher<Presence>() {
+					@Override
+					public Presence get(DataFetchingEnvironment env) throws Exception {
+						final PresenceService ps = presenceService;
+
+						if (ps == null) {
+							return null;
+						}
+
+						return ps.personPresence(env.getSource()).orElse(null);
 					}
 				}));
 

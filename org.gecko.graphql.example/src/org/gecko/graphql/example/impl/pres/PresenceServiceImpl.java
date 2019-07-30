@@ -1,5 +1,6 @@
 package org.gecko.graphql.example.impl.pres;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -10,10 +11,13 @@ import org.gecko.graphql.example.model.Fixture;
 import org.gecko.graphql.example.model.Person;
 import org.gecko.graphql.example.model.Presence;
 import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Component(
+		service = PresenceService.class)
 public class PresenceServiceImpl implements PresenceService {
 
 	private static final Logger LOG = LoggerFactory.getLogger(PresenceServiceImpl.class);
@@ -63,6 +67,11 @@ public class PresenceServiceImpl implements PresenceService {
 	public Presence updatePresence(Person person, Presence presence) {
 		Objects.nonNull(person);
 		Objects.nonNull(presence);
+
+		// set since time stamp if not set
+		if (presence.getSince() == null) {
+			presence.setSince(LocalDateTime.now());
+		}
 
 		return Fixture.INSTANCE.presences().put(person.getId(), presence);
 	}

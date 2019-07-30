@@ -1,8 +1,12 @@
 package org.gecko.graphql.example.model;
 
 import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Presence {
+
+	public static final String NAME = "presence";
 
 	private PresenceType status;
 
@@ -10,6 +14,24 @@ public class Presence {
 
 	private String message;
 
+
+	public static Presence fromMap(Map<String, Object> input) {
+		System.out.println("Presence:\n"
+				+ input.entrySet().stream().map(e -> e.getKey() + ": " + e.getValue() + " (" + e.getValue().getClass() + ")")
+						.collect(Collectors.joining("\n\t")));
+
+		final String message = input.get(Fields.MESSAGE) instanceof String ? String.class.cast(input.get(Fields.MESSAGE)) : null;
+		final LocalDateTime since = input.get(Fields.SINCE) instanceof LocalDateTime ? LocalDateTime.class.cast(input.get(Fields.SINCE)) : null;
+		final PresenceType status = input.get(Fields.STATUS) instanceof String
+				? PresenceType.valueOf(String.class.cast(input.get(Fields.STATUS)))
+				: PresenceType.OFFLINE;
+
+		return builder()
+				.message(message)
+				.since(since)
+				.status(status)
+				.build();
+	}
 
 	private Presence(Builder builder) {
 		status = builder.status;
@@ -29,6 +51,11 @@ public class Presence {
 
 	public LocalDateTime getSince() {
 		return since;
+	}
+
+
+	public void setSince(LocalDateTime since) {
+		this.since = since;
 	}
 
 
@@ -87,5 +114,13 @@ public class Presence {
 		public Presence build() {
 			return new Presence(this);
 		}
+	}
+
+	public static interface Fields {
+
+		public static final String MESSAGE = "message";
+		public static final String SINCE = "since";
+		public static final String STATUS = "status";
+
 	}
 }

@@ -20,6 +20,8 @@ public class Person {
 
 	private PersonStatus status;
 
+	private Presence presence;
+
 	private List<Anniversary> anniversaries;
 	private Set<Contact> contacts;
 
@@ -27,6 +29,7 @@ public class Person {
 	private Person(Builder builder) {
 		id = builder.id;
 		preferredName = builder.preferredName;
+		presence = builder.presence;
 		surname = builder.surname;
 		userName = builder.userName;
 		gender = builder.gender;
@@ -75,6 +78,16 @@ public class Person {
 	}
 
 
+	public Presence getPresence() {
+		return presence;
+	}
+
+
+	public void setPresence(Presence presence) {
+		this.presence = presence;
+	}
+
+
 	public List<Anniversary> getAnniversaries() {
 		return anniversaries;
 	}
@@ -106,6 +119,7 @@ public class Person {
 		private String userName;
 		private Gender gender;
 		private PersonStatus status;
+		private Presence presence;
 		private List<Anniversary> anniversaries;
 		private Set<Contact> contacts;
 
@@ -146,6 +160,12 @@ public class Person {
 
 		public Builder status(PersonStatus status) {
 			this.status = status;
+			return this;
+		}
+
+
+		public Builder presence(Presence presence) {
+			this.presence = presence;
 			return this;
 		}
 
@@ -196,6 +216,7 @@ public class Person {
 		public static final String GENDER = "gender";
 		public static final String ID = "id";
 		public static final String PREFERRED_NAME = "preferredName";
+		public static final String PRESENCE = "presence";
 		public static final String STATUS = "status";
 		public static final String SURNAME = "surname";
 		public static final String USER_NAME = "userName";
