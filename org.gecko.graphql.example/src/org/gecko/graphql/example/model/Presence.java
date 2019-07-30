@@ -2,7 +2,6 @@ package org.gecko.graphql.example.model;
 
 import java.time.LocalDateTime;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class Presence {
 
@@ -16,10 +15,6 @@ public class Presence {
 
 
 	public static Presence fromMap(Map<String, Object> input) {
-		System.out.println("Presence:\n"
-				+ input.entrySet().stream().map(e -> e.getKey() + ": " + e.getValue() + " (" + e.getValue().getClass() + ")")
-						.collect(Collectors.joining("\n\t")));
-
 		final String message = input.get(Fields.MESSAGE) instanceof String ? String.class.cast(input.get(Fields.MESSAGE)) : null;
 		final LocalDateTime since = input.get(Fields.SINCE) instanceof LocalDateTime ? LocalDateTime.class.cast(input.get(Fields.SINCE)) : null;
 		final PresenceType status = input.get(Fields.STATUS) instanceof String
