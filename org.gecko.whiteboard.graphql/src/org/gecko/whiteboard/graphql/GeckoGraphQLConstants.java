@@ -21,6 +21,9 @@ public class GeckoGraphQLConstants {
 
     /** The name of the  Implementation capability*/
 	public static final String OSGI_GRAPHQL_CAPABILITY_NAME = "osgi.graphql";
+
+	/** The name of the EMF Implementation capability*/
+	public static final String OSGI_EMF_GRAPHQL_CAPABILITY_NAME = "osgi.graphql.emf";
 	
 	/** The name of the Component that can be used in the ConfigurationAdmin */
 	public static final String GECKO_GRAPHQL_WHITEBOARD_COMPONENT_NAME = "GeckoGraphQLWhiteboard";

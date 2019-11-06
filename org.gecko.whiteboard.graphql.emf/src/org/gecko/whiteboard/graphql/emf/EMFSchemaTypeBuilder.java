@@ -11,6 +11,8 @@
  */
 package org.gecko.whiteboard.graphql.emf;
 
+import static org.gecko.whiteboard.graphql.GeckoGraphQLConstants.OSGI_EMF_GRAPHQL_CAPABILITY_NAME;
+
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
@@ -39,11 +41,13 @@ import org.gecko.whiteboard.graphql.emf.resolver.EMFTypeResolver;
 import org.gecko.whiteboard.graphql.emf.schema.GraphQLEMFFieldDefinition;
 import org.gecko.whiteboard.graphql.emf.schema.GraphQLEMFInputObjectField;
 import org.gecko.whiteboard.graphql.emf.schema.GraphQLEMFInputObjectType;
+import org.osgi.annotation.bundle.Capability;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+import org.osgi.namespace.implementation.ImplementationNamespace;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -64,6 +68,7 @@ import graphql.schema.GraphQLTypeReference;
 
 @Component
 @RequireGraphQLWhiteboard
+@Capability(namespace=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name= OSGI_EMF_GRAPHQL_CAPABILITY_NAME, version="1.0.0")
 public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder{
 
 	
@@ -160,7 +165,9 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder{
 			return scalarType;
 		}
 		
+		
 		EClass eClass = (EClass) eClassifier;
+		
 		return buildEClass(eClass, typeMapping, inputType);
 	}
 
@@ -208,6 +215,8 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder{
 	 */
 	private GraphQLType buildEClass(EClass eClass, Map<Object, GraphQLType> typeMapping, boolean inputType) {
 		if(!inputType) {
+			List<EClass> upperTypeHierarchyForEClass = modelInfo.getUpperTypeHierarchyForEClass(eClass);
+			upperTypeHierarchyForEClass.forEach(eC -> buildInterfacesAndObject(eC, typeMapping));
 			GraphQLInterfaceType interfaceType = buildInterfacesAndObject(eClass, typeMapping);
 			return interfaceType;
 		} else {
@@ -321,6 +330,7 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder{
 	 * Creates a {@link GraphQLInputType} for the given {@link EClass}. The type will be named EClass
 	 * @param eClass
 	 * @param typeMapping
+	 * @param upperTypeHierarchyForEClass 
 	 * @param inputType
 	 * @return
 	 */
