@@ -18,7 +18,6 @@ Test-Cases: ${classes;CONCRETE;ANNOTATED;org.junit.runner.RunWith}
 	org.osgi.util.pushstream;version=1.0,\
 	org.gecko.whiteboard.graphql.api;version=latest,\
 	com.graphql-java,\
-	org.gecko.util.test.common;version=latest,\
 	org.apache.felix.http.servlet-api,\
 	org.apache.felix.http.jetty,\
 	org.dataloader.java-dataloader,\

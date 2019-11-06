@@ -4,5 +4,5 @@
 		pretty = true; \
 		local = ${build}/release
 
-
+-pom: version=${versionmask;===s;${@version}}
 		
