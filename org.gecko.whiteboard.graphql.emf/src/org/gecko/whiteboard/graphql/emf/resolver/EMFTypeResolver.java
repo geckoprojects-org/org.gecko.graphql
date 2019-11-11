@@ -26,13 +26,21 @@ import graphql.schema.TypeResolver;
 public class EMFTypeResolver implements TypeResolver {
 
 
-	private Map<Object, GraphQLType> types;
+	private Map<String, GraphQLType> types;
+	private String sufix;
 
 	/**
 	 * Creates a new instance.
 	 */
-	public EMFTypeResolver(Map<Object, GraphQLType> types) {
+	public EMFTypeResolver(Map<String, GraphQLType> types) {
+		this(types, "Impl");
+	}
+	/**
+	 * Creates a new instance.
+	 */
+	public EMFTypeResolver(Map<String, GraphQLType> types, String sufix) {
 		this.types = types;
+		this.sufix = sufix;
 	}
 	
 	/* 
@@ -41,7 +49,7 @@ public class EMFTypeResolver implements TypeResolver {
 	 */
 	@Override
 	public GraphQLObjectType getType(TypeResolutionEnvironment env) {
-		return (GraphQLObjectType) types.get(env.getFieldType().getName() + "Impl");
+		return (GraphQLObjectType) types.get(env.getFieldType().getName() + sufix);
 	}
 
 }

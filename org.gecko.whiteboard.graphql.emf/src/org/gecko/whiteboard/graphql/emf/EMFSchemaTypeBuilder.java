@@ -65,6 +65,8 @@ import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLOutputType;
 import graphql.schema.GraphQLType;
 import graphql.schema.GraphQLTypeReference;
+import graphql.schema.GraphQLUnionType;
+import graphql.schema.GraphQLUnionType.Builder;
 
 @Component
 @RequireGraphQLWhiteboard
@@ -106,7 +108,7 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder{
 	 * @see org.gecko.whiteboard.graphql.GraphqlSchemaTypeBuilder#buildType(java.lang.reflect.Type, java.util.Map, boolean)
 	 */
 	@Override
-	public GraphQLType buildType(Type type, Map<Object, GraphQLType> typeMapping, boolean inputType) {
+	public GraphQLType buildType(Type type, Map<String, GraphQLType> typeMapping, boolean inputType) {
 
 		Class<?> clazz;
 		boolean isList = false;
@@ -143,7 +145,7 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder{
 	 * @param inputType
 	 * @return
 	 */
-	private GraphQLType buildTypeForEClassifier(EClassifier eClassifier, Map<Object, GraphQLType> typeMapping,
+	private GraphQLType buildTypeForEClassifier(EClassifier eClassifier, Map<String, GraphQLType> typeMapping,
 			boolean inputType) {
 		
 		String name = getName(eClassifier, inputType);
@@ -185,7 +187,7 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder{
 	 * @param typeMapping
 	 * @return
 	 */
-	private GraphQLType buildEnum(EEnum eEnum, Map<Object, GraphQLType> typeMapping) {
+	private GraphQLType buildEnum(EEnum eEnum, Map<String, GraphQLType> typeMapping) {
 		GraphQLEnumType.Builder typeBuilder = GraphQLEnumType.newEnum().name(eEnum.getName());
 		eEnum.getELiterals().stream().forEach(literal ->{
 			typeBuilder.value(literal.getName(), literal.getLiteral(), getDocumentation(eEnum));
@@ -213,10 +215,12 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder{
 	 * @param inputType
 	 * @return
 	 */
-	private GraphQLType buildEClass(EClass eClass, Map<Object, GraphQLType> typeMapping, boolean inputType) {
+	private GraphQLType buildEClass(EClass eClass, Map<String, GraphQLType> typeMapping, boolean inputType) {
 		if(!inputType) {
 			List<EClass> upperTypeHierarchyForEClass = modelInfo.getUpperTypeHierarchyForEClass(eClass);
-			upperTypeHierarchyForEClass.forEach(eC -> buildInterfacesAndObject(eC, typeMapping));
+			if(!upperTypeHierarchyForEClass.isEmpty()) {
+				return buildUnionTypeOutput(eClass, upperTypeHierarchyForEClass, typeMapping);
+			} 
 			GraphQLInterfaceType interfaceType = buildInterfacesAndObject(eClass, typeMapping);
 			return interfaceType;
 		} else {
@@ -226,13 +230,45 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder{
 	}
 	
 	/**
+	 * @param eClass
+	 * @param upperTypeHierarchyForEClass
+	 * @param typeMapping
+	 * @return
+	 */
+	private GraphQLType buildUnionTypeOutput(EClass eClass, List<EClass> upperTypeHierarchyForEClass,
+			Map<String, GraphQLType> typeMapping) {
+		String unionName = eClass.getName() + "Union";
+		if(typeMapping.containsKey(unionName)) {
+			return typeMapping.get(unionName);
+		}
+		
+		Builder unionType = GraphQLUnionType.newUnionType();
+		
+		unionType.name(unionName);
+
+		upperTypeHierarchyForEClass.stream()
+			.map(eC -> buildInterfacesAndObject(eC, typeMapping))
+			.map(qlType -> GraphQLTypeReference.typeRef(qlType.getName() + "Impl"))
+			.forEach(unionType::possibleType);
+		GraphQLInterfaceType qlInterface = buildInterfacesAndObject(eClass, typeMapping);
+		
+		unionType.possibleType(GraphQLTypeReference.typeRef(qlInterface.getName() + "Impl"));
+		unionType.typeResolver(new EMFTypeResolver(typeMapping, "Union"));
+		GraphQLUnionType type = unionType.build();
+		
+		typeMapping.put(unionName, type);
+		
+		return type;
+	}
+
+	/**
 	 * 
 	 * @param eClass
 	 * @param typeMapping
 	 * @param inputType
 	 * @return
 	 */
-	private GraphQLInterfaceType buildInterfacesAndObject(EClass eClass, Map<Object, GraphQLType> typeMapping) {
+	private GraphQLInterfaceType buildInterfacesAndObject(EClass eClass, Map<String, GraphQLType> typeMapping) {
 		if(typeMapping.containsKey(eClass.getName())) {
 			return (GraphQLInterfaceType) typeMapping.get(eClass.getName());
 		}
@@ -334,7 +370,7 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder{
 	 * @param inputType
 	 * @return
 	 */
-	private GraphQLInputType buildInputObject(EClass eClass, Map<Object, GraphQLType> typeMapping) {
+	private GraphQLInputType buildInputObject(EClass eClass, Map<String, GraphQLType> typeMapping) {
 		String name = getName(eClass, true);
 		if(typeMapping.containsKey(name)) {
 			return (GraphQLInputType) typeMapping.get(name);

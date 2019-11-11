@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.gecko.whiteboard.graphql.annotation.GraphqlMutationService;
 import org.gecko.whiteboard.graphql.annotation.GraphqlQueryService;
+import org.gecko.whiteboard.graphql.annotation.RequireEMFGraphQLWhiteboard;
 import org.gecko.whiteboard.graphql.emf.test.api.AnotherInterface;
 import org.gecko.whiteboard.graphql.emf.test.api.TestService;
 import org.osgi.service.component.annotations.Activate;
@@ -29,6 +30,7 @@ import org.gecko.whiteboard.graphql.emf.test.model.GraphqlTest.Product;
 @Component
 @GraphqlQueryService(TestService.class)
 @GraphqlMutationService(AnotherInterface.class)
+@RequireEMFGraphQLWhiteboard
 public class ExampleImpl implements TestService, AnotherInterface{
 
 	private List<Catalog> catalogs = new LinkedList<>();

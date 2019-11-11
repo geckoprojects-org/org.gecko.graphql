@@ -64,7 +64,7 @@ public class ServiceSchemaBuilder {
 	private final Builder mutationTypeBuilder;
 	private final Set<GraphQLType> types;
 	
-	private final Map<Object, GraphQLType> typeMapping = new HashMap<Object, GraphQLType>();
+	private final Map<String, GraphQLType> typeMapping = new HashMap<String, GraphQLType>();
 	private final List<GraphqlSchemaTypeBuilder> schemaTypeBuilder = new LinkedList<>();
 	private final GraphqlSchemaTypeBuilder defaultBuilder = new DefaultGraphqlTypeBuilder();
 	
@@ -329,7 +329,7 @@ public class ServiceSchemaBuilder {
 	 * @param typeMapping the list of the 
 	 * @return the Object type of th service
 	 */
-	private GraphQLObjectType createService(String name, Class<?> curInterface, Map<Object, GraphQLType> typeMapping) {
+	private GraphQLObjectType createService(String name, Class<?> curInterface, Map<String, GraphQLType> typeMapping) {
 		GraphQLType existingType = typeMapping.get(name);
 		graphql.schema.GraphQLObjectType.Builder serviceBuilder = null;
 		if(existingType != null) {
@@ -450,7 +450,7 @@ public class ServiceSchemaBuilder {
 	 * @param typeMapping2
 	 * @return
 	 */
-	private GraphQLType createType(Type type, Map<Object, GraphQLType> typeMapping, boolean inputType) {
+	private GraphQLType createType(Type type, Map<String, GraphQLType> typeMapping, boolean inputType) {
 		GraphqlSchemaTypeBuilder builder = schemaTypeBuilder.stream().filter(stb -> stb.canHandle(type, inputType)).findFirst().orElseGet(() -> defaultBuilder);
 		return builder.buildType(type, typeMapping, inputType);
 	}

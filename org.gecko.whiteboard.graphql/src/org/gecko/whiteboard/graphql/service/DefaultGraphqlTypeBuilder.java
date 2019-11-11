@@ -35,7 +35,7 @@ import graphql.schema.PropertyDataFetcher;
 
 /**
  * 
- * @author jalbert
+ * @author Juergen Albert
  * @since 7 Nov 2018
  */
 public class DefaultGraphqlTypeBuilder implements GraphqlSchemaTypeBuilder {
@@ -54,7 +54,7 @@ public class DefaultGraphqlTypeBuilder implements GraphqlSchemaTypeBuilder {
 	 * @see org.gecko.whiteboard.graphql.GraphqlSchemaTypeBuilder#buildType(java.lang.reflect.Type, java.util.Map, boolean)
 	 */
 	@Override
-	public GraphQLType buildType(Type type, Map<Object, GraphQLType> typeMapping, boolean inputType) {
+	public GraphQLType buildType(Type type, Map<String, GraphQLType> typeMapping, boolean inputType) {
 		if(type instanceof ParameterizedType) {
 			ParameterizedType parameterizedType = (ParameterizedType) type;
 			Class<?> rawType = (Class<?>) parameterizedType.getRawType();
@@ -111,7 +111,7 @@ public class DefaultGraphqlTypeBuilder implements GraphqlSchemaTypeBuilder {
 	 * @param clazzType
 	 * @return
 	 */
-	private GraphQLObjectType buildObjectType(Map<Object, GraphQLType> typeMapping, boolean inputType,
+	private GraphQLObjectType buildObjectType(Map<String, GraphQLType> typeMapping, boolean inputType,
 			Class<?> clazzType, String name) {
 		graphql.schema.GraphQLObjectType.Builder typeBuilder = GraphQLObjectType.newObject()
 				.name(name);
@@ -135,7 +135,7 @@ public class DefaultGraphqlTypeBuilder implements GraphqlSchemaTypeBuilder {
 	 * @param clazzType
 	 * @return
 	 */
-	private GraphQLInputObjectType buildInputObjectType(Map<Object, GraphQLType> typeMapping, boolean inputType,
+	private GraphQLInputObjectType buildInputObjectType(Map<String, GraphQLType> typeMapping, boolean inputType,
 			Class<?> clazzType, String name) {
 		graphql.schema.GraphQLInputObjectType.Builder typeBuilder = GraphQLInputObjectType.newInputObject()
 				.name(name);
@@ -185,6 +185,5 @@ public class DefaultGraphqlTypeBuilder implements GraphqlSchemaTypeBuilder {
 		}
 		return null;
 	}
-
 
 }

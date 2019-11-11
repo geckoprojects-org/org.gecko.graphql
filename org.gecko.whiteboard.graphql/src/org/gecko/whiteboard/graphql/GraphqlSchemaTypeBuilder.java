@@ -29,14 +29,14 @@ import graphql.schema.GraphQLType;
 
 /**
  * 
- * @author jalbert
+ * @author Juergen Albert
  * @since 7 Nov 2018
  */
 public interface GraphqlSchemaTypeBuilder {
 	
 	public boolean canHandle(Type type, boolean inputType);
 	
-	public GraphQLType buildType(Type type, Map<Object, GraphQLType> typeMapping, boolean inputType); 
+	public GraphQLType buildType(Type type, Map<String, GraphQLType> typeMapping, boolean inputType); 
 	
 	public static GraphQLType getGraphQLScalarType(Class<?> instanceClass) {
 		if (instanceClass == Integer.TYPE || instanceClass == Integer.class) {
@@ -81,4 +81,5 @@ public interface GraphqlSchemaTypeBuilder {
 		}
 		return result;
 	}
+
 }
