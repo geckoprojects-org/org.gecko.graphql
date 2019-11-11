@@ -11,6 +11,7 @@
  */
 package org.gecko.whiteboard.graphql;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -36,7 +37,7 @@ public interface GraphqlSchemaTypeBuilder {
 	
 	public boolean canHandle(Type type, boolean inputType);
 	
-	public GraphQLType buildType(Type type, Map<String, GraphQLType> typeMapping, boolean inputType); 
+	public GraphQLType buildType(Type type, Map<String, GraphQLType> typeMapping, boolean inputType, List<Annotation> annotations); 
 	
 	public static GraphQLType getGraphQLScalarType(Class<?> instanceClass) {
 		if (instanceClass == Integer.TYPE || instanceClass == Integer.class) {

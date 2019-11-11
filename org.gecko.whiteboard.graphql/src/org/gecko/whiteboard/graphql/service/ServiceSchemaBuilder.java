@@ -11,12 +11,14 @@
  */
 package org.gecko.whiteboard.graphql.service;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -28,15 +30,12 @@ import org.gecko.whiteboard.graphql.GeckoGraphQLConstants;
 import org.gecko.whiteboard.graphql.GraphqlSchemaTypeBuilder;
 import org.gecko.whiteboard.graphql.annotation.GraphqlArgument;
 import org.gecko.whiteboard.graphql.annotation.GraphqlDocumentation;
-import org.gecko.whiteboard.graphql.annotation.GraphqlQueryService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceObjects;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.wiring.BundleWiring;
-import org.osgi.util.converter.Converter;
-import org.osgi.util.converter.Converters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -340,7 +339,7 @@ public class ServiceSchemaBuilder {
 		for(Method method : curInterface.getMethods()) {
 			String methodName = method.getName();
 			
-			GraphQLOutputType returnType = (GraphQLOutputType) createType(method.getGenericReturnType(), typeMapping, false);
+			GraphQLOutputType returnType = (GraphQLOutputType) createType(method.getGenericReturnType(), typeMapping, false, getMethodAnnotations(method));
 			Map<String, ParameterContext> parameters = new HashMap<>();
 			boolean ignore = false;
 			String methodDocumentation = getDocumentation(method);
@@ -371,7 +370,7 @@ public class ServiceSchemaBuilder {
 						.findFirst()
 						.orElseGet(() -> defaultBuilder.canHandle(parameterType, true));
 					if(hasHandler) {
-						parameters.put(parameterName, new ParameterContext(p, (GraphQLInputType) createType(parameterType, typeMapping, true)));
+						parameters.put(parameterName, new ParameterContext(p, (GraphQLInputType) createType(parameterType, typeMapping, true, getParameterAnnotations(p))));
 					} else {
 						LOG.error("{} parameter {} is a complex type and no handler is available. Thus the Method will be ignored", method, parameterName);
 						ignore = true;
@@ -390,6 +389,22 @@ public class ServiceSchemaBuilder {
 		return objectType;
 	}
 	
+	/**
+	 * @param p
+	 * @return
+	 */
+	private List<Annotation> getParameterAnnotations(Parameter p) {
+		return Arrays.asList(p.getAnnotations());
+	}
+
+	/**
+	 * @param method
+	 * @return
+	 */
+	private List<Annotation> getMethodAnnotations(Method method) {
+		return Arrays.asList(method.getAnnotations());
+	}
+
 	/**
 	 * Looks if the parameter is annotated with {@link GraphqlArgument} and uses this value. If not the parameter name is returned.
 	 * @param p the parameter we want the name for
@@ -450,9 +465,9 @@ public class ServiceSchemaBuilder {
 	 * @param typeMapping2
 	 * @return
 	 */
-	private GraphQLType createType(Type type, Map<String, GraphQLType> typeMapping, boolean inputType) {
+	private GraphQLType createType(Type type, Map<String, GraphQLType> typeMapping, boolean inputType, List<Annotation> annotations) {
 		GraphqlSchemaTypeBuilder builder = schemaTypeBuilder.stream().filter(stb -> stb.canHandle(type, inputType)).findFirst().orElseGet(() -> defaultBuilder);
-		return builder.buildType(type, typeMapping, inputType);
+		return builder.buildType(type, typeMapping, inputType, annotations);
 	}
 	
 	

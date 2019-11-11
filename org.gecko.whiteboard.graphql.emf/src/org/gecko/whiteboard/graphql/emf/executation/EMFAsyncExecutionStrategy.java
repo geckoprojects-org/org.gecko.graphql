@@ -25,7 +25,6 @@ import graphql.execution.DataFetcherResult;
 import graphql.execution.ExecutionContext;
 import graphql.execution.ExecutionId;
 import graphql.execution.ExecutionStepInfo;
-import graphql.execution.ExecutionStrategy;
 import graphql.execution.ExecutionStrategyParameters;
 import graphql.execution.ValuesResolver;
 import graphql.execution.instrumentation.Instrumentation;

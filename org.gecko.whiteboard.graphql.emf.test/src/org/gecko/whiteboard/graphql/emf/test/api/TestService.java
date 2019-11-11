@@ -14,7 +14,7 @@ package org.gecko.whiteboard.graphql.emf.test.api;
 import java.util.List;
 
 import org.osgi.annotation.versioning.ProviderType;
-
+import org.gecko.whiteboard.graphql.annotation.GraphqlUnionType;
 import org.gecko.whiteboard.graphql.emf.test.model.GraphqlTest.Catalog;
 import org.gecko.whiteboard.graphql.emf.test.model.GraphqlTest.CatalogEntry;
 import org.gecko.whiteboard.graphql.emf.test.model.GraphqlTest.Product;
@@ -23,6 +23,11 @@ import org.gecko.whiteboard.graphql.emf.test.model.GraphqlTest.Product;
 public interface TestService{
 
 	public List<Catalog> getCatalogs();
+	
+	@GraphqlUnionType(value = {
+		Product.class,
+		CatalogEntry.class
+	})
 	public CatalogEntry getEntryById(String id);
 	
 	public List<Product> getProducts(String name);
