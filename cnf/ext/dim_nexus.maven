@@ -24,6 +24,4 @@ org.gecko.runtime:org.gecko.runtime.config:1.0.3
 org.gecko.runtime:org.gecko.runtime.logging:1.0.14
 org.gecko.runtime:org.gecko.runtime.resources:1.0.1
 org.gecko.runtime:org.gecko.templates:1.0.24-SNAPSHOT
-org.osgi:org.osgi.util.converter:1.0.1
-org.slf4j:slf4j-simple:1.7.25
 org.gecko.core:org.gecko.core.test:1.2.0

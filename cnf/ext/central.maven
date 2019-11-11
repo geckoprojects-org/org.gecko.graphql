@@ -127,3 +127,6 @@ org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.2.0
 com.rabbitmq:amqp-client:5.5.1
 
 commons-logging:commons-logging:1.2
+org.osgi:org.osgi.util.converter:1.0.1
+org.slf4j:slf4j-simple:1.7.25
+
