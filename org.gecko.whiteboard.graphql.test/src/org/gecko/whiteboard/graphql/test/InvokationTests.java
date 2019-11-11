@@ -117,6 +117,10 @@ public class InvokationTests extends AbstractOSGiTest{
 		registerServiceForCleanup(testServiceImpl, properties, TestService.class);
 		
 		assertTrue(serviceChecker.awaitModification());
+		
+		CountDownLatch latch = new CountDownLatch(1);
+		latch.await(200, TimeUnit.MILLISECONDS);
+		
 		Request post = client.POST("http://localhost:8181/graphql");
 		post.content(new StringContentProvider("{\n" + 
 				"  \"query\": \"query {\\n  TestService{\\n    testMethodWithDataFetchingEnvironment\\n  }\\n}\"\n" + 
@@ -199,6 +203,10 @@ public class InvokationTests extends AbstractOSGiTest{
 		Date date = new Date();
 		
 		assertTrue(serviceChecker.awaitModification());
+		
+		CountDownLatch latch = new CountDownLatch(1);
+		latch.await(200, TimeUnit.MILLISECONDS);
+		
 		Request post = client.POST("http://localhost:8181/graphql");
 		post.content(new StringContentProvider("{\n" + 
 				"  \"query\": \"query {\\n  DateTestService{\\n    testDate(arg0 : \\\"" + dateFormat.format(date) + "\\\")\\n  }\\n}\\n\",\n" + 
@@ -335,6 +343,10 @@ public class InvokationTests extends AbstractOSGiTest{
 		registerServiceForCleanup(testServiceImpl, properties, IntegerService.class);
 		
 		assertTrue(serviceChecker.awaitModification());
+		
+		CountDownLatch latch = new CountDownLatch(1);
+		latch.await(200, TimeUnit.MILLISECONDS);
+		
 		Request post = client.POST("http://localhost:8181/graphql");
 		post.content(new StringContentProvider("{\n" + 
 				"  \"query\": \"query {\\n  IntegerService{\\n    testInteger\\n  }\\n}\\n\",\n" + 

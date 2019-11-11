@@ -163,6 +163,9 @@ public class MethodParameterTests extends AbstractOSGiTest{
 		
 		assertTrue(serviceChecker.awaitModification());
 		
+		CountDownLatch latch = new CountDownLatch(1);
+		latch.await(200, TimeUnit.MILLISECONDS);
+		
 		Request post = client.POST("http://localhost:8181/graphql");
 		post.content(new StringContentProvider("{\n" + 
 				"  \"query\": \"query {\\n  ListReturnTestService{\\n    testMethod(fizz : [\\\"test\\\", \\\"test2\\\"])\\n  }\\n}\",\n" + 
