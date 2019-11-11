@@ -36,17 +36,28 @@ public class GeckoGraphQLConstants {
 	/** Defines a whiteboard target filter, that decides if a service will be applied to the target  */
 	public static final String GRAPHQL_WHITEBOARD_TARGET = "osgi.graphql.target";
 
+	public static final String GRAPHQL_QUERY_SERVICE_PREFIX = "osgi.graphql.query.";
+
+	/** Identifies a Graphql  Service, that should act as a query */
+	public static final String GRAPHQL_WHITEBOARD_QUERY_SERVICE = GRAPHQL_QUERY_SERVICE_PREFIX + "graphql.query.service";
+	
 	/** Defines the name of the Service in the GraphQL whiteboard, communicated to the outside world as part of the query or mutation  */
-	public static final String GRAPHQL_QUERY_SERVICE_NAME = "osgi.graphql.query.service.name";
+	public static final String GRAPHQL_QUERY_SERVICE_NAME = GRAPHQL_QUERY_SERVICE_PREFIX + "name";
+
+	/** Marks the Service as a possible Query Service */
+	public static final String GRAPHQL_QUERY_SERVICE_MARKER = GRAPHQL_QUERY_SERVICE_PREFIX + "marker";
+	
+	
+	public static final String GRAPHQL_MUTATION_SERVICE_PREFIX = "osgi.graphql.mutation.";
 
 	/** Defines the name of the Service in the GraphQL whiteboard, communicated to the outside world as part of the query or mutation  */
-	public static final String GRAPHQL_MUTATION_SERVICE_NAME = "osgi.graphql.mutation.service.name";
-	
-	/** Identifies a Graphql  Service, that should act as a query */
-	public static final String GRAPHQL_WHITEBOARD_QUERY_SERVICE = "osgi.graphql.query.service";
+	public static final String GRAPHQL_MUTATION_SERVICE_NAME = GRAPHQL_MUTATION_SERVICE_PREFIX + "name";
+
+	/** Marks the Service as a possible Mutation Service */
+	public static final String GRAPHQL_MUTATION_SERVICE_MARKER = GRAPHQL_MUTATION_SERVICE_PREFIX + "marker";
 
 	/** Identifies a Graphql  Service, that should act as a mutation */
-	public static final String GRAPHQL_WHITEBOARD_MUTATION_SERVICE = "osgi.graphql.mutation.service";
+	public static final String GRAPHQL_WHITEBOARD_MUTATION_SERVICE = GRAPHQL_MUTATION_SERVICE_PREFIX + "graphql.mutation.service";
 
 	/** Enables request tracing in a GraphQL Whiteboard */
 	public static final String TRACING_ENABLED = "osgi.graphql.tracing.enabled";

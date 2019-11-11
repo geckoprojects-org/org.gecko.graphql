@@ -31,6 +31,7 @@ Test-Cases: ${classes;CONCRETE;ANNOTATED;org.junit.runner.RunWith}
 	com.graphql-java,\
 	org.dataloader.java-dataloader
 
+
 javac.source: 1.8
 javac.target: 1.8
 
@@ -43,7 +44,8 @@ javac.target: 1.8
 -runrequires: \
 	bnd.identity;id='org.gecko.whiteboard.graphql.emf',\
 	bnd.identity;id='org.gecko.whiteboard.graphql.emf.test.impl',\
-	bnd.identity;id='org.gecko.whiteboard.graphql.emf.integration.test'
+	bnd.identity;id='org.gecko.whiteboard.graphql.emf.integration.test',\
+	bnd.identity;id='slf4j.simple'
 
 Bundle-Version: 1.0.0.SNAPSHOT
 Private-Package: org.gecko.whiteboard.graphql.emf.integration.test
@@ -60,7 +62,6 @@ Bundle-Vendor: Data In Motion Consulting GmbH
 -runvm: -ea
 -runee: JavaSE-1.8
 -runbundles: \
-	ch.qos.logback.core;version='[1.2.3,1.2.4)',\
 	com.fasterxml.jackson.core.jackson-core;version='[2.9.7,2.9.8)',\
 	com.fasterxml.jackson.core.jackson-databind;version='[2.9.7,2.9.8)',\
 	com.fasterxml.jackson.datatype.jackson-datatype-jdk8;version='[2.9.2,2.9.3)',\
@@ -103,18 +104,23 @@ Bundle-Vendor: Data In Motion Consulting GmbH
 	org.gecko.mongo.osgi.component;version='[2.1.3,2.1.4)',\
 	org.gecko.rsa.model;version='[1.0.2,1.0.3)',\
 	org.gecko.util.test;version='[1.0.0,1.0.1)',\
-	org.gecko.whiteboard.graphql.api;version=snapshot,\
-	org.gecko.whiteboard.graphql.emf;version=snapshot,\
-	org.gecko.whiteboard.graphql.emf.integration.test;version=snapshot,\
-	org.gecko.whiteboard.graphql.emf.test.api;version=snapshot,\
-	org.gecko.whiteboard.graphql.emf.test.impl;version=snapshot,\
-	org.gecko.whiteboard.graphql.emf.test.model;version=snapshot,\
-	org.gecko.whiteboard.graphql.impl;version=snapshot,\
 	org.mongodb.mongo-java-driver;version='[3.9.1,3.9.2)',\
 	org.yaml.snakeyaml;version='[1.23.0,1.23.1)',\
-	slf4j.simple;version='[1.7.25,1.7.26)',\
-	org.apache.felix.log;version='[1.2.0,1.2.1)'
+	org.apache.felix.log;version='[1.2.0,1.2.1)',\
+	org.gecko.whiteboard.graphql.api;version='[1.0.0,1.0.1)',\
+	org.gecko.whiteboard.graphql.emf;version='[1.0.0,1.0.1)',\
+	org.gecko.whiteboard.graphql.emf.integration.test;version='[1.0.0,1.0.1)',\
+	org.gecko.whiteboard.graphql.emf.test.api;version='[1.0.0,1.0.1)',\
+	org.gecko.whiteboard.graphql.emf.test.impl;version='[1.0.0,1.0.1)',\
+	org.gecko.whiteboard.graphql.emf.test.model;version='[1.0.0,1.0.1)',\
+	org.gecko.whiteboard.graphql.impl;version='[1.0.0,1.0.1)',\
+	org.osgi.util.converter;version='[1.0.1,1.0.2)',\
+	org.osgi.util.function;version='[1.1.0,1.1.1)',\
+	ch.qos.logback.core;version='[1.2.3,1.2.4)',\
+	slf4j.simple;version='[1.7.25,1.7.26)'
 	
 -runproperties: \
 	org.osgi.service.http.port=8181
 -runblacklist: bnd.identity;id='org.eclipse.osgi'
+
+-runtrace: true

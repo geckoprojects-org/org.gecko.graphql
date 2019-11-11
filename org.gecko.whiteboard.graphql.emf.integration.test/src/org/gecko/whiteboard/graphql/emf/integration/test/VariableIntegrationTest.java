@@ -76,7 +76,7 @@ public class VariableIntegrationTest extends AbstractOSGiTest{
 	
 		Dictionary<String, Object> properties = new Hashtable<>();
 		
-		properties.put(GeckoGraphQLConstants.GRAPHQL_WHITEBOARD_QUERY_SERVICE, "*");
+		properties.put(GeckoGraphQLConstants.GRAPHQL_QUERY_SERVICE_MARKER, "true");
 		
 		serviceChecker.stop();
 		serviceChecker.setModifyExpectationCount(1);
@@ -139,7 +139,7 @@ public class VariableIntegrationTest extends AbstractOSGiTest{
 		
 		Dictionary<String, Object> properties = new Hashtable<>();
 		
-		properties.put(GeckoGraphQLConstants.GRAPHQL_WHITEBOARD_QUERY_SERVICE, "*");
+		properties.put(GeckoGraphQLConstants.GRAPHQL_QUERY_SERVICE_MARKER, "true");
 		
 		serviceChecker.stop();
 		serviceChecker.setModifyExpectationCount(1);
@@ -203,7 +203,7 @@ public class VariableIntegrationTest extends AbstractOSGiTest{
 		
 		Dictionary<String, Object> properties = new Hashtable<>();
 		
-		properties.put(GeckoGraphQLConstants.GRAPHQL_WHITEBOARD_QUERY_SERVICE, "*");
+		properties.put(GeckoGraphQLConstants.GRAPHQL_QUERY_SERVICE_MARKER, "true");
 		
 		serviceChecker.stop();
 		serviceChecker.setModifyExpectationCount(1);
@@ -267,7 +267,7 @@ public class VariableIntegrationTest extends AbstractOSGiTest{
 		
 		Dictionary<String, Object> properties = new Hashtable<>();
 		
-		properties.put(GeckoGraphQLConstants.GRAPHQL_WHITEBOARD_QUERY_SERVICE, "*");
+		properties.put(GeckoGraphQLConstants.GRAPHQL_QUERY_SERVICE_MARKER, "true");
 		
 		serviceChecker.stop();
 		serviceChecker.setModifyExpectationCount(1);
@@ -323,13 +323,11 @@ public class VariableIntegrationTest extends AbstractOSGiTest{
 			public String testVariables(List<Product> prod) {
 				return "Size " + prod.size();
 			}
-			
-			
 		};
 		
 		Dictionary<String, Object> properties = new Hashtable<>();
 		
-		properties.put(GeckoGraphQLConstants.GRAPHQL_WHITEBOARD_QUERY_SERVICE, "*");
+		properties.put(GeckoGraphQLConstants.GRAPHQL_QUERY_SERVICE_MARKER, "true");
 		
 		serviceChecker.stop();
 		serviceChecker.setModifyExpectationCount(1);
@@ -410,7 +408,7 @@ public class VariableIntegrationTest extends AbstractOSGiTest{
 		
 		Dictionary<String, Object> properties = new Hashtable<>();
 		
-		properties.put(GeckoGraphQLConstants.GRAPHQL_WHITEBOARD_QUERY_SERVICE, "*");
+		properties.put(GeckoGraphQLConstants.GRAPHQL_QUERY_SERVICE_MARKER, "true");
 		
 		serviceChecker.stop();
 		serviceChecker.setModifyExpectationCount(1);

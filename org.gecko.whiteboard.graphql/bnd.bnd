@@ -5,8 +5,8 @@
 	com.graphql-java-kickstart.graphql-java-servlet,\
 	org.apache.felix.http.servlet-api,\
 	javax.websocket-api,\
-	slf4j.api,\
-	com.graphql-java
+	com.graphql-java,\
+	slf4j.api
 
 -testpath: \
 	${junit}

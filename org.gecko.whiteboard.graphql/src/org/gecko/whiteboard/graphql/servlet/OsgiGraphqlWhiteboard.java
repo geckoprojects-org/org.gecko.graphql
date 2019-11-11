@@ -14,8 +14,6 @@ package org.gecko.whiteboard.graphql.servlet;
 
 import static org.gecko.whiteboard.graphql.GeckoGraphQLConstants.DEFAULT_SERVLET_PATTERN;
 import static org.gecko.whiteboard.graphql.GeckoGraphQLConstants.GECKO_GRAPHQL_WHITEBOARD_COMPONENT_NAME;
-import static org.gecko.whiteboard.graphql.GeckoGraphQLConstants.GRAPHQL_WHITEBOARD_MUTATION_SERVICE;
-import static org.gecko.whiteboard.graphql.GeckoGraphQLConstants.GRAPHQL_WHITEBOARD_QUERY_SERVICE;
 import static org.gecko.whiteboard.graphql.GeckoGraphQLConstants.OSGI_GRAPHQL_CAPABILITY_NAME;
 
 import java.io.IOException;
@@ -192,7 +190,7 @@ public class OsgiGraphqlWhiteboard extends AbstractGraphQLHttpServlet implements
     public OsgiGraphqlWhiteboard(ComponentContext componentContext) throws InvalidSyntaxException {
     	bundleContext = componentContext.getBundleContext();
     	copyProperties(componentContext);
-    	serviceTracker = new ServiceTracker<Object, Object>(bundleContext, FrameworkUtil.createFilter("(|(" + GRAPHQL_WHITEBOARD_QUERY_SERVICE + "=*)(" + GRAPHQL_WHITEBOARD_MUTATION_SERVICE + "=*))"), this);
+    	serviceTracker = new ServiceTracker<Object, Object>(bundleContext, FrameworkUtil.createFilter("(|(" + GeckoGraphQLConstants.GRAPHQL_QUERY_SERVICE_MARKER + "=true)(" + GeckoGraphQLConstants.GRAPHQL_MUTATION_SERVICE_MARKER + "=*))"), this);
     	serviceTracker.open();
     	Object tracingEnabled = componentContext.getProperties().get(GeckoGraphQLConstants.TRACING_ENABLED);
     	if(tracingEnabled != null && Boolean.parseBoolean(tracingEnabled.toString())) {

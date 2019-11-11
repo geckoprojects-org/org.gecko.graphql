@@ -16,6 +16,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -32,8 +33,8 @@ import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.client.util.StringContentProvider;
-import org.gecko.util.test.AbstractOSGiTest;
-import org.gecko.util.test.ServiceChecker;
+import org.gecko.core.tests.AbstractOSGiTest;
+import org.gecko.core.tests.ServiceChecker;
 import org.gecko.whiteboard.graphql.GeckoGraphQLConstants;
 import org.gecko.whiteboard.graphql.annotation.GraphqlArgument;
 import org.junit.Test;
@@ -77,7 +78,7 @@ public class InvokationTests extends AbstractOSGiTest{
 		options.put(GeckoGraphQLConstants.TRACING_ENABLED, "true");
 		Configuration configuration = createConfigForCleanup(GeckoGraphQLConstants.GECKO_GRAPHQL_WHITEBOARD_COMPONENT_NAME, "?", options);
 		
-		org.gecko.util.test.ServiceChecker<Object> serviceChecker = createdCheckerTrackedForCleanUp("(id=my.graphql.servlet)");
+		ServiceChecker<Object> serviceChecker = createdCheckerTrackedForCleanUp("(id=my.graphql.servlet)");
 		serviceChecker.setCreateExpectationCount(1);
 		serviceChecker.setCreateTimeout(10);
 		serviceChecker.start();
@@ -107,7 +108,7 @@ public class InvokationTests extends AbstractOSGiTest{
 	
 		Dictionary<String, Object> properties = new Hashtable<>();
 		
-		properties.put(GeckoGraphQLConstants.GRAPHQL_WHITEBOARD_QUERY_SERVICE, "*");
+		properties.put(GeckoGraphQLConstants.GRAPHQL_QUERY_SERVICE_MARKER, "true");
 		
 		serviceChecker.stop();
 		serviceChecker.setModifyExpectationCount(1);
@@ -186,7 +187,7 @@ public class InvokationTests extends AbstractOSGiTest{
 		
 		Dictionary<String, Object> properties = new Hashtable<>();
 		
-		properties.put(GeckoGraphQLConstants.GRAPHQL_WHITEBOARD_QUERY_SERVICE, "*");
+		properties.put(GeckoGraphQLConstants.GRAPHQL_QUERY_SERVICE_MARKER, "true");
 		
 		serviceChecker.stop();
 		serviceChecker.setModifyExpectationCount(1);
@@ -253,7 +254,7 @@ public class InvokationTests extends AbstractOSGiTest{
 		
 		Dictionary<String, Object> properties = new Hashtable<>();
 		
-		properties.put(GeckoGraphQLConstants.GRAPHQL_WHITEBOARD_QUERY_SERVICE, "*");
+		properties.put(GeckoGraphQLConstants.GRAPHQL_QUERY_SERVICE_MARKER, "true");
 		
 		serviceChecker.stop();
 		serviceChecker.setModifyExpectationCount(1);
@@ -262,6 +263,14 @@ public class InvokationTests extends AbstractOSGiTest{
 		registerServiceForCleanup(testServiceImpl, properties, IntegerService.class);
 		
 		assertTrue(serviceChecker.awaitModification());
+		
+		CountDownLatch latch = new CountDownLatch(1);
+		try {
+			latch.await(200, TimeUnit.MILLISECONDS);
+		} catch (InterruptedException e) {
+			fail();
+		}
+		
 		Request post = client.POST("http://localhost:8181/graphql");
 		post.content(new StringContentProvider("{\n" + 
 				"  \"query\": \"query {\\n  IntegerService{\\n    testInteger\\n  }\\n}\\n\",\n" + 
@@ -317,7 +326,7 @@ public class InvokationTests extends AbstractOSGiTest{
 		
 		Dictionary<String, Object> properties = new Hashtable<>();
 		
-		properties.put(GeckoGraphQLConstants.GRAPHQL_WHITEBOARD_QUERY_SERVICE, "*");
+		properties.put(GeckoGraphQLConstants.GRAPHQL_QUERY_SERVICE_MARKER, "true");
 		
 		serviceChecker.stop();
 		serviceChecker.setModifyExpectationCount(1);
@@ -394,8 +403,12 @@ public class InvokationTests extends AbstractOSGiTest{
 	 */
 	@Override
 	public void doAfter() {
-		// TODO Auto-generated method stub
-		
+		CountDownLatch latch = new CountDownLatch(1);
+		try {
+			latch.await(200, TimeUnit.MILLISECONDS);
+		} catch (InterruptedException e) {
+			fail();
+		}
 	}
 
 }

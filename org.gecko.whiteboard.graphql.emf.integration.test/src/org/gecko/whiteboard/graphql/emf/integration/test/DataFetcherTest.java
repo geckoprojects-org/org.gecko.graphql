@@ -85,7 +85,7 @@ public class DataFetcherTest extends AbstractOSGiTest{
 		testObject.getSkus().add(sku1);
 		
 		Dictionary<String, Object> testProps = new Hashtable<>();
-		testProps.put(GeckoGraphQLConstants.GRAPHQL_WHITEBOARD_QUERY_SERVICE, "*");
+		testProps.put(GeckoGraphQLConstants.GRAPHQL_QUERY_SERVICE_MARKER, "true");
 		
 		Service testServiceImpl = new Service() {
 

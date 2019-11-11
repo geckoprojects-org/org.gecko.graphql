@@ -27,8 +27,8 @@ import org.gecko.whiteboard.graphql.emf.test.model.GraphqlTest.GraphQLTestFactor
 import org.gecko.whiteboard.graphql.emf.test.model.GraphqlTest.Product;
 
 @Component
-@GraphqlQueryService("org.gecko.whiteboard.graphql.emf.test.api.TestService")
-@GraphqlMutationService("org.gecko.whiteboard.graphql.emf.test.api.AnotherInterface")
+@GraphqlQueryService(TestService.class)
+@GraphqlMutationService(AnotherInterface.class)
 public class ExampleImpl implements TestService, AnotherInterface{
 
 	private List<Catalog> catalogs = new LinkedList<>();

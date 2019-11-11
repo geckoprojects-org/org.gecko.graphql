@@ -16,6 +16,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,8 +32,8 @@ import java.util.concurrent.TimeoutException;
 
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
-import org.gecko.util.test.AbstractOSGiTest;
-import org.gecko.util.test.ServiceChecker;
+import org.gecko.core.tests.AbstractOSGiTest;
+import org.gecko.core.tests.ServiceChecker;
 import org.gecko.whiteboard.graphql.GeckoGraphQLConstants;
 import org.gecko.whiteboard.graphql.GraphqlServiceRuntime;
 import org.gecko.whiteboard.graphql.annotation.GraphqlQueryService;
@@ -100,6 +101,8 @@ public class BasicTests extends AbstractOSGiTest{
 		assertTrue(serviceChecker2.awaitCreation());
 		assertEquals(1, serviceChecker2.getCreateExpectationCount());
 		
+		CountDownLatch latch = new CountDownLatch(1);
+		latch.await(100, TimeUnit.MILLISECONDS);
 		
 		ContentResponse get = client.GET("http://localhost:8181/graphql/schema.json");
 		assertEquals(200, get.getStatus());
@@ -128,8 +131,6 @@ public class BasicTests extends AbstractOSGiTest{
 		serviceChecker.setCreateTimeout(1);
 		serviceChecker.start();
 
-		assertFalse(serviceChecker.awaitCreation());
-		
 		// Create GraphQL Whiteboard.
 		Dictionary<String, Object> options = new Hashtable<>();
 		options.put("id", "my.graphql.servlet");
@@ -139,13 +140,16 @@ public class BasicTests extends AbstractOSGiTest{
 		
 		ServiceReference<GraphqlServiceRuntime> serviceReference = getServiceReference(GraphqlServiceRuntime.class);
 
+		CountDownLatch latch = new CountDownLatch(1);
+		latch.await(100, TimeUnit.MILLISECONDS);
+		
 		long changeCount = (long) serviceReference.getProperty(Constants.SERVICE_CHANGECOUNT);
 		
 		assertEquals(0L, changeCount);
 		
 		// register AddressBookServiceImpl as a AddressBookService with the GraphqlQueryService properties.
 		Dictionary<String, Object> addressBookProps = new Hashtable<String, Object>();
-		addressBookProps.put(GeckoGraphQLConstants.GRAPHQL_WHITEBOARD_QUERY_SERVICE, new String[]{"*"});
+		addressBookProps.put(GeckoGraphQLConstants.GRAPHQL_QUERY_SERVICE_MARKER, "true");
 		AddressBookServiceImpl addressBookServiceImpl = new AddressBookServiceImpl();
 		serviceChecker.stop();
 		serviceChecker.setModifyExpectationCount(1);
@@ -164,12 +168,18 @@ public class BasicTests extends AbstractOSGiTest{
 		assertNotNull(json);
 		assertTrue(hasAddressBookService(json));
 		
-		// unregister the service
-		unregisterService(addressBookServiceImpl);
 		// make sure the change count increments
 		serviceChecker.stop();
 		serviceChecker.setModifyExpectationCount(1);
 		serviceChecker.start();
+
+		// unregister the service
+		unregisterService(addressBookServiceImpl);
+		
+		assertTrue(serviceChecker.awaitModification());
+		
+		latch.await(100, TimeUnit.MILLISECONDS);
+		
 		changeCount = (long) serviceReference.getProperty(Constants.SERVICE_CHANGECOUNT);
 		assertEquals(2L, changeCount);
 		
@@ -203,6 +213,7 @@ public class BasicTests extends AbstractOSGiTest{
 		// register AddressBookServiceImpl as a AddressBookService under two interfaces
 		// properties.
 		Dictionary<String, Object> addressBookProps = new Hashtable<String, Object>();
+		addressBookProps.put(GeckoGraphQLConstants.GRAPHQL_QUERY_SERVICE_MARKER, "true");
 		addressBookProps.put(GeckoGraphQLConstants.GRAPHQL_WHITEBOARD_QUERY_SERVICE, new String[] { AddressBookService.class.getName() });
 		AddressBookServiceImpl addressBookServiceImpl = new AddressBookServiceImpl();
 		serviceChecker.stop();
@@ -210,7 +221,11 @@ public class BasicTests extends AbstractOSGiTest{
 		serviceChecker.start();
 		registerServiceForCleanup(addressBookServiceImpl, addressBookProps, AddressBookService.class);
 		assertTrue(serviceChecker.awaitModification());
+		serviceChecker.stop();
+		serviceChecker.setModifyExpectationCount(1);
+		serviceChecker.start();
 		Dictionary<String, Object> addressBookProps2 = new Hashtable<String, Object>();
+		addressBookProps2.put(GeckoGraphQLConstants.GRAPHQL_MUTATION_SERVICE_MARKER, "true");
 		addressBookProps2.put(GeckoGraphQLConstants.GRAPHQL_WHITEBOARD_MUTATION_SERVICE, new String[] { AnotherInterface.class.getName() });
 		serviceChecker.stop();
 		serviceChecker.setModifyExpectationCount(1);
@@ -329,6 +344,7 @@ public class BasicTests extends AbstractOSGiTest{
 		// register AddressBookServiceImpl as a AddressBookService under two interfaces
 		// properties.
 		Dictionary<String, Object> addressBookProps = new Hashtable<String, Object>();
+		addressBookProps.put(GeckoGraphQLConstants.GRAPHQL_QUERY_SERVICE_MARKER, "true");
 		addressBookProps.put(GeckoGraphQLConstants.GRAPHQL_WHITEBOARD_QUERY_SERVICE,
 				new String[] { AddressBookService.class.getName(), AnotherInterface.class.getName() });
 		addressBookProps.put(GeckoGraphQLConstants.GRAPHQL_QUERY_SERVICE_NAME, "TestServiceName");
@@ -389,6 +405,7 @@ public class BasicTests extends AbstractOSGiTest{
 		// register AddressBookServiceImpl as a AddressBookService under two interfaces
 		// properties.
 		Dictionary<String, Object> addressBookProps = new Hashtable<String, Object>();
+		addressBookProps.put(GeckoGraphQLConstants.GRAPHQL_QUERY_SERVICE_MARKER, "true");
 		addressBookProps.put(GeckoGraphQLConstants.GRAPHQL_WHITEBOARD_QUERY_SERVICE,
 				new String[] { AddressBookService.class.getName() });
 		AddressBookServiceImpl addressBookServiceImpl = new AddressBookServiceImpl();
@@ -398,6 +415,7 @@ public class BasicTests extends AbstractOSGiTest{
 		registerServiceForCleanup(addressBookServiceImpl, addressBookProps, AddressBookService.class);
 		assertTrue(serviceChecker.awaitModification());
 		Dictionary<String, Object> addressBookProps2 = new Hashtable<String, Object>();
+		addressBookProps2.put(GeckoGraphQLConstants.GRAPHQL_QUERY_SERVICE_MARKER, "true");
 		addressBookProps2.put(GeckoGraphQLConstants.GRAPHQL_WHITEBOARD_QUERY_SERVICE,
 				new String[] { AnotherInterface.class.getName() });
 		serviceChecker.stop();
@@ -450,8 +468,12 @@ public class BasicTests extends AbstractOSGiTest{
 	 */
 	@Override
 	public void doAfter() {
-		// TODO Auto-generated method stub
-		
+		CountDownLatch latch = new CountDownLatch(1);
+		try {
+			latch.await(200, TimeUnit.MILLISECONDS);
+		} catch (InterruptedException e) {
+			fail();
+		}
 	}
 
 }

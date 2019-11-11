@@ -28,12 +28,15 @@ import org.gecko.whiteboard.graphql.GeckoGraphQLConstants;
 import org.gecko.whiteboard.graphql.GraphqlSchemaTypeBuilder;
 import org.gecko.whiteboard.graphql.annotation.GraphqlArgument;
 import org.gecko.whiteboard.graphql.annotation.GraphqlDocumentation;
+import org.gecko.whiteboard.graphql.annotation.GraphqlQueryService;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceObjects;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.wiring.BundleWiring;
+import org.osgi.util.converter.Converter;
+import org.osgi.util.converter.Converters;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -154,6 +157,11 @@ public class ServiceSchemaBuilder {
 	 * @return
 	 */
 	private boolean isDeclaredQueryInterface(Class<?> curInterface, ServiceReference<Object> serviceReference) {
+
+		Object marker = serviceReference.getProperty(GeckoGraphQLConstants.GRAPHQL_QUERY_SERVICE_MARKER);
+		if(marker == null || !Boolean.valueOf(marker.toString())) {
+			return false;
+		}
 		return isDeclaredInterfaceForProperty(curInterface, serviceReference, GeckoGraphQLConstants.GRAPHQL_WHITEBOARD_QUERY_SERVICE);
 	}
 
@@ -164,6 +172,10 @@ public class ServiceSchemaBuilder {
 	 * @return
 	 */
 	private boolean isDeclaredMutationInterface(Class<?> curInterface, ServiceReference<Object> serviceReference) {
+		Object marker = serviceReference.getProperty(GeckoGraphQLConstants.GRAPHQL_MUTATION_SERVICE_MARKER);
+		if(marker == null || !Boolean.valueOf(marker.toString())) {
+			return false;
+		}
 		return isDeclaredInterfaceForProperty(curInterface, serviceReference, GeckoGraphQLConstants.GRAPHQL_WHITEBOARD_MUTATION_SERVICE);
 	}
 
@@ -174,10 +186,11 @@ public class ServiceSchemaBuilder {
 	 * @return
 	 */
 	private boolean isDeclaredInterfaceForProperty(Class<?> curInterface, ServiceReference<Object> serviceReference, String property) {
+		
 		String[] objectClasses = (String[]) serviceReference.getProperty(Constants.OBJECTCLASS);
 		Object queryInterfacesUntyped = serviceReference.getProperty(property);
 		if(queryInterfacesUntyped == null) {
-			return false;
+			return true;
 		}
 		String[] queryInterfaces = null;
 		if(queryInterfacesUntyped instanceof String[]) {
@@ -203,7 +216,7 @@ public class ServiceSchemaBuilder {
 	 * @return
 	 */
 	private boolean containsInterface(String[] interfaces, String intefaceName) {
-		if(interfaces[0].equals("*")) {
+		if(interfaces.length == 0) {
 			return true;
 		}
 		for(String name : interfaces) {
@@ -220,7 +233,7 @@ public class ServiceSchemaBuilder {
 	 */
 	private String getQueryName(ServiceReference<Object> serviceReference, Class<?> theInterface) {
 		String name = (String) serviceReference.getProperty(GeckoGraphQLConstants.GRAPHQL_QUERY_SERVICE_NAME);
-		if(name == null) {
+		if(name == null || name.isEmpty()) {
 			name = theInterface.getSimpleName(); 
 		}
 		return name;
@@ -233,7 +246,7 @@ public class ServiceSchemaBuilder {
 	private String getMutationName(ServiceReference<Object> serviceReference, Class<?> theInterface) {
 		String name = (String) serviceReference.getProperty(GeckoGraphQLConstants.GRAPHQL_MUTATION_SERVICE_NAME);
 		
-		if(name == null) {
+		if(name == null || name.isEmpty()) {
 			name = theInterface.getSimpleName(); 
 		}
 		return name;
@@ -375,7 +388,6 @@ public class ServiceSchemaBuilder {
 		GraphQLObjectType objectType = serviceBuilder.build();
 		typeMapping.put(name, objectType);
 		return objectType;
-	
 	}
 	
 	/**
