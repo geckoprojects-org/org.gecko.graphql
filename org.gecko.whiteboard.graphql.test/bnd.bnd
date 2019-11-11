@@ -12,6 +12,7 @@ Test-Cases: ${classes;CONCRETE;ANNOTATED;org.junit.runner.RunWith}
 -buildpath: \
 	${junit},\
 	${mockito},\
+	${geckotest},\
 	osgi.annotation;version=7.0,\
 	osgi.core;version=7.0,\
 	osgi.cmpn;version=7.0,\
