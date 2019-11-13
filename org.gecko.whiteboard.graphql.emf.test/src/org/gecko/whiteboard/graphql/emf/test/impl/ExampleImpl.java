@@ -69,7 +69,11 @@ public class ExampleImpl implements TestService, AnotherInterface{
 	 */
 	@Override
 	public CatalogEntry getEntryById(String id) {
-		return null;
+		Product prod = GraphQLTestFactory.eINSTANCE.createProduct();
+		prod.setActive(true);
+		prod.setId("test");
+		prod.setName("A name");
+		return prod;
 	}
 
 	/* 

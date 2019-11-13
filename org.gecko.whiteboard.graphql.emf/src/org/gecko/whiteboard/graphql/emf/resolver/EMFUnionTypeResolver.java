@@ -13,34 +13,28 @@ package org.gecko.whiteboard.graphql.emf.resolver;
 
 import java.util.Map;
 
+import org.eclipse.emf.ecore.EClassifier;
+import org.eclipse.emf.ecore.EObject;
+
 import graphql.TypeResolutionEnvironment;
 import graphql.schema.GraphQLObjectType;
-import graphql.schema.GraphQLType;
 import graphql.schema.TypeResolver;
 
 /**
- * 
- * @author jalbert
+ * A special resolver to resolve Union Types.
+ * @author Juergen Albert
  * @since 10 Nov 2018
  */
-public class EMFTypeResolver implements TypeResolver {
+public class EMFUnionTypeResolver implements TypeResolver {
 
 
-	private Map<String, GraphQLType> types;
-	private String sufix;
+	private Map<EClassifier, GraphQLObjectType> types;
 
 	/**
 	 * Creates a new instance.
 	 */
-	public EMFTypeResolver(Map<String, GraphQLType> types) {
-		this(types, "Impl");
-	}
-	/**
-	 * Creates a new instance.
-	 */
-	public EMFTypeResolver(Map<String, GraphQLType> types, String sufix) {
+	public EMFUnionTypeResolver(Map<EClassifier, GraphQLObjectType> types) {
 		this.types = types;
-		this.sufix = sufix;
 	}
 	
 	/* 
@@ -49,12 +43,7 @@ public class EMFTypeResolver implements TypeResolver {
 	 */
 	@Override
 	public GraphQLObjectType getType(TypeResolutionEnvironment env) {
-		String name = env.getFieldType().getName();
-		if(!name.endsWith(sufix)) {
-			name += sufix;
-		}
-		return (GraphQLObjectType) types.get(env.getFieldType().getName() + sufix);
+		return types.get(((EObject) env.getObject()).eClass());
 	}
 
 }
-

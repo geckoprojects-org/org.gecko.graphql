@@ -18,6 +18,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.eclipse.emf.common.util.Enumerator;
 import org.eclipse.emf.ecore.EAnnotation;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
@@ -42,6 +44,7 @@ import org.gecko.whiteboard.graphql.annotation.RequireGraphQLWhiteboard;
 import org.gecko.whiteboard.graphql.emf.datafetcher.EStructuralFeatureDataFetcher;
 import org.gecko.whiteboard.graphql.emf.datafetcher.PrototypeDataFetcher;
 import org.gecko.whiteboard.graphql.emf.resolver.EMFTypeResolver;
+import org.gecko.whiteboard.graphql.emf.resolver.EMFUnionTypeResolver;
 import org.gecko.whiteboard.graphql.emf.schema.GraphQLEMFFieldDefinition;
 import org.gecko.whiteboard.graphql.emf.schema.GraphQLEMFInputObjectField;
 import org.gecko.whiteboard.graphql.emf.schema.GraphQLEMFInputObjectType;
@@ -104,7 +107,7 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder{
 		} else {
 			return false;
 		}
-		return EObject.class.isAssignableFrom(clazz);
+		return Enumerator.class.isAssignableFrom(clazz) || EObject.class.isAssignableFrom(clazz);
 	}
 
 	@Override
@@ -140,7 +143,7 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder{
 
 	/**	 
 	 * 
-	 * @param eClassifier
+	 * @param eClassifier the {@link EClassifier} to build a {@link GraphQLType} for
 	 * @param typeMapping
 	 * @param inputType
 	 * @param annotations 
@@ -149,7 +152,7 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder{
 	private GraphQLType buildTypeForEClassifier(EClassifier eClassifier, Map<String, GraphQLType> typeMapping,
 			boolean inputType, List<Annotation> annotations) {
 		
-		String name = getName(eClassifier, inputType);
+		String name = getName(eClassifier, inputType, annotations);
 		
 		if(typeMapping.containsKey(name)) {
 			return typeMapping.get(name);
@@ -179,8 +182,14 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder{
 	 * @param inputType
 	 * @return
 	 */
-	private String getName(EClassifier eClassifier, boolean inputType) {
-		return inputType && !(eClassifier instanceof EEnum) ? eClassifier.getName() + "Input" : eClassifier.getName();
+	private String getName(EClassifier eClassifier, boolean inputType, List<Annotation> annotations) {
+		
+		if(inputType && !(eClassifier instanceof EEnum)) {
+			return eClassifier.getName() + "Input";
+		} else if(getUnionTypeAnnotation(annotations) != null) {
+			return eClassifier.getName() + "Union";
+		}
+		return  eClassifier.getName();
 	}
 
 	/**
@@ -191,7 +200,7 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder{
 	private GraphQLType buildEnum(EEnum eEnum, Map<String, GraphQLType> typeMapping) {
 		GraphQLEnumType.Builder typeBuilder = GraphQLEnumType.newEnum().name(eEnum.getName());
 		eEnum.getELiterals().stream().forEach(literal ->{
-			typeBuilder.value(literal.getName(), literal.getLiteral(), getDocumentation(eEnum));
+			typeBuilder.value(literal.getName(), literal.getInstance(), getDocumentation(eEnum));
 		});
 		GraphQLEnumType theEnum = typeBuilder.build();
 		typeMapping.put(eEnum.getName(), theEnum);
@@ -232,6 +241,7 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder{
 		}
 	}
 	
+	
 	/**
 	 * @param annotations
 	 * @return
@@ -256,7 +266,7 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder{
 	 */
 	private GraphQLType buildUnionTypeOutput(EClass eClass, List<EClass> upperTypeHierarchyForEClass,
 			Map<String, GraphQLType> typeMapping, List<Annotation> annotations) {
-		String unionName = eClass.getName() + "Union";
+		String unionName = getName(eClass, false, annotations);
 		if(typeMapping.containsKey(unionName)) {
 			return typeMapping.get(unionName);
 		}
@@ -267,16 +277,25 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder{
 		
 		unionType.name(unionName);
 
+		Map<EClassifier, GraphQLObjectType> resolverContent = new HashMap<>();
+		
 		upperTypeHierarchyForEClass.stream()
 			.filter(eC -> isMemberOfUnionType(eC, unionTypeAnnotation))
-			.map(eC -> buildInterfacesAndObject(eC, typeMapping, annotations))
+			.map(eC -> {
+				GraphQLInterfaceType interfaceType = buildInterfacesAndObject(eC, typeMapping, Collections.emptyList());
+				
+				resolverContent.put(eC, (GraphQLObjectType) typeMapping.get(interfaceType.getName() + "Impl"));
+				
+				return interfaceType;
+			})
 			.map(qlType -> GraphQLTypeReference.typeRef(qlType.getName() + "Impl"))
 			.forEach(unionType::possibleType);
-		GraphQLInterfaceType qlInterface = buildInterfacesAndObject(eClass, typeMapping, annotations);
+		GraphQLInterfaceType qlInterface = buildInterfacesAndObject(eClass, typeMapping, Collections.emptyList());
 		if(isMemberOfUnionType(eClass, unionTypeAnnotation)) {
+			resolverContent.put(eClass, (GraphQLObjectType) typeMapping.get(qlInterface.getName() + "Impl"));
 			unionType.possibleType(GraphQLTypeReference.typeRef(qlInterface.getName() + "Impl"));
 		}
-		unionType.typeResolver(new EMFTypeResolver(typeMapping, "Union"));
+		unionType.typeResolver(new EMFUnionTypeResolver(resolverContent));
 		GraphQLUnionType type = unionType.build();
 		
 		typeMapping.put(unionName, type);
@@ -414,7 +433,7 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder{
 	 * @return
 	 */
 	private GraphQLInputType buildInputObject(EClass eClass, Map<String, GraphQLType> typeMapping, List<Annotation> annotations) {
-		String name = getName(eClass, true);
+		String name = getName(eClass, true, annotations);
 		if(typeMapping.containsKey(name)) {
 			return (GraphQLInputType) typeMapping.get(name);
 		}
@@ -526,7 +545,7 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder{
 				.eFeature(eFeature)
 				.type((GraphQLInputType) type);
 		if(!eFeature.isMany()) {
-			builder = builder.defaultValue(eFeature.getDefaultValueLiteral());
+			builder = builder.defaultValue(eFeature.getDefaultValue());
 		}
 		return builder.build();
 	}
