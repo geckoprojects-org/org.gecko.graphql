@@ -333,14 +333,10 @@ public class EMFValuesResolver extends ValuesResolver {
 			Object fieldObject = object.get(inputTypeField.getName());
 			if(fieldObject != null) {
 				if(emfField.getEFeature().getEType() instanceof EEnum) {
-					EEnum eEnum = ((EEnum) emfField.getEFeature().getEType());
 					if(!emfField.getEFeature().isMany()) {
-						EEnumLiteral eEnumLiteral = eEnum.getEEnumLiteral(fieldObject.toString());
-						eObject.eSet(emfField.getEFeature(), eEnumLiteral.getInstance());
+						eObject.eSet(emfField.getEFeature(), fieldObject);
 					} else {
-						List<String> objectList = (List<String>) fieldObject;
-						List<Enumerator> collect = objectList.stream().map(s -> eEnum.getEEnumLiteral(s).getInstance()).collect(Collectors.toList());
-						eObject.eSet(emfField.getEFeature(), collect);
+						eObject.eSet(emfField.getEFeature(), fieldObject);
 					}
 				} else {
 					if(emfField.getEFeature() instanceof EAttribute) {
