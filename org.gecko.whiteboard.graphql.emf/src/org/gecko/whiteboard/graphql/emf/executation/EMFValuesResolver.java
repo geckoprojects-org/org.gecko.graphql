@@ -25,10 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.eclipse.emf.common.util.Enumerator;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EEnum;
-import org.eclipse.emf.ecore.EEnumLiteral;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.util.EcoreUtil;
@@ -333,11 +331,7 @@ public class EMFValuesResolver extends ValuesResolver {
 			Object fieldObject = object.get(inputTypeField.getName());
 			if(fieldObject != null) {
 				if(emfField.getEFeature().getEType() instanceof EEnum) {
-					if(!emfField.getEFeature().isMany()) {
-						eObject.eSet(emfField.getEFeature(), fieldObject);
-					} else {
-						eObject.eSet(emfField.getEFeature(), fieldObject);
-					}
+					eObject.eSet(emfField.getEFeature(), fieldObject);
 				} else {
 					if(emfField.getEFeature() instanceof EAttribute) {
 						eObject.eSet(emfField.getEFeature(), fieldObject);
@@ -430,15 +424,7 @@ public class EMFValuesResolver extends ValuesResolver {
                 	if(eObject != null) {
                 		GraphQLEMFInputObjectField emfField = (GraphQLEMFInputObjectField) inputTypeField;
                 		if(emfField.getEFeature().getEType() instanceof EEnum) {
-                			EEnum eEnum = ((EEnum) emfField.getEFeature().getEType());
-        					if(!emfField.getEFeature().isMany()) {
-        						EEnumLiteral eEnumLiteral = eEnum.getEEnumLiteral(fieldObject.toString());
-        						eObject.eSet(emfField.getEFeature(), eEnumLiteral.getInstance());
-        					} else {
-        						List<String> objectList = (List<String>) fieldObject;
-        						List<Enumerator> collect = objectList.stream().map(s -> eEnum.getEEnumLiteral(s).getInstance()).collect(Collectors.toList());
-        						eObject.eSet(emfField.getEFeature(), collect);
-        					}
+    						eObject.eSet(emfField.getEFeature(), fieldObject);
                 		} else {
                 			eObject.eSet(emfField.getEFeature(), fieldObject);
                 		}
