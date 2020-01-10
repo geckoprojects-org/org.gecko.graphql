@@ -67,7 +67,7 @@ public class VariableTests extends AbstractOSGiTest{
 	public void testVariableSubstitution() throws IOException, InvalidSyntaxException, InterruptedException, ExecutionException, TimeoutException {
 		Dictionary<String, Object> options = new Hashtable<>();
 		options.put("id", "my.graphql.servlet");
-		options.put(GeckoGraphQLConstants.TRACING_ENABLED, "true");
+		options.put(GeckoGraphQLConstants.SERVICE_PROPERTY_TRACING_ENABLED, "true");
 		Configuration configuration = createConfigForCleanup(GeckoGraphQLConstants.GECKO_GRAPHQL_WHITEBOARD_COMPONENT_NAME, "?", options);
 		
 		ServiceChecker<Object> serviceChecker = createdCheckerTrackedForCleanUp("(id=my.graphql.servlet)");

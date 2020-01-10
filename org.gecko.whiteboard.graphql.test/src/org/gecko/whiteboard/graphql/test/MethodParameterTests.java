@@ -69,7 +69,7 @@ public class MethodParameterTests extends AbstractOSGiTest{
 	public void testListParameters() throws IOException, InvalidSyntaxException, InterruptedException, ExecutionException, TimeoutException {
 		Dictionary<String, Object> options = new Hashtable<>();
 		options.put("id", "my.graphql.servlet");
-		options.put(GeckoGraphQLConstants.TRACING_ENABLED, "true");
+		options.put(GeckoGraphQLConstants.SERVICE_PROPERTY_TRACING_ENABLED, "true");
 		Configuration configuration = createConfigForCleanup(GeckoGraphQLConstants.GECKO_GRAPHQL_WHITEBOARD_COMPONENT_NAME, "?", options);
 		
 		ServiceChecker<Object> serviceChecker = createdCheckerTrackedForCleanUp("(id=my.graphql.servlet)");
@@ -132,7 +132,7 @@ public class MethodParameterTests extends AbstractOSGiTest{
 	public void testListReturn() throws IOException, InvalidSyntaxException, InterruptedException, ExecutionException, TimeoutException {
 		Dictionary<String, Object> options = new Hashtable<>();
 		options.put("id", "my.graphql.servlet");
-		options.put(GeckoGraphQLConstants.TRACING_ENABLED, "true");
+		options.put(GeckoGraphQLConstants.SERVICE_PROPERTY_TRACING_ENABLED, "true");
 		Configuration configuration = createConfigForCleanup(GeckoGraphQLConstants.GECKO_GRAPHQL_WHITEBOARD_COMPONENT_NAME, "?", options);
 		
 		ServiceChecker<Object> serviceChecker = createdCheckerTrackedForCleanUp("(id=my.graphql.servlet)");

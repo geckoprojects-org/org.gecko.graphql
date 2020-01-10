@@ -60,7 +60,10 @@ public class GeckoGraphQLConstants {
 	public static final String GRAPHQL_WHITEBOARD_MUTATION_SERVICE = GRAPHQL_MUTATION_SERVICE_PREFIX + "graphql.mutation.service";
 
 	/** Enables request tracing in a GraphQL Whiteboard */
-	public static final String TRACING_ENABLED = "osgi.graphql.tracing.enabled";
+	public static final String SERVICE_PROPERTY_TRACING_ENABLED = "osgi.graphql.tracing.enabled";
+
+	/** Prefix for additoinal response headers */
+	public static final String SERVICE_PROPERTY_RESPONSE_HEADER_PREFIX = "osgi.graphql.response.header.";
 	
 	
 }

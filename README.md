@@ -206,7 +206,7 @@ As a Servlet, the GraphQLWhiteboard can be targeted to a specific HTTP Whiteboar
 		"org.apache.felix.http.name": "my_http_whiteboard",
 		"org.apache.felix.http.runtime.init.id": "foo"
 	},
-	"GeckoGraphQLWhiteboard~login": 
+	"GeckoGraphQLWhiteboard~test": 
   	{
   		"osgi.http.whiteboard.target" : "(id=foo)",
   		"osgi.http.whiteboard.servlet.pattern" : "/special/graphql/*"
@@ -214,3 +214,16 @@ As a Servlet, the GraphQLWhiteboard can be targeted to a specific HTTP Whiteboar
 }
 ```
 
+### adding default response headers
+
+If you for example want to set some fixed Headers like ```Access-Control-Allow-Origin``` , you can add some special service properties. Every property that starts with the prefix ```osgi.graphql.response.header.``` will be set as a response header.
+
+```json
+{
+    ":configurator:resource-version": 1,
+	"GeckoGraphQLWhiteboard~test": 
+  	{
+  		"osgi.graphql.response.header.Access-Control-Allow-Origin" : "*"
+	}
+}
+```

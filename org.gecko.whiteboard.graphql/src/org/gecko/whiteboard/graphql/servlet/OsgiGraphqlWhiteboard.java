@@ -135,39 +135,18 @@ public class OsgiGraphqlWhiteboard extends AbstractGraphQLHttpServlet implements
 	private BundleContext bundleContext;
 	
 	private Hashtable<String, Object> properties = new Hashtable<>();
+	private Map<String, String> responseHeaders = new HashMap<>();
 
 	private AtomicLong changeCount = new AtomicLong(0);
 	private ServiceRegistration<GraphqlServiceRuntime> runtimeRegistration;
 	
     /* 
      * (non-Javadoc)
-     * @see graphql.servlet.AbstractGraphQLHttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
-    @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    	resp.setHeader("Access-Control-Allow-Origin", "*");
-    	super.doGet(req, resp);
-    }
-    
-    /* 
-     * (non-Javadoc)
-     * @see graphql.servlet.AbstractGraphQLHttpServlet#doPost(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
-     */
-    @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    	resp.setHeader("Access-Control-Allow-Origin", "*");
-    	super.doPost(req, resp);
-    }
-    
-    /* 
-     * (non-Javadoc)
      * @see javax.servlet.http.HttpServlet#service(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-    	resp.setHeader("Access-Control-Allow-Origin", "*");
-    	resp.setHeader("Access-Control-Allow-Headers", "*");
-    	resp.setHeader("Access-Control-Request-Method", "*");
+    	responseHeaders.forEach(resp::setHeader);
     	super.service(req, resp);
     }
     
@@ -192,7 +171,7 @@ public class OsgiGraphqlWhiteboard extends AbstractGraphQLHttpServlet implements
     	copyProperties(componentContext);
     	serviceTracker = new ServiceTracker<Object, Object>(bundleContext, FrameworkUtil.createFilter("(|(" + GeckoGraphQLConstants.GRAPHQL_QUERY_SERVICE_MARKER + "=true)(" + GeckoGraphQLConstants.GRAPHQL_MUTATION_SERVICE_MARKER + "=*))"), this);
     	serviceTracker.open();
-    	Object tracingEnabled = componentContext.getProperties().get(GeckoGraphQLConstants.TRACING_ENABLED);
+    	Object tracingEnabled = componentContext.getProperties().get(GeckoGraphQLConstants.SERVICE_PROPERTY_TRACING_ENABLED);
     	if(tracingEnabled != null && Boolean.parseBoolean(tracingEnabled.toString())) {
     		this.instrumentationProvider = new TracingInstrumentationProvider(); 
     	}
@@ -215,6 +194,7 @@ public class OsgiGraphqlWhiteboard extends AbstractGraphQLHttpServlet implements
     
     
     /**
+     * Copies the properties for the Runtime Registration and extracts the additional request and response headers 
 	 * @param componentContext
 	 */
 	private void copyProperties(ComponentContext componentContext) {
@@ -222,7 +202,15 @@ public class OsgiGraphqlWhiteboard extends AbstractGraphQLHttpServlet implements
 		Enumeration<String> keys = componentProperties.keys();
 		while(keys.hasMoreElements()) {
 			String key = keys.nextElement();
-			properties.put(key, componentProperties.get(key));
+			Object value = componentProperties.get(key);
+			if(key.startsWith(GeckoGraphQLConstants.SERVICE_PROPERTY_RESPONSE_HEADER_PREFIX)) {
+				String stringValue = "";
+				if(value != null) {
+					stringValue = value.toString();
+				}
+				responseHeaders.put(key.substring(GeckoGraphQLConstants.SERVICE_PROPERTY_RESPONSE_HEADER_PREFIX.length()), stringValue);
+			}
+			properties.put(key, value);
 		}
 		properties.put(Constants.SERVICE_CHANGECOUNT, changeCount.get());
 	}
@@ -301,6 +289,7 @@ public class OsgiGraphqlWhiteboard extends AbstractGraphQLHttpServlet implements
         }
         updateSchema();
     }
+	
     public void unbindProvider(GraphQLProvider provider) {
         if (provider instanceof GraphQLQueryProvider) {
             queryProviders.remove(provider);
