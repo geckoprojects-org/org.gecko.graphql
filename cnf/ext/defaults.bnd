@@ -35,7 +35,7 @@ mockito: org.mockito.mockito-core;version="[1.9,2)",\
 
 # String to substitute for "SNAPSHOT" in the bundle version's qualifier.
 #-snapshot: ${tstamp}
--releaserepo: Release, DIM_Nexus
+-releaserepo: Release, DIM_Release
 
 
 # Enable semantic versioning for all bundles
