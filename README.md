@@ -2,11 +2,43 @@
 
 The OSGi GraphQL Whiteboard is a simple mechanism to expose your OSGi services via GraphQL. Please note that this is no official OSGi Specification, even if the name suggests this.
 
+## Note
+
+Please note, that the project is mostly focused on the EMF support at the Moment. This means, the Servies returning simple Pojos have not gotten a lot of attention and might be buggy. Please create Bugs or pitch in, if you find issues around this topic.
+
+Complex Objects as incoming Data Types for mutations are currently only supported in the EMF Version. Without EMF incomming Objects will only be represented as Maps.  
+
 ## Requirements
 
 The whiteboard provides a Servlet, that handles all GraphQL in different manners for you. As such, it makes use of the  [OSGi Http Whiteboad](https://osgi.org/specification/osgi.cmpn/7.0.0/service.http.whiteboard.html) and thus has a strong requirement for such an implementation. Thus it also requires a R/ compatible OSGi implementation.
 
-The current implementation is based on GraphQL for Java in Version 11.
+The current implementation is based on GraphQL (Version 11) and Java 1.8 as a minimum.
+
+## Artifacts and Repositories
+
+### Maven
+
+Release Repository - https://devel.data-in-motion.biz/nexus/repository/dim-release/
+Snapshot Repository - https://devel.data-in-motion.biz/nexus/repository/dim-snapshot/
+
+Artifacts
+
+org.gecko.graphql:org.gecko.whiteboard.graphql.api:1.0.0
+org.gecko.graphql:org.gecko.whiteboard.graphql.impl:1.0.0
+
+For EMF Support:
+
+org.gecko.graphql:org.gecko.whiteboard.graphql.emf:1.0.0
+
+POM Repository:
+
+Coming soon.
+
+### OBR
+
+Release:  https://devel.data-in-motion.biz/repository/gecko/release/geckoGraphQL/
+Snapshot: https://devel.data-in-motion.biz/repository/gecko/snapshot/geckoGraphQL/
+
 
 ## The Concept
 
@@ -227,3 +259,73 @@ If you for example want to set some fixed Headers like ```Access-Control-Allow-O
 	}
 }
 ```
+
+## Union Types
+
+GraphQL does not support inheritance per say. It supports concepts close to it. Take the following example:
+
+```pseudocode
+class Person {
+	attribute id: String[1] {id};
+	attribute name : String[1];
+}
+
+class BusinessPerson extends Person {
+	attribute companyName: String:
+}
+```
+ 
+ In GraphQL inheritance is handled via Interfaces. This means we would have the following schema:
+ 
+ ```pseudocode
+interface Person {
+  id: ID
+  name: String
+}
+
+interface BusinessPerson {
+  id: ID
+  name: String
+  companyName: String
+}
+
+type BusinessPersonImpl implements Person & BusinessPerson {
+  id: ID
+  name: String
+  companyName: String
+}
+```
+
+As you can see, we don't have any relation between Person and BusinessPerson, except the duplicated attributes, but as the BusinessPersonImpl implements both it is kind of close.
+As GrphQL is more oriented towards JS, the following setup is different:
+
+ ```pseudocode
+
+type PersonService {
+  getAllPersons(): [Person]!
+}
+```
+
+In Java you can expect a List of Persons and you may find a few BusinessPersons in it as well and you can cast if necessary. In GraphQL this, does not help, because the schema says that the Method returns a Person and thus will only be read as such.    
+
+Union Type to the rescue. It allows to declare multiple return types for a schema attribute. The following code acts as an example:
+
+```java
+public interface GraphQLQueryInterface{
+	@GraphqlUnionType({Person.class, BusinessPerson.class})
+	List<Person> getAllPersons();
+}
+
+```
+
+## GraphQL and EMF
+
+In order to use GraphQL with EMF the following Artifacts are necessary:
+
+org.gecko.graphql:org.gecko.whiteboard.graphql.emf:1.0.0
+org.gecko.emf:org.gecko.emf.osgi.ecore:2.2.4
+org.gecko.emf:org.gecko.emf.osgi.model.info.api:1.0.0
+org.gecko.emf:org.gecko.emf.osgi.model.info.impl:1.0.0
+org.gecko.emf:org.gecko.emf.osgi.component:2.2.8
+
+With this dependencies The GraphQL Whiteboard will now be able to understand Services returning generated EMF Objects. The Schema is then generated using the registered EPackage. In Addition to that incoming Objects can now be complex EMF Objects as well.
