@@ -5,7 +5,7 @@
 		index=${.}/dim_nexus.maven;\
 		name='DIM_Nexus',\
 	aQute.bnd.repository.maven.provider.MavenBndRepository;\
-		releaseUrl=https://devel.data-in-motion.biz/nexus/repository/dim-releases/;\
-		snapshotUrl=https://devel.data-in-motion.biz/nexus/repository/dim-snapshots/;\
+		releaseUrl=https://devel.data-in-motion.biz/nexus/repository/dim-release/;\
+		snapshotUrl=https://devel.data-in-motion.biz/nexus/repository/dim-snapshot/;\
 		index=${.}/dim_release.maven;\
 		name='DIM_Release'
