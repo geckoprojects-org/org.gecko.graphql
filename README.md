@@ -4,9 +4,13 @@ The OSGi GraphQL Whiteboard is a simple mechanism to expose your OSGi services v
 
 ## Note
 
-Please note, that the project is mostly focused on the EMF support at the Moment. This means, the Servies returning simple Pojos have not gotten a lot of attention and might be buggy. Please create Bugs or pitch in, if you find issues around this topic.
+Please note, that the project is mostly focused on the EMF support at the Moment. This means, the Services returning simple Pojos have not gotten a lot of attention and might be buggy. Please create Bugs or pitch in, if you find issues around this topic.
 
-Complex Objects as incoming Data Types for mutations are currently only supported in the EMF Version. Without EMF incomming Objects will only be represented as Maps.  
+Complex Objects as incoming Data Types for mutations are currently only supported in the EMF Version. Without EMF incoming Objects will only be represented as Maps.  
+
+## Tutorial and Examples
+
+Two examples, one with simple Pojos and one with EMF, are provided. Look at `org.gecko.whiteboard.graphql.example` and `org.gecko.whiteboard.graphql.emf.example`, respectively. These should help you understand how to properly set your services in order to be picked up via GraphQL. All the steps are documented in [here](./org.gecko.whiteboard.graphql.example/README.md`)
 
 ## Requirements
 
@@ -61,12 +65,12 @@ class Address {
 class Person {
 	attribute id: String[1] {id};
 	attribute name : String[1];
-	property addres : Address[1]:
+	property address : Address[1];
 	property relatives : Person[*];
 }
 ```
 
-The data model  is highly recursive and can look in the end like a graph because an ``` Address ``` can have ```Person```s living there, that have in turn relatives that can have addresses with persons living there and so forth. 
+The data model is highly recursive and can look in the end like a graph because an ``` Address ``` can have ```Person```s living there, that have in turn relatives that can have addresses with persons living there and so forth. 
 
 In REST it could look as follows:
 
@@ -77,12 +81,12 @@ GET /address/{id}/person
 GET /address/{id}/person/{id}
 GET /person
 GET /person/{id}
-GET /person/{id}/relativs ?
-GET /person/{id}/relativs/{id} ? 
+GET /person/{id}/relatives ?
+GET /person/{id}/relatives/{id} ? 
 
 ```
 
-This only covers a couple of the possible use cases, that highly depend on what one intents to do with this model. Besides the question on how to structure your endpoint, one needs to decide on how many levels of the hierarchy one wants to return and how to handle this. If you build and API for a brought audience this is is often hard to answer and might have multiple Ansers.
+This only covers a couple of the possible use cases, that highly depend on what one intents to do with this model. Besides the question on how to structure your endpoint, one needs to decide on how many levels of the hierarchy one wants to return and how to handle this. If you build and API for a brought audience this is is often hard to answer and might have multiple answers.
 
 ### A solution with GraphQL
 
@@ -153,7 +157,7 @@ There a few noteworthy parallels here:
 
 ## The boring technical Details
 
-The Whiteboard gives you the ability register your Service with a property or two and have it picked up by the Whiteboard. The Service Interfaces are then parsed and a Schema is created out of it and the Classes it uses in its methods, if possible.
+The Whiteboard gives you the ability to register your Service with a property or two and have it picked up by the Whiteboard. The Service Interfaces are then parsed and a Schema is created out of it and the Classes it uses in its methods, if possible.
 
 ### Configuration
 
@@ -177,7 +181,7 @@ public interface AddressService {
 	public List<Address> getAddresses(String personId);
 }
 
-@Component(scope = PROTOTYPE) // The prototype is usefull here, because the Service can be called in parallel and every caller should get its exclusive instance
+@Component(scope = PROTOTYPE) // The prototype is useful here, because the Service can be called in parallel and every caller should get its exclusive instance
 @GraphqlQueryService // Marks all implemented Interfaces as part of the Query Schema
 public class AddressServiceImpl implements AddressQuery {
    	
@@ -274,9 +278,9 @@ class BusinessPerson extends Person {
 	attribute companyName: String:
 }
 ```
- 
+
  In GraphQL inheritance is handled via Interfaces. This means we would have the following schema:
- 
+
  ```pseudocode
 interface Person {
   id: ID
@@ -294,7 +298,7 @@ type BusinessPersonImpl implements Person & BusinessPerson {
   name: String
   companyName: String
 }
-```
+ ```
 
 As you can see, we don't have any relation between Person and BusinessPerson, except the duplicated attributes, but as the BusinessPersonImpl implements both it is kind of close.
 As GrphQL is more oriented towards JS, the following setup is different:
@@ -304,7 +308,7 @@ As GrphQL is more oriented towards JS, the following setup is different:
 type PersonService {
   getAllPersons(): [Person]!
 }
-```
+ ```
 
 In Java you can expect a List of Persons and you may find a few BusinessPersons in it as well and you can cast if necessary. In GraphQL this, does not help, because the schema says that the Method returns a Person and thus will only be read as such.    
 
