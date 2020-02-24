@@ -10,7 +10,7 @@ Complex Objects as incoming Data Types for mutations are currently only supporte
 
 ## Tutorial and Examples
 
-Two examples, one with simple Pojos and one with EMF, are provided. Look at `org.gecko.whiteboard.graphql.example` and `org.gecko.whiteboard.graphql.emf.example`, respectively. These should help you understand how to properly set your services in order to be picked up via GraphQL. All the steps are documented in [here](./org.gecko.whiteboard.graphql.example/README.md`)
+Two examples, one with simple Pojos and one with EMF, are provided. Look at `org.gecko.whiteboard.graphql.example` and `org.gecko.whiteboard.graphql.emf.example`, respectively. These should help you understand how to properly set your services in order to be picked up via GraphQL. All the steps are documented in [here](https://gitlab.com/gecko.io/geckographql/-/blob/develop/org.gecko.whiteboard.graphql.example/README.md)
 
 ## Requirements
 
