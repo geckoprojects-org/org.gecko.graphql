@@ -20,6 +20,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -136,6 +137,10 @@ public class ServiceSchemaBuilder {
 	 * @return
 	 */
 	private List<Class<?>> getDeclaredObjectClasses(ServiceReference<Object> serviceReference) {
+		if(serviceReference.getBundle() == null) {
+			LOG.warn("The Service is already unregistered. This service need to be ignored {}", serviceReference.getProperty(Constants.OBJECTCLASS));
+			return Collections.emptyList();
+		}
 		String[] objectClasses = (String[]) serviceReference.getProperty(Constants.OBJECTCLASS);
 		List<Class<?>> interfaces = new ArrayList<Class<?>>(objectClasses.length);
 		for(String objectClass : objectClasses) {
