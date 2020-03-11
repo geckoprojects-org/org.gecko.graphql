@@ -28,7 +28,7 @@ build:
 
 test:
   stage: test
-  script: ./gradlew clean build test testOSGi --info
+  script: ./gradlew clean build -x test testOSGi --info
   cache:
     key: "$CI_COMMIT_REF_NAME"
     policy: pull
