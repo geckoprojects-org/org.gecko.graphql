@@ -11,6 +11,7 @@
  */
 package org.gecko.whiteboard.graphql;
 
+import org.gecko.whiteboard.graphql.annotation.RequireGraphQLWhiteboard;
 import org.gecko.whiteboard.graphql.dto.RuntimeDTO;
 
 /**
@@ -25,6 +26,7 @@ import org.gecko.whiteboard.graphql.dto.RuntimeDTO;
  * @author Juergen Albert
  * @since 6 Nov 2018
  */
+@RequireGraphQLWhiteboard
 public interface GraphqlServiceRuntime {
 
 	/**

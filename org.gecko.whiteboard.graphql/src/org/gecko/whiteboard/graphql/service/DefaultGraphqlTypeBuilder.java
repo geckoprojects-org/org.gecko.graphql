@@ -11,17 +11,18 @@
  */
 package org.gecko.whiteboard.graphql.service;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 import org.gecko.whiteboard.graphql.GraphqlSchemaTypeBuilder;
 
 import graphql.Scalars;
 import graphql.schema.DataFetcher;
-import graphql.schema.GraphQLArgument;
 import graphql.schema.GraphQLEnumType;
 import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLInputObjectField;
@@ -36,7 +37,7 @@ import graphql.schema.PropertyDataFetcher;
 
 /**
  * 
- * @author jalbert
+ * @author Juergen Albert
  * @since 7 Nov 2018
  */
 public class DefaultGraphqlTypeBuilder implements GraphqlSchemaTypeBuilder {
@@ -46,20 +47,20 @@ public class DefaultGraphqlTypeBuilder implements GraphqlSchemaTypeBuilder {
 	 * @see org.gecko.whiteboard.graphql.GraphqlSchemaTypeBuilder#canHandle(java.lang.reflect.Type)
 	 */
 	@Override
-	public boolean canHandle(Type type) {
-		return true;
+	public boolean canHandle(Type type, boolean inputType) {
+		return !inputType;
 	}
 
 	/* 
 	 * (non-Javadoc)
-	 * @see org.gecko.whiteboard.graphql.GraphqlSchemaTypeBuilder#buildType(java.lang.reflect.Type, java.util.Map, boolean)
+	 * @see org.gecko.whiteboard.graphql.GraphqlSchemaTypeBuilder#buildType(java.lang.reflect.Type, java.util.Map, boolean, java.util.List)
 	 */
 	@Override
-	public GraphQLType buildType(Type type, Map<Object, GraphQLType> typeMapping, boolean inputType) {
+	public GraphQLType buildType(Type type, Map<String, GraphQLType> typeMapping, boolean inputType, List<Annotation> annotations) {
 		if(type instanceof ParameterizedType) {
 			ParameterizedType parameterizedType = (ParameterizedType) type;
 			Class<?> rawType = (Class<?>) parameterizedType.getRawType();
-			GraphQLType createType = buildType(parameterizedType.getActualTypeArguments()[0], typeMapping, inputType);
+			GraphQLType createType = buildType(parameterizedType.getActualTypeArguments()[0], typeMapping, inputType, annotations);
 			createType = createType instanceof GraphQLObjectType  ? GraphQLTypeReference.typeRef(((GraphQLObjectType) createType).getName()) : createType;
 			if(Collection.class.isAssignableFrom(rawType)) {
 				return GraphQLList.list(createType);
@@ -99,9 +100,9 @@ public class DefaultGraphqlTypeBuilder implements GraphqlSchemaTypeBuilder {
 			
 		}
 		if(!inputType) {
-			buildObjectType(typeMapping, inputType, clazzType, name);
+			buildObjectType(typeMapping, inputType, clazzType, name, annotations);
 		} else {
-			buildInputObjectType(typeMapping, inputType, clazzType, name);
+			buildInputObjectType(typeMapping, inputType, clazzType, name, annotations);
 		}
 		return GraphQLTypeReference.typeRef(name);
 	}
@@ -112,8 +113,8 @@ public class DefaultGraphqlTypeBuilder implements GraphqlSchemaTypeBuilder {
 	 * @param clazzType
 	 * @return
 	 */
-	private GraphQLObjectType buildObjectType(Map<Object, GraphQLType> typeMapping, boolean inputType,
-			Class<?> clazzType, String name) {
+	private GraphQLObjectType buildObjectType(Map<String, GraphQLType> typeMapping, boolean inputType,
+			Class<?> clazzType, String name, List<Annotation> annotations) {
 		graphql.schema.GraphQLObjectType.Builder typeBuilder = GraphQLObjectType.newObject()
 				.name(name);
 		GraphQLObjectType theType = typeBuilder.build();
@@ -122,7 +123,7 @@ public class DefaultGraphqlTypeBuilder implements GraphqlSchemaTypeBuilder {
 		for(Field f : clazzType.getDeclaredFields()) {
 			Type fieldType = f.getGenericType();
 			String fieldName = f.getName();
-			GraphQLType createType = buildType(fieldType, typeMapping, inputType);
+			GraphQLType createType = buildType(fieldType, typeMapping, inputType, annotations);
 			typeBuilder.field(createField(fieldName, new PropertyDataFetcher<String>(fieldName), createType));
 		}
 		GraphQLObjectType objectType = typeBuilder.build();
@@ -136,14 +137,14 @@ public class DefaultGraphqlTypeBuilder implements GraphqlSchemaTypeBuilder {
 	 * @param clazzType
 	 * @return
 	 */
-	private GraphQLInputObjectType buildInputObjectType(Map<Object, GraphQLType> typeMapping, boolean inputType,
-			Class<?> clazzType, String name) {
+	private GraphQLInputObjectType buildInputObjectType(Map<String, GraphQLType> typeMapping, boolean inputType,
+			Class<?> clazzType, String name, List<Annotation> annotations) {
 		graphql.schema.GraphQLInputObjectType.Builder typeBuilder = GraphQLInputObjectType.newInputObject()
 				.name(name);
 		for(Field f : clazzType.getDeclaredFields()) {
 			Class<?> fieldType = f.getType();
 			String fieldName = f.getName();
-			GraphQLType createType = buildType(fieldType, typeMapping, inputType);
+			GraphQLType createType = buildType(fieldType, typeMapping, inputType, annotations);
 			typeBuilder.field(createInputField(fieldName, new PropertyDataFetcher<String>(fieldName), createType));
 		}
 		GraphQLInputObjectType objectType = typeBuilder.build();
@@ -173,36 +174,7 @@ public class DefaultGraphqlTypeBuilder implements GraphqlSchemaTypeBuilder {
 				.type((GraphQLInputType) type);
 		return builder.build();
 	}
-
-	/**
-	 * @param string
-	 * @return
-	 */
-	private GraphQLFieldDefinition createReferenceField(String name, DataFetcher<?> datafetcher, GraphQLOutputType type) {
-		GraphQLFieldDefinition.Builder builder = GraphQLFieldDefinition.newFieldDefinition()
-				.name(name)
-				.dataFetcher(datafetcher)
-				.type(type);
-		return builder.build();
-	}
-
-	private GraphQLFieldDefinition createOperation(String name, Map<String, GraphQLInputType> parameters, DataFetcher<?> datafetcher, GraphQLOutputType type) {
-		GraphQLFieldDefinition.Builder builder = GraphQLFieldDefinition.newFieldDefinition()
-				.name(name)
-				.dataFetcher(datafetcher)
-				.type(type);
-		parameters.entrySet().stream().map(e -> this.createArgument(e.getKey(), e.getValue())).forEach(builder::argument);
-		return builder.build();
-	}
 	
-	private GraphQLArgument createArgument(String name, GraphQLInputType type) {
-		return GraphQLArgument.newArgument()
-				.name(name)
-				.type(type)
-				.build();
-		
-	}
-
 	static GraphQLType getGraphQLScalarType(Class<?> instanceClass) {
 		if (instanceClass == Integer.TYPE || instanceClass == Integer.class || instanceClass == Long.TYPE || instanceClass == Long.class) {
 			return Scalars.GraphQLInt;
@@ -215,6 +187,5 @@ public class DefaultGraphqlTypeBuilder implements GraphqlSchemaTypeBuilder {
 		}
 		return null;
 	}
-
 
 }

@@ -19,9 +19,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.gecko.whiteboard.graphql.annotation.GraphqlMutationService;
-import org.gecko.whiteboard.graphql.annotation.GraphqlMutationServiceName;
 import org.gecko.whiteboard.graphql.annotation.GraphqlQueryService;
-import org.gecko.whiteboard.graphql.annotation.GraphqlQueryServiceName;
 import org.gecko.whiteboard.graphql.test.dto.Address;
 import org.gecko.whiteboard.graphql.test.dto.Contact;
 import org.gecko.whiteboard.graphql.test.dto.ContactType;
@@ -37,12 +35,12 @@ import org.osgi.service.component.annotations.Component;
  * @author jalbert
  * @since 2 Nov 2018
  */
-@Component(
-		)
-@GraphqlQueryServiceName("TestQuery")
-@GraphqlMutationServiceName("TestMutation")
-@GraphqlQueryService(value ="org.gecko.whiteboard.graphql.test.service.api.AddressBookService")
-@GraphqlMutationService(value = "org.gecko.whiteboard.graphql.test.service.api.AnotherInterface")
+//@Component(
+//		)
+//@GraphqlQueryServiceName("TestQuery")
+//@GraphqlMutationServiceName("TestMutation")
+//@GraphqlQueryService(value ="org.gecko.whiteboard.graphql.test.service.api.AddressBookService")
+//@GraphqlMutationService(value = "org.gecko.whiteboard.graphql.test.service.api.AnotherInterface")
 public class AddressBookServiceImpl implements AddressBookService, AnotherInterface{
 
 	List<Address> addresses = new LinkedList<Address>();
@@ -117,7 +115,7 @@ public class AddressBookServiceImpl implements AddressBookService, AnotherInterf
 	 * @see org.gecko.whiteboard.graphql.test.service.api.AddressBookService#getAllAdresses()
 	 */
 	@Override
-	public List<Address> getAllAdresses() {
+	public List<Address> getAllAddresses() {
 		return addresses;
 	}
 
@@ -126,7 +124,7 @@ public class AddressBookServiceImpl implements AddressBookService, AnotherInterf
 	 * @see org.gecko.whiteboard.graphql.test.service.api.AddressBookService#getAdressesByStreet(java.lang.String)
 	 */
 	@Override
-	public List<Address> getAdressesByStreet(String name) {
+	public List<Address> getAddressesByStreet(String name) {
 		return addresses.stream().filter(a -> a.getStreet().toLowerCase().equals(name.toLowerCase())).collect(Collectors.toList());
 	}
 
@@ -135,7 +133,7 @@ public class AddressBookServiceImpl implements AddressBookService, AnotherInterf
 	 * @see org.gecko.whiteboard.graphql.test.service.api.AddressBookService#getAdressesByQuery(org.gecko.whiteboard.graphql.test.service.api.Query)
 	 */
 	@Override
-	public List<Address> getAdressesByQuery(MyQuery query) {
+	public List<Address> getAddressesByQuery(MyQuery query) {
 		// TODO Auto-generated method stub
 		return null;
 	}

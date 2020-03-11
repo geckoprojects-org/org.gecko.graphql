@@ -1,3 +1,6 @@
 Private-Package: \
 	org.gecko.whiteboard.graphql.service,\
-	org.gecko.whiteboard.graphql.servlet
+	org.gecko.whiteboard.graphql.servlet,\
+	org.gecko.whiteboard.graphql.instrumentation
+	
+DynamicImport-Package: *

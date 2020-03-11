@@ -19,13 +19,14 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import org.gecko.whiteboard.graphql.GeckoGraphQLConstants;
 import org.osgi.service.component.annotations.ComponentPropertyType;
 
 @Documented
 @Retention(CLASS)
 @Target({ TYPE, PACKAGE })
 /**
- * Acts as a Marker, so a GraphQLWhiteboard can pick up the Service. A name is required to be used in the GraphQL Schema.
+ * Acts as a Marker, so a GraphQLWhiteboard can pick up a Service as part of the Query Schema 
  * @author Juergen Albert
  * @since 5 Nov 2018
  */
@@ -36,7 +37,11 @@ public @interface GraphqlQueryService {
 	 * Prefix for the property name. This value is prepended to each property
 	 * name.
 	 */
- 	String PREFIX_ = "osgi.";
+ 	String PREFIX_ = GeckoGraphQLConstants.GRAPHQL_QUERY_SERVICE_PREFIX;
  	
-	public String[] value() default {"*"};
+ 	public boolean marker() default true; 
+ 	
+ 	public String name() default "";
+ 	
+	public Class<?>[] value() default {};
 }

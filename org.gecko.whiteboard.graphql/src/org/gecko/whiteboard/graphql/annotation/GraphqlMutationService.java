@@ -19,6 +19,7 @@ import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import org.gecko.whiteboard.graphql.GeckoGraphQLConstants;
 import org.osgi.service.component.annotations.ComponentPropertyType;
 
 @Documented
@@ -36,7 +37,11 @@ public @interface GraphqlMutationService {
 	 * Prefix for the property name. This value is prepended to each property
 	 * name.
 	 */
-	String PREFIX_ = "osgi.";
-
-	public String[] value() default {"*"};
+ 	String PREFIX_ = GeckoGraphQLConstants.GRAPHQL_MUTATION_SERVICE_PREFIX;
+ 	
+ 	public boolean marker() default true; 
+ 	
+ 	public String name() default "";
+ 	
+	public Class<?>[] value() default {};
 }

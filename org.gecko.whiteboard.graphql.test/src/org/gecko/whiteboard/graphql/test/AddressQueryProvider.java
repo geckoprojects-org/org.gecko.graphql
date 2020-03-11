@@ -76,7 +76,7 @@ public class AddressQueryProvider implements GraphQLTypesProvider, GraphQLQueryP
 
 			@Override
 			public List<Address> get(DataFetchingEnvironment environment) {
-				return ((AddressBookService) environment.getSource()).getAllAdresses();
+				return ((AddressBookService) environment.getSource()).getAllAddresses();
 			}
 		}, GraphQLList.list(GraphQLTypeReference.typeRef("Address"))));
 
@@ -86,7 +86,7 @@ public class AddressQueryProvider implements GraphQLTypesProvider, GraphQLQueryP
 			
 			@Override
 			public List<Address> get(DataFetchingEnvironment environment) {
-				return ((AddressBookService) environment.getSource()).getAdressesByStreet(environment.getArgument("street"));
+				return ((AddressBookService) environment.getSource()).getAddressesByStreet(environment.getArgument("street"));
 			}
 		}, GraphQLList.list(GraphQLTypeReference.typeRef("Address"))));
 

@@ -25,26 +25,44 @@ Bundle-Icon: icons/gecko.ico;size=64
 		
 -removeheaders: Bnd-LastModified, Tool, Created-By
 
-# Path to ...
-#cnf: ${workspace}/cnf
+# This is the version of JUnit that will be used at build time and runtime
+geckotest: org.gecko.core.test;version="[1.0.0,2.0.0)"
+# This is the version of JUnit that will be used at build time and runtime
 junit: org.apache.servicemix.bundles.junit;version="[4.11,5)"
+# This is the version of Mockito that will be used at build time and run time
+mockito: org.mockito.mockito-core;version="[1.9,2)",\
+  org.objenesis;version="[2.1,3)"
 
 # String to substitute for "SNAPSHOT" in the bundle version's qualifier.
--snapshot: ${tstamp}
+#-snapshot: ${tstamp}
+-releaserepo: Release, DIM_Release
+
 
 # Enable semantic versioning for all bundles
 -baselinerepo: Release
 -baseline: *
 
+-groupid: org.gecko.graphql
+-maven-release: pom
+
+# Provide a useful group-id
+#-groupid: org.gecko.runtime
+
 # Ignore files for baselining
-#-diffignore: *.xml
+-diffignore: *.xml,\
+    */pom.properties,\
+     OSGI-OPT/*
 
 # define global blacklist
 -runblacklist.default: osgi.identity;filter:='(osgi.identity=osgi.cmpn)'
 
--testpath: ${junit}
+-testpath: ${junit},\
+  ${mockito},\
+  ${geckotest}
 
 -resolve.effective: active
+#-resolve.effective: active;skip:="osgi.service"
+
 # > Java 8 runtime
 #modules: --add-opens=java.base/jdk.internal.loader=ALL-UNNAMED, --add-opens=java.base/java.lang=ALL-UNNAMED, --add-opens=java.base/java.net=ALL-UNNAMED, --add-opens=java.base/java.security=ALL-UNNAMED
 #-runvm.default: ${if;${isempty;${system_allow_fail;java --list-modules}};;${modules}}

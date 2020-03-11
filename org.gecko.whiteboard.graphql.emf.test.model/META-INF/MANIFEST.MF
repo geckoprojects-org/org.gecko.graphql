@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %pluginName
+Bundle-SymbolicName: org.gecko.whiteboard.graphql.emf.test.model;singleton:=true
+Automatic-Module-Name: org.gecko.whiteboard.graphql.emf.test.model
+Bundle-Version: 1.0.0.qualifier
+Bundle-ClassPath: .
+Bundle-Vendor: %providerName
+Bundle-Localization: plugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Export-Package: org.gecko.whiteboard.graphql.emf.test.model.GraphqlTest,
+ org.gecko.whiteboard.graphql.emf.test.model.GraphqlTest.impl,
+ org.gecko.whiteboard.graphql.emf.test.model.GraphqlTest.util
+Require-Bundle: org.eclipse.core.runtime;resolution:=optional;x-installation:=greedy,
+ org.eclipse.emf.ecore;visibility:=reexport,
+ org.eclipse.emf.ecore.xmi;visibility:=reexport
+Bundle-ActivationPolicy: lazy

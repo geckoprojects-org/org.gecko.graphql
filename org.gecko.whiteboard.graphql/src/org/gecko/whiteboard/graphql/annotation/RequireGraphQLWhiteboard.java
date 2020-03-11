@@ -20,9 +20,11 @@ import java.lang.annotation.Target;
 import org.osgi.annotation.bundle.Requirement;
 import org.osgi.namespace.implementation.ImplementationNamespace;
 
+import org.gecko.whiteboard.graphql.GeckoGraphQLConstants;
+
 
 /**
- * 
+ * If this Annotation is used, the GraphQLWhiteboard will be required 
  * @author jalbert
  * @since 2 Nov 2018
  */
@@ -31,7 +33,7 @@ import org.osgi.namespace.implementation.ImplementationNamespace;
 @Target({
 		ElementType.TYPE, ElementType.PACKAGE
 })
-@Requirement(namespace=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name="osgi.graphql", version="1.0.0")
+@Requirement(namespace=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name=GeckoGraphQLConstants.OSGI_GRAPHQL_CAPABILITY_NAME, version="1.0.0")
 public @interface RequireGraphQLWhiteboard {
 
 }

@@ -11,12 +11,16 @@
  */
 package org.gecko.whiteboard.graphql;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
+import org.gecko.whiteboard.graphql.schema.GeckoScalars;
 
 import graphql.Scalars;
 import graphql.schema.DataFetcher;
@@ -26,14 +30,14 @@ import graphql.schema.GraphQLType;
 
 /**
  * 
- * @author jalbert
+ * @author Juergen Albert
  * @since 7 Nov 2018
  */
 public interface GraphqlSchemaTypeBuilder {
 	
-	public boolean canHandle(Type type);
+	public boolean canHandle(Type type, boolean inputType);
 	
-	public GraphQLType buildType(Type type, Map<Object, GraphQLType> typeMapping, boolean inputType); 
+	public GraphQLType buildType(Type type, Map<String, GraphQLType> typeMapping, boolean inputType, List<Annotation> annotations); 
 	
 	public static GraphQLType getGraphQLScalarType(Class<?> instanceClass) {
 		if (instanceClass == Integer.TYPE || instanceClass == Integer.class) {
@@ -54,6 +58,8 @@ public interface GraphqlSchemaTypeBuilder {
 			return Scalars.GraphQLChar;
 		} else if (String.class == instanceClass) {
 			return Scalars.GraphQLString;
+		} else if (Date.class == instanceClass) {
+			return GeckoScalars.GraphQLDate;
 		}
 		return null;
 	}
@@ -76,4 +82,5 @@ public interface GraphqlSchemaTypeBuilder {
 		}
 		return result;
 	}
+
 }
