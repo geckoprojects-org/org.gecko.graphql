@@ -276,6 +276,11 @@ public class ServiceSchemaBuilder {
 		@Override
 		public Object get(DataFetchingEnvironment environment) throws Exception {
 			ServiceObjects<Object> serviceObjects = environment.getSource();
+			long start = 0;
+			if(LOG.isDebugEnabled()) {
+				start = System.currentTimeMillis();
+				LOG.debug("calling {} matching to service {} and method {}", environment.getField().getName(), serviceObjects.getServiceReference().getClass(), method.getName());
+			}
 			Object[] parameters = new Object[method.getParameterCount()];
 			for (int i = 0; i < method.getParameters().length; i++) {
 				Parameter parameter = method.getParameters()[i];
@@ -295,6 +300,9 @@ public class ServiceSchemaBuilder {
 				throw e;
 			} finally {
 				serviceObjects.ungetService(toInvokeOn);
+				if(LOG.isDebugEnabled()) {
+					LOG.debug("finished {}  after {} ms matching to service {} and method {}", environment.getField().getName(), System.currentTimeMillis() - start , serviceObjects.getServiceReference().getClass(), method.getName());
+				}
 			}
 		}
 	}

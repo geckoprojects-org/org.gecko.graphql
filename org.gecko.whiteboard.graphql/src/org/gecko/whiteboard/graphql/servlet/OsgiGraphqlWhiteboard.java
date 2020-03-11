@@ -427,6 +427,9 @@ public class OsgiGraphqlWhiteboard extends AbstractGraphQLHttpServlet implements
 	@Override
 	public Object addingService(ServiceReference<Object> reference) {
 		ServiceObjects<Object> serviceObjects = bundleContext.getServiceObjects(reference);
+		if(serviceObjects == null) {
+			return null;
+		}
 		serviceReferences.put(reference, serviceObjects);
 		updateSchema();
 		return bundleContext.getService(reference);
@@ -450,7 +453,6 @@ public class OsgiGraphqlWhiteboard extends AbstractGraphQLHttpServlet implements
 	public void removedService(ServiceReference<Object> reference, Object service) {
 		serviceReferences.remove(reference);
 		bundleContext.ungetService(reference);
-		
 		updateSchema();
 	}
 	
