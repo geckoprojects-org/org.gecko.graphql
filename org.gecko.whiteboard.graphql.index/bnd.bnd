@@ -1,0 +1,6 @@
+Bundle-Version: 1.0.0-SNAPSHOT
+
+-buildpath: \
+	org.gecko.whiteboard.graphql.api;version=latest,\
+	org.gecko.whiteboard.graphql.emf;version=latest,\
+	org.gecko.whiteboard.graphql.impl;version=latest
