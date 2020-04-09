@@ -12,13 +12,11 @@
 package org.gecko.whiteboard.graphql.emf.integration.test;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
@@ -43,10 +41,6 @@ import org.osgi.framework.InvalidSyntaxException;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-
-import graphql.schema.DataFetcher;
-import graphql.schema.DataFetchingEnvironment;
 
 @RunWith(MockitoJUnitRunner.class)
 public class EnumListTest extends AbstractOSGiTest{

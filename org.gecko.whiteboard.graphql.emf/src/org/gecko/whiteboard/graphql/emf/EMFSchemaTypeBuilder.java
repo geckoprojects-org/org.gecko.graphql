@@ -352,6 +352,9 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder{
 			if(!isQueryFeature(eAttribute)) {
 				continue;
 			}
+			if(eAttribute.isTransient()) {
+				continue;
+			}
 			EClassifier type = eAttribute.getEType();
 			String fieldName = eAttribute.getName();
 			String documentation = getDocumentation(eAttribute);
@@ -364,6 +367,9 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder{
 		
 		for(EReference reference : eClass.getEAllReferences()) {
 			if(!isQueryFeature(reference)) {
+				continue;
+			}
+			if(reference.isTransient()) {
 				continue;
 			}
 			EClass type = (EClass) reference.getEType();
