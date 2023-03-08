@@ -15,6 +15,7 @@ import static graphql.Assert.assertNotNull;
 import static graphql.util.FpKit.getByName;
 import static graphql.util.FpKit.valuesToList;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ import graphql.schema.GraphQLDirective;
 import graphql.schema.GraphQLInputObjectField;
 import graphql.schema.GraphQLInputObjectType;
 import graphql.schema.GraphQLInputType;
+import graphql.schema.InputValueWithState;
 
 /**
  * 
@@ -35,23 +37,28 @@ import graphql.schema.GraphQLInputType;
 public class GraphQLEMFInputObjectField extends GraphQLInputObjectField {
 
 	private EStructuralFeature eFeature;
-
-	/**
-	 * Creates a new instance.
-	 * @param name
-	 * @param description
-	 * @param type
-	 * @param defaultValue
-	 * @param directives
-	 * @param definition
-	 * @param eFeature
-	 */
-	public GraphQLEMFInputObjectField(String name, String description, GraphQLInputType type, Object defaultValue,
-			List<GraphQLDirective> directives, InputValueDefinition definition, EStructuralFeature eFeature) {
-		super(name, description, type, defaultValue, directives, definition);
+	
+	// @formatter:off
+	public GraphQLEMFInputObjectField(String name, 
+									  String description, 
+									  GraphQLInputType type, 
+									  Object defaultValue,
+									  List<GraphQLDirective> directives, 
+									  InputValueDefinition definition, 
+									  EStructuralFeature eFeature) {
+		super(name, 
+			  description, 
+			  type, 
+			  InputValueWithState.newInternalValue(defaultValue), 
+			  directives, 
+			  Collections.emptyList(), // List<GraphQLAppliedDirective>
+			  definition, 
+			  null); // String deprecationReason
+		
 		this.eFeature = eFeature;
 	}
-
+	// @formatter:off
+	
 	/**
 	 * Returns the eFeature.
 	 * @return the eFeature
@@ -72,7 +79,7 @@ public class GraphQLEMFInputObjectField extends GraphQLInputObjectField {
 	public static class Builder {
         private String name;
         private String description;
-        private Object defaultValue;
+        private InputValueWithState defaultValue = InputValueWithState.NOT_SET;
         private GraphQLInputType type;
         private InputValueDefinition definition;
         private EStructuralFeature eFeature;
@@ -84,7 +91,7 @@ public class GraphQLEMFInputObjectField extends GraphQLInputObjectField {
         public Builder(GraphQLInputObjectField existing) {
             this.name = existing.getName();
             this.description = existing.getDescription();
-            this.defaultValue = existing.getDefaultValue();
+            this.defaultValue = existing.getInputFieldDefaultValue();
             this.type = existing.getType();
             this.definition = existing.getDefinition();
             this.directives.putAll(getByName(existing.getDirectives(), GraphQLDirective::getName));
@@ -123,12 +130,12 @@ public class GraphQLEMFInputObjectField extends GraphQLInputObjectField {
         }
 
         public Builder defaultValue(Object defaultValue) {
-            this.defaultValue = defaultValue;
+            this.defaultValue = InputValueWithState.newInternalValue(defaultValue);
             return this;
         }
 
         public Builder withDirectives(GraphQLDirective... directives) {
-            assertNotNull(directives, "directives can't be null");
+            assertNotNull(directives, () -> "directives can't be null");
             for (GraphQLDirective directive : directives) {
                 withDirective(directive);
             }
@@ -136,7 +143,7 @@ public class GraphQLEMFInputObjectField extends GraphQLInputObjectField {
         }
 
         public Builder withDirective(GraphQLDirective directive) {
-            assertNotNull(directive, "directive can't be null");
+            assertNotNull(directive, () -> "directive can't be null");
             directives.put(directive.getName(), directive);
             return this;
         }

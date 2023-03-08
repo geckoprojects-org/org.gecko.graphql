@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.gecko.whiteboard.graphql.GeckoGraphQLConstants;
+import org.gecko.whiteboard.graphql.GeckoGraphQLUtil;
 import org.gecko.whiteboard.graphql.GraphqlSchemaTypeBuilder;
 import org.gecko.whiteboard.graphql.annotation.GraphqlArgument;
 import org.gecko.whiteboard.graphql.annotation.GraphqlDocumentation;
@@ -84,10 +85,10 @@ public class ServiceSchemaBuilder {
 		this.queryTypeBuilder = queryTypeBuilder;
 		this.mutationTypeBuilder = mutationTypeBuilder;
 		this.types = types;
-		types.forEach(type -> typeMapping.put(type.getName(), type));
+		types.forEach(type -> typeMapping.put(GeckoGraphQLUtil.INSTANCE.getTypeName(type), type));
 		schemaTypeBuilder.addAll(typeBuilder);
 	}
-
+	
 //	/**
 //	 * Builds the query and mutation Schema
 //	 */
@@ -211,8 +212,6 @@ public class ServiceSchemaBuilder {
 		}
 		return false;
 	}
-
-	
 	
 	/**
 	 * @param queryInterfaces
@@ -308,7 +307,6 @@ public class ServiceSchemaBuilder {
 	}
 
 	private static final class ParameterContext {
-		
 		private Parameter parameter;
 		private GraphQLInputType type;
 
@@ -482,8 +480,6 @@ public class ServiceSchemaBuilder {
 		GraphqlSchemaTypeBuilder builder = schemaTypeBuilder.stream().filter(stb -> stb.canHandle(type, inputType)).findFirst().orElseGet(() -> defaultBuilder);
 		return builder.buildType(type, typeMapping, inputType, annotations);
 	}
-	
-	
 	
 	private GraphQLFieldDefinition createOperation(String name, String methodDocumentation, Map<String, ParameterContext> parameters, DataFetcher<?> datafetcher, GraphQLOutputType type) {
 		GraphQLFieldDefinition.Builder builder = GraphQLFieldDefinition.newFieldDefinition()

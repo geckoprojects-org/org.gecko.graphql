@@ -1,13 +1,15 @@
 -buildpath: \
-	osgi.annotation;version=7.0,\
-	osgi.core;version=7.0,\
-	osgi.cmpn;version=7.0,\
+	osgi.annotation;version='7.0',\
+	osgi.core;version='7.0',\
+	osgi.cmpn;version='7.0',\
 	org.gecko.whiteboard.graphql;version=project,\
-	com.graphql-java,\
+	graphql-java,\
+	graphql-java-kickstart,\
 	org.gecko.emf.osgi.model.info.api,\
 	org.eclipse.emf.common,\
 	org.eclipse.emf.ecore,\
-	org.gecko.whiteboard.graphql.api
+	org.gecko.whiteboard.graphql.api,\
+	com.google.guava
 
 # This is the version of JUnit that will be used at build time and run time
 junit: org.apache.servicemix.bundles.junit;version="[4.11,5)"
@@ -19,7 +21,7 @@ Bundle-Version: 1.0.0.SNAPSHOT
 -privatepackage: \
 	org.gecko.whiteboard.graphql.emf,\
 	org.gecko.whiteboard.graphql.emf.datafetcher,\
-	org.gecko.whiteboard.graphql.emf.executation,\
-	org.gecko.whiteboard.graphql.emf.resolver
+	org.gecko.whiteboard.graphql.emf.resolver,\
+	org.gecko.whiteboard.graphql.emf.execution
 
 Export-Package: org.gecko.whiteboard.graphql.emf.schema

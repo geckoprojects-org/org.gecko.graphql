@@ -9,14 +9,14 @@
  * Contributors:
  *     Data In Motion - initial API and implementation
  */
-package org.gecko.whiteboard.graphql.emf.executation;
+package org.gecko.whiteboard.graphql.emf.execution;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ServiceScope;
 
 import graphql.execution.ExecutionStrategy;
 import graphql.execution.SubscriptionExecutionStrategy;
-import graphql.servlet.ExecutionStrategyProvider;
+import graphql.kickstart.execution.config.ExecutionStrategyProvider;
 
 /**
  * 
@@ -24,7 +24,7 @@ import graphql.servlet.ExecutionStrategyProvider;
  * @since 16 Nov 2018
  */
 @Component(scope = ServiceScope.PROTOTYPE)
-public class EMFExecutationStrategyProvider implements ExecutionStrategyProvider {
+public class EMFExecutionStrategyProvider implements ExecutionStrategyProvider {
 
     private final ExecutionStrategy queryExecutionStrategy = new EMFAsyncExecutionStrategy();
     private final ExecutionStrategy mutationExecutionStrategy = queryExecutionStrategy;

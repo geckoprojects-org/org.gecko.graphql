@@ -4,6 +4,7 @@ import static graphql.Assert.assertNotNull;
 import static graphql.util.FpKit.getByName;
 import static graphql.util.FpKit.valuesToList;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,11 +30,29 @@ public class GraphQLEMFFieldDefinition extends GraphQLFieldDefinition {
 
 	private EStructuralFeature feature;
 	
-    public GraphQLEMFFieldDefinition(String name, String description, GraphQLOutputType type, DataFetcherFactory<?> dataFetcherFactory, List<GraphQLArgument> arguments, String deprecationReason, List<GraphQLDirective> directives, FieldDefinition definition, EStructuralFeature feature) {
-       super(name, description, type, dataFetcherFactory, arguments, deprecationReason, directives, definition);
-       
-       this.feature = feature;
-    }
+	// @formatter:off
+	public GraphQLEMFFieldDefinition(String name, 
+									 String description, 
+									 GraphQLOutputType type,
+									 DataFetcherFactory<?> dataFetcherFactory, 
+									 List<GraphQLArgument> arguments, 
+									 String deprecationReason,
+									 List<GraphQLDirective> directives, 
+									 FieldDefinition definition, 
+									 EStructuralFeature feature) {
+		super(name,
+			  description,
+			  type,
+			  dataFetcherFactory,
+			  arguments,
+			  deprecationReason,
+			  directives,
+			  Collections.emptyList(), // List<GraphQLAppliedDirective>
+			  definition);
+
+		this.feature = feature;
+	}
+	// @formatter:off
 
     /**
 	 * Returns the feature.
@@ -67,19 +86,17 @@ public class GraphQLEMFFieldDefinition extends GraphQLFieldDefinition {
         public Builder() {
         }
 
-        @SuppressWarnings("unchecked")
         public Builder(GraphQLEMFFieldDefinition existing) {
             this.name = existing.getName();
             this.description = existing.getDescription();
             this.type = existing.getType();
-            this.dataFetcherFactory = DataFetcherFactories.useDataFetcher(existing.getDataFetcher());
+            this.dataFetcherFactory = DataFetcherFactories.useDataFetcher(new PropertyDataFetcher<>(name));
             this.deprecationReason = existing.getDeprecationReason();
             this.definition = existing.getDefinition();
             this.feature = existing.getFeature();
             this.arguments.putAll(getByName(existing.getArguments(), GraphQLArgument::getName));
             this.directives.putAll(getByName(existing.getDirectives(), GraphQLDirective::getName));
         }
-
 
         public Builder name(String name) {
             this.name = name;
@@ -126,7 +143,7 @@ public class GraphQLEMFFieldDefinition extends GraphQLFieldDefinition {
          * @return this builder
          */
         public Builder dataFetcher(DataFetcher<?> dataFetcher) {
-            assertNotNull(dataFetcher, "dataFetcher must be not null");
+            assertNotNull(dataFetcher, () -> "dataFetcher must be not null");
             this.dataFetcherFactory = DataFetcherFactories.useDataFetcher(dataFetcher);
             return this;
         }
@@ -139,7 +156,7 @@ public class GraphQLEMFFieldDefinition extends GraphQLFieldDefinition {
          * @return this builder
          */
         public Builder dataFetcherFactory(DataFetcherFactory<?> dataFetcherFactory) {
-            assertNotNull(dataFetcherFactory, "dataFetcherFactory must be not null");
+            assertNotNull(dataFetcherFactory, () -> "dataFetcherFactory must be not null");
             this.dataFetcherFactory = dataFetcherFactory;
             return this;
         }
@@ -157,7 +174,7 @@ public class GraphQLEMFFieldDefinition extends GraphQLFieldDefinition {
         }
 
         public Builder argument(GraphQLArgument argument) {
-            assertNotNull(argument, "argument can't be null");
+            assertNotNull(argument, () -> "argument can't be null");
             this.arguments.put(argument.getName(), argument);
             return this;
         }
@@ -195,7 +212,7 @@ public class GraphQLEMFFieldDefinition extends GraphQLFieldDefinition {
         }
 
         public Builder argument(List<GraphQLArgument> arguments) {
-            assertNotNull(arguments, "arguments can't be null");
+            assertNotNull(arguments, () -> "arguments can't be null");
             for (GraphQLArgument argument : arguments) {
                 argument(argument);
             }
@@ -219,7 +236,7 @@ public class GraphQLEMFFieldDefinition extends GraphQLFieldDefinition {
         }
 
         public Builder withDirectives(GraphQLDirective... directives) {
-            assertNotNull(directives, "directives can't be null");
+            assertNotNull(directives, () -> "directives can't be null");
             for (GraphQLDirective directive : directives) {
                 withDirective(directive);
             }
@@ -227,7 +244,7 @@ public class GraphQLEMFFieldDefinition extends GraphQLFieldDefinition {
         }
 
         public Builder withDirective(GraphQLDirective directive) {
-            assertNotNull(directive, "directive can't be null");
+            assertNotNull(directive, () -> "directive can't be null");
             directives.put(directive.getName(), directive);
             return this;
         }

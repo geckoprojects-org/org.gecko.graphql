@@ -13,6 +13,8 @@ package org.gecko.whiteboard.graphql.emf.resolver;
 
 import java.util.Map;
 
+import org.gecko.whiteboard.graphql.GeckoGraphQLUtil;
+
 import graphql.TypeResolutionEnvironment;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLType;
@@ -24,8 +26,6 @@ import graphql.schema.TypeResolver;
  * @since 10 Nov 2018
  */
 public class EMFTypeResolver implements TypeResolver {
-
-
 	private Map<String, GraphQLType> types;
 	private String sufix;
 
@@ -49,12 +49,11 @@ public class EMFTypeResolver implements TypeResolver {
 	 */
 	@Override
 	public GraphQLObjectType getType(TypeResolutionEnvironment env) {
-		String name = env.getFieldType().getName();
-		if(!name.endsWith(sufix)) {
+		String name = GeckoGraphQLUtil.INSTANCE.getTypeName(env.getFieldType());
+		if (!name.endsWith(sufix)) {
 			name += sufix;
 		}
-		return (GraphQLObjectType) types.get(env.getFieldType().getName() + sufix);
+		return (GraphQLObjectType) types.get(GeckoGraphQLUtil.INSTANCE.getTypeName(env.getFieldType()) + sufix);
 	}
-
 }
 

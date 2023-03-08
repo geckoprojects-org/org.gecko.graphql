@@ -38,6 +38,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EReference;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.gecko.emf.osgi.model.info.EMFModelInfo;
+import org.gecko.whiteboard.graphql.GeckoGraphQLUtil;
 import org.gecko.whiteboard.graphql.GraphqlSchemaTypeBuilder;
 import org.gecko.whiteboard.graphql.annotation.GraphqlUnionType;
 import org.gecko.whiteboard.graphql.annotation.RequireGraphQLWhiteboard;
@@ -78,8 +79,7 @@ import graphql.schema.GraphQLUnionType.Builder;
 @Component
 @RequireGraphQLWhiteboard
 @Capability(namespace=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name= OSGI_EMF_GRAPHQL_CAPABILITY_NAME, version="1.0.0")
-public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder{
-
+public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder {
 	
 	@Reference(cardinality=ReferenceCardinality.MANDATORY)
 	EMFModelInfo modelInfo;
@@ -134,7 +134,7 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder{
 		}
 		
 		GraphQLType qlType = buildTypeForEClassifier(eClassifier, typeMapping, inputType, annotations);
-		GraphQLTypeReference typeRef = GraphQLTypeReference.typeRef(qlType.getName());
+		GraphQLTypeReference typeRef = GraphQLTypeReference.typeRef(GeckoGraphQLUtil.INSTANCE.getTypeName(qlType));
 		if(isList) {
 			return GraphQLList.list(typeRef);
 		}
@@ -490,7 +490,7 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder{
 	 * @return
 	 */
 	private GraphQLType wrapReferenceProperties(EStructuralFeature eFeature, GraphQLType type) {
-		GraphQLType result = eFeature instanceof EReference ? GraphQLTypeReference.typeRef(type.getName()) : type; 
+		GraphQLType result = eFeature instanceof EReference ? GraphQLTypeReference.typeRef(GeckoGraphQLUtil.INSTANCE.getTypeName(type)) : type; 
 		result = wrap(eFeature.isRequired(), GraphQLNonNull::nonNull, result);
 		result = wrap(eFeature.isMany(), GraphQLList::list, result);
 		return result;
@@ -502,7 +502,7 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder{
 	 * @return
 	 */
 	private GraphQLType wrapReferenceInputAttribute(EAttribute eAttribute, GraphQLType type) {
-		GraphQLType result = eAttribute instanceof EReference ? GraphQLTypeReference.typeRef(type.getName()) : type; 
+		GraphQLType result = eAttribute instanceof EReference ? GraphQLTypeReference.typeRef(GeckoGraphQLUtil.INSTANCE.getTypeName(type)) : type; 
 		result = wrap(eAttribute.isRequired() && !eAttribute.isID(), GraphQLNonNull::nonNull, result);
 		result = wrap(eAttribute.isMany(), GraphQLList::list, result);
 		return result;
@@ -549,5 +549,4 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder{
 		}
 		return builder.build();
 	}
-
 }

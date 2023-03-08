@@ -1,18 +1,21 @@
 -buildpath: \
-	osgi.annotation;version=7.0,\
-	osgi.core;version=7.0,\
-	osgi.cmpn;version=7.0,\
-	com.graphql-java-kickstart.graphql-java-servlet,\
-	org.apache.felix.http.servlet-api,\
-	javax.websocket-api,\
-	com.graphql-java,\
+	osgi.annotation;version='7.0',\
+	osgi.core;version='7.0',\
+	osgi.cmpn;version='7.0',\
+	graphql-java,\
+	graphql-java-extended-scalars,\
+	graphql-java-kickstart,\
+	graphql-java-servlet,\
+	jakarta.servlet-api,\
+	jakarta.websocket-api,\
+	jakarta.websocket-client-api,\
 	slf4j.api
 
 -testpath: \
 	${junit}
 
-javac.source: 1.8
-javac.target: 1.8
+javac.source: 17
+javac.target: 17
 
 Bundle-Version: 1.0.0.SNAPSHOT
 

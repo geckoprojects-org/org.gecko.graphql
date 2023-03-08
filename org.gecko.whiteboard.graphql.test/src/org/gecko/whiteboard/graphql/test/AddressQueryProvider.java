@@ -27,6 +27,8 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 
 import graphql.Scalars;
+import graphql.kickstart.servlet.osgi.GraphQLQueryProvider;
+import graphql.kickstart.servlet.osgi.GraphQLTypesProvider;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 import graphql.schema.GraphQLArgument;
@@ -41,8 +43,6 @@ import graphql.schema.GraphQLType;
 import graphql.schema.GraphQLTypeReference;
 import graphql.schema.PropertyDataFetcher;
 import graphql.schema.StaticDataFetcher;
-import graphql.servlet.GraphQLQueryProvider;
-import graphql.servlet.GraphQLTypesProvider;
 
 /**
  * 

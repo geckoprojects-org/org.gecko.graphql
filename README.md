@@ -16,7 +16,7 @@ Two examples, one with simple Pojos and one with EMF, are provided. Look at `org
 
 The whiteboard provides a Servlet, that handles all GraphQL in different manners for you. As such, it makes use of the  [OSGi Http Whiteboad](https://osgi.org/specification/osgi.cmpn/7.0.0/service.http.whiteboard.html) and thus has a strong requirement for such an implementation. Thus it also requires a R/ compatible OSGi implementation.
 
-The current implementation is based on GraphQL (Version 11) and Java 1.8 as a minimum.
+The current implementation is based on GraphQL (Version `19.3.1` - patched version of officially released version `19.3`) and Java 17 as a minimum.
 
 ## Artifacts and Repositories
 
@@ -26,13 +26,12 @@ Release Repository - https://devel.data-in-motion.biz/nexus/repository/dim-relea
 Snapshot Repository - https://devel.data-in-motion.biz/nexus/repository/dim-snapshot/
 
 Artifacts
-
-org.gecko.graphql:org.gecko.whiteboard.graphql.api:1.0.0
-org.gecko.graphql:org.gecko.whiteboard.graphql.impl:1.0.0
+ - `org.gecko.graphql:org.gecko.whiteboard.graphql.api:1.0.0`
+ - `org.gecko.graphql:org.gecko.whiteboard.graphql.impl:1.0.0`
 
 For EMF Support:
+ - `org.gecko.graphql:org.gecko.whiteboard.graphql.emf:1.0.0`
 
-org.gecko.graphql:org.gecko.whiteboard.graphql.emf:1.0.0
 
 POM Repository:
 
@@ -326,10 +325,10 @@ public interface GraphQLQueryInterface{
 
 In order to use GraphQL with EMF the following Artifacts are necessary:
 
-org.gecko.graphql:org.gecko.whiteboard.graphql.emf:1.0.0
-org.gecko.emf:org.gecko.emf.osgi.ecore:2.2.4
-org.gecko.emf:org.gecko.emf.osgi.model.info.api:1.0.0
-org.gecko.emf:org.gecko.emf.osgi.model.info.impl:1.0.0
-org.gecko.emf:org.gecko.emf.osgi.component:2.2.8
+- `org.gecko.graphql:org.gecko.whiteboard.graphql.emf:1.0.0`
+- `org.gecko.emf:org.gecko.emf.osgi.ecore:2.2.4`
+- `org.gecko.emf:org.gecko.emf.osgi.model.info.api:1.0.0`
+- `org.gecko.emf:org.gecko.emf.osgi.model.info.impl:1.0.0`
+- `org.gecko.emf:org.gecko.emf.osgi.component:2.2.8`
 
 With this dependencies The GraphQL Whiteboard will now be able to understand Services returning generated EMF Objects. The Schema is then generated using the registered EPackage. In Addition to that incoming Objects can now be complex EMF Objects as well.
