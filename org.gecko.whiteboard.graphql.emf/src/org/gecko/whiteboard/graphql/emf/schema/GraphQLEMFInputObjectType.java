@@ -15,6 +15,7 @@ import static graphql.Assert.assertNotNull;
 import static graphql.util.FpKit.getByName;
 import static graphql.util.FpKit.valuesToList;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,20 +37,25 @@ import graphql.schema.GraphQLInputObjectType;
 public class GraphQLEMFInputObjectType extends GraphQLInputObjectType {
 
 	private EClass eClass = null;
+	
+	// @formatter:off
+	public GraphQLEMFInputObjectType(String name, 
+									 String description, 
+									 List<GraphQLInputObjectField> fields,
+									 List<GraphQLDirective> directives, 
+									 InputObjectTypeDefinition definition, 
+									 EClass eClass) {
+		super(name, 
+			  description, 
+			  fields, 
+			  directives, 
+			  Collections.emptyList(), // List<GraphQLAppliedDirective>
+			  definition, 
+			  Collections.emptyList()); // List<InputObjectTypeExtensionDefinition>
 
-	/**
-	 * Creates a new instance.
-	 * @param name
-	 * @param description
-	 * @param fields
-	 * @param directives
-	 * @param definition
-	 */
-	public GraphQLEMFInputObjectType(String name, String description, List<GraphQLInputObjectField> fields,
-			List<GraphQLDirective> directives, InputObjectTypeDefinition definition, EClass eClass) {
-		super(name, description, fields, directives, definition);
 		this.eClass = eClass;
 	}
+	// @formatter:off
 
 	/**
 	 * Returns the eClass.
@@ -111,7 +117,7 @@ public class GraphQLEMFInputObjectType extends GraphQLInputObjectType {
         }
 
         public Builder field(GraphQLInputObjectField field) {
-            assertNotNull(field, "field can't be null");
+            assertNotNull(field, () -> "field can't be null");
             fields.put(field.getName(), field);
             return this;
         }
@@ -130,7 +136,7 @@ public class GraphQLEMFInputObjectType extends GraphQLInputObjectType {
          * @return this
          */
         public Builder field(UnaryOperator<GraphQLInputObjectField.Builder> builderFunction) {
-            assertNotNull(builderFunction, "builderFunction should not be null");
+            assertNotNull(builderFunction, () -> "builderFunction should not be null");
             GraphQLInputObjectField.Builder builder = GraphQLInputObjectField.newInputObjectField();
             builder = builderFunction.apply(builder);
             return field(builder);
@@ -175,7 +181,7 @@ public class GraphQLEMFInputObjectType extends GraphQLInputObjectType {
         }
 
         public Builder withDirective(GraphQLDirective directive) {
-            assertNotNull(directive, "directive can't be null");
+            assertNotNull(directive, () -> "directive can't be null");
             directives.put(directive.getName(), directive);
             return this;
         }

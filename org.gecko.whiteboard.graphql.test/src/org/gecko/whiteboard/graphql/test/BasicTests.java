@@ -93,7 +93,7 @@ public class BasicTests extends AbstractOSGiTest{
 		assertEquals(1, serviceChecker.getCreateExpectationCount());
 		
 		// check if a Servlet is registered.
-		ServiceChecker<Object> serviceChecker2 = createdCheckerTrackedForCleanUp("(&(objectClass=javax.servlet.Servlet)(id=my.graphql.servlet))");
+		ServiceChecker<Object> serviceChecker2 = createdCheckerTrackedForCleanUp("(&(objectClass=jakarta.servlet.Servlet)(id=my.graphql.servlet))");
 		serviceChecker2.setCreateExpectationCount(1);
 		serviceChecker2.setCreateTimeout(10);
 		serviceChecker2.start();
@@ -182,8 +182,6 @@ public class BasicTests extends AbstractOSGiTest{
 		
 		changeCount = (long) serviceReference.getProperty(Constants.SERVICE_CHANGECOUNT);
 		assertEquals(2L, changeCount);
-		
-	
 	}
 
 	/**
@@ -245,7 +243,6 @@ public class BasicTests extends AbstractOSGiTest{
 		assertNotNull(json);
 		assertTrue(hasAddressBookService(json));
 		assertTrue(hasAnotherInterface(json));
-		
 	}
 	
 	// Helper method to parse JSON.
@@ -381,8 +378,6 @@ public class BasicTests extends AbstractOSGiTest{
 //		TypeDefinitionRegistry schema = schemaParser.parse(get.getContentAsString());
 
 	}
-	
-	
 	
 	/**
 	 * Define both interfaces as a single query, all methods of both interfaces

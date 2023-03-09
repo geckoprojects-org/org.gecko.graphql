@@ -1,7 +1,9 @@
 java: java
 javac: javac
-javac.source: 1.8
-javac.target: 1.8
+
+javac.source: 17
+javac.target: 17
+
 javac.debug:  on
 
 #Bundle-DocURL: https://yourdoc.de
@@ -44,9 +46,6 @@ mockito: org.mockito.mockito-core;version="[1.9,2)",\
 
 -groupid: org.gecko.graphql
 -maven-release: pom
-
-# Provide a useful group-id
-#-groupid: org.gecko.runtime
 
 # Ignore files for baselining
 -diffignore: *.xml,\

@@ -1,4 +1,4 @@
-package org.gecko.whiteboard.graphql.emf.executation;
+package org.gecko.whiteboard.graphql.emf.execution;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -9,10 +9,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import graphql.Assert;
-import graphql.ErrorType;
+import graphql.ErrorClassification;
 import graphql.GraphQLError;
 import graphql.execution.ExecutionStrategyParameters;
-import graphql.language.Field;
+import graphql.execution.MergedField;
 import graphql.language.SourceLocation;
 import graphql.schema.DataFetcher;
 
@@ -26,16 +26,20 @@ class AbsoluteGraphQLError implements GraphQLError {
 	private final List<SourceLocation> locations;
     private final List<Object> absolutePath;
     private final String message;
-    private final ErrorType errorType;
+    private final ErrorClassification errorClassification;
     private final Map<String, Object> extensions;
 
     AbsoluteGraphQLError(ExecutionStrategyParameters executionStrategyParameters, GraphQLError relativeError) {
     	Assert.assertNotNull(executionStrategyParameters);
     	Assert.assertNotNull(relativeError);
         this.absolutePath = createAbsolutePath(executionStrategyParameters, relativeError);
-        this.locations = createAbsoluteLocations(relativeError, executionStrategyParameters.getField());
+        
+        this.locations = createAbsoluteLocations(relativeError, executionStrategyParameters.getFields().getSubFieldsList());
         this.message = relativeError.getMessage();
-        this.errorType = relativeError.getErrorType();
+        
+        relativeError.getErrorType();
+        
+        this.errorClassification = relativeError.getErrorType();
         if (relativeError.getExtensions() != null) {
             this.extensions = new HashMap<>();
             this.extensions.putAll(relativeError.getExtensions());
@@ -53,12 +57,12 @@ class AbsoluteGraphQLError implements GraphQLError {
     public List<SourceLocation> getLocations() {
         return locations;
     }
-
+    
     @Override
-    public ErrorType getErrorType() {
-        return errorType;
-    }
-
+    public ErrorClassification getErrorType() {
+        return errorClassification;
+    }    
+    
     @Override
     public List<Object> getPath() {
         return absolutePath;
@@ -100,10 +104,10 @@ class AbsoluteGraphQLError implements GraphQLError {
      * @param fields fields on the current field.
      * @return List of locations from the root.
      */
-    private List<SourceLocation> createAbsoluteLocations(GraphQLError relativeError, List<Field> fields) {
+    private List<SourceLocation> createAbsoluteLocations(GraphQLError relativeError, List<MergedField> fields) {
         Optional<SourceLocation> baseLocation;
         if (!fields.isEmpty()) {
-            baseLocation = Optional.ofNullable(fields.get(0).getSourceLocation());
+        	baseLocation = Optional.ofNullable(fields.get(0).getSingleField().getSourceLocation());
         } else {
             baseLocation = Optional.empty();
         }
@@ -113,6 +117,7 @@ class AbsoluteGraphQLError implements GraphQLError {
             return baseLocation.map(Collections::singletonList).orElse(null);
         }
 
+        // @formatter:off
         return Optional.ofNullable(
                 relativeError.getLocations())
                 .map(locations -> locations.stream()
@@ -125,5 +130,6 @@ class AbsoluteGraphQLError implements GraphQLError {
                         .collect(Collectors.toList()))
                 .map(Collections::unmodifiableList)
                 .orElse(null);
+        // @formatter:off
     }
 }

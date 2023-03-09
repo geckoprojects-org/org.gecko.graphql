@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
+import org.gecko.whiteboard.graphql.GeckoGraphQLUtil;
 import org.gecko.whiteboard.graphql.GraphqlSchemaTypeBuilder;
 
 import graphql.Scalars;
@@ -80,9 +81,9 @@ public class DefaultGraphqlTypeBuilder implements GraphqlSchemaTypeBuilder {
 		}
 		
 		GraphQLType result = typeMapping.get(name);
-		if(result != null) {
-			if(result instanceof GraphQLObjectType) {
-				return GraphQLTypeReference.typeRef(result.getName());
+		if (result != null) {
+			if (result instanceof GraphQLObjectType) {
+				return GraphQLTypeReference.typeRef(GeckoGraphQLUtil.INSTANCE.getTypeName(result));
 			}
 			return result;
 		}

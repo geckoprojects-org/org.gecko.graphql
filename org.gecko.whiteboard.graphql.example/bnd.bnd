@@ -2,7 +2,7 @@
 	osgi.annotation;version=7.0,\
 	osgi.core;version=7.0,\
 	osgi.cmpn;version=7.0,\
-	com.graphql-java,\
+	graphql-java,\
 	org.gecko.whiteboard.graphql.api
 
 # This is the version of JUnit that will be used at build time and run time
