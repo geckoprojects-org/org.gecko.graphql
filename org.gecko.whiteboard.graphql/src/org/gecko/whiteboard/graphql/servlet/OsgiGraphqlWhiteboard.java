@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.gecko.whiteboard.graphql.GeckoGraphQLConstants;
+import org.gecko.whiteboard.graphql.GeckoGraphQLValueConverter;
 import org.gecko.whiteboard.graphql.GraphqlSchemaTypeBuilder;
 import org.gecko.whiteboard.graphql.GraphqlServiceRuntime;
 import org.gecko.whiteboard.graphql.dto.RuntimeDTO;
@@ -114,7 +115,7 @@ public class OsgiGraphqlWhiteboard extends AbstractGraphQLHttpServlet
 
 	@Reference(service = LoggerFactory.class)
 	private Logger logger;
-
+	
 	@Activate
 	public void activate(ComponentContext componentContext) throws InvalidSyntaxException {
 		bundleContext = componentContext.getBundleContext();
@@ -168,17 +169,28 @@ public class OsgiGraphqlWhiteboard extends AbstractGraphQLHttpServlet
 				serviceReferences);
 
 		if (!copiedServiceMap.isEmpty()) {
-			ServiceSchemaBuilder sb = new ServiceSchemaBuilder(schemaBuilder.getQueryTypeBuilder(),
-					schemaBuilder.getMutationTypeBuilder(), schemaBuilder.buildTypes(), typeBuilder);
+			// @formatter:off
+			ServiceSchemaBuilder sb = new ServiceSchemaBuilder(
+					schemaBuilder.getQueryTypeBuilder(),
+					schemaBuilder.getMutationTypeBuilder(), 
+					schemaBuilder.buildTypes(), 
+					typeBuilder, 
+					schemaBuilder.valueConverters());
+			// @formatter:on
 			copiedServiceMap.forEach(sb::build);
 		}
+		
 		try {
 			schemaBuilder.updateSchema();
 
 			updateRuntime();
-			logger.info("Schema generation sucessfull");
+			
+			// FIXME: this method is called from both #bindGraphqlSechemaTypeBuilder and #bindValueConverter BEFORE logger reference is injected, resulting in NullPointerException
+			if (logger != null)
+				logger.info("Schema generation sucessfull");
 		} catch (AssertException e) {
-			logger.warn("The current Configuration is invalid: " + e.getMessage());
+			if (logger != null)
+				logger.warn("The current Configuration is invalid: " + e.getMessage());
 		}
 	}
 
@@ -188,7 +200,11 @@ public class OsgiGraphqlWhiteboard extends AbstractGraphQLHttpServlet
 	 */
 	private void updateRuntime() {
 		if (runtimeRegistration == null) {
-			runtimeRegistration = bundleContext.registerService(GraphqlServiceRuntime.class, this, properties);
+
+			// FIXME: 'bundleContext' may be null, since '#activate' method is called AFTER '#bind' methods
+			if (bundleContext != null) {
+				runtimeRegistration = bundleContext.registerService(GraphqlServiceRuntime.class, this, properties);
+			}
 		} else {
 			properties.put(Constants.SERVICE_CHANGECOUNT, changeCount.incrementAndGet());
 			runtimeRegistration.setProperties(properties);
@@ -377,6 +393,17 @@ public class OsgiGraphqlWhiteboard extends AbstractGraphQLHttpServlet
 
 	public void unbindGraphqlSechemaTypeBuilder(GraphqlSchemaTypeBuilder typeBuilder) {
 		this.typeBuilder.remove(typeBuilder);
+		updateSchema();
+	}
+
+	@Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
+	public void bindValueConverter(GeckoGraphQLValueConverter valueConverter) {
+		schemaBuilder.add(valueConverter);
+		updateSchema();
+	}
+
+	public void unbindValueConverter(GeckoGraphQLValueConverter valueConverter) {
+		schemaBuilder.remove(valueConverter);
 		updateSchema();
 	}
 

@@ -29,6 +29,7 @@ import java.util.Set;
 
 import org.gecko.whiteboard.graphql.GeckoGraphQLConstants;
 import org.gecko.whiteboard.graphql.GeckoGraphQLUtil;
+import org.gecko.whiteboard.graphql.GeckoGraphQLValueConverter;
 import org.gecko.whiteboard.graphql.GraphqlSchemaTypeBuilder;
 import org.gecko.whiteboard.graphql.annotation.GraphqlArgument;
 import org.gecko.whiteboard.graphql.annotation.GraphqlDocumentation;
@@ -49,7 +50,6 @@ import graphql.schema.GraphQLInputType;
 import graphql.schema.GraphQLList;
 import graphql.schema.GraphQLNonNull;
 import graphql.schema.GraphQLObjectType;
-import graphql.schema.GraphQLObjectType.Builder;
 import graphql.schema.GraphQLOutputType;
 import graphql.schema.GraphQLType;
 import graphql.schema.StaticDataFetcher;
@@ -60,10 +60,10 @@ import graphql.schema.StaticDataFetcher;
  * @since 2 Nov 2018
  */
 public class ServiceSchemaBuilder {
-
-	private final Builder queryTypeBuilder;
-	private final Builder mutationTypeBuilder;
+	private final GraphQLObjectType.Builder queryTypeBuilder;
+	private final GraphQLObjectType.Builder mutationTypeBuilder;
 	private final Set<GraphQLType> types;
+	private final List<GeckoGraphQLValueConverter> valueConverters;
 	
 	private final Map<String, GraphQLType> typeMapping = new HashMap<String, GraphQLType>();
 	private final List<GraphqlSchemaTypeBuilder> schemaTypeBuilder = new LinkedList<>();
@@ -73,21 +73,19 @@ public class ServiceSchemaBuilder {
 	
 	private BundleContext ctx = FrameworkUtil.getBundle(getClass()).getBundleContext();
 	
-	/**
-	 * Creates a new instance.
-	 * @param queryTypeBuilder
-	 * @param mutationTypeBuilder 
-	 * @param types
-	 * @param typeBuilder 
-	 */
-	public ServiceSchemaBuilder(Builder queryTypeBuilder,
-			Builder mutationTypeBuilder, Set<GraphQLType> types, List<GraphqlSchemaTypeBuilder> typeBuilder) {
+	public ServiceSchemaBuilder(
+			GraphQLObjectType.Builder queryTypeBuilder,
+			GraphQLObjectType.Builder mutationTypeBuilder, 
+			Set<GraphQLType> types, 
+			List<GraphqlSchemaTypeBuilder> typeBuilder, 
+			List<GeckoGraphQLValueConverter> valueConverters) {
 		this.queryTypeBuilder = queryTypeBuilder;
 		this.mutationTypeBuilder = mutationTypeBuilder;
 		this.types = types;
+		this.valueConverters = valueConverters;
 		types.forEach(type -> typeMapping.put(GeckoGraphQLUtil.INSTANCE.getTypeName(type), type));
 		schemaTypeBuilder.addAll(typeBuilder);
-	}
+	}	
 	
 //	/**
 //	 * Builds the query and mutation Schema
@@ -272,23 +270,72 @@ public class ServiceSchemaBuilder {
 			this.method = method;
 		}
 
+		@SuppressWarnings("unchecked")
 		@Override
 		public Object get(DataFetchingEnvironment environment) throws Exception {
 			ServiceObjects<Object> serviceObjects = environment.getSource();
 			long start = 0;
 			if(LOG.isDebugEnabled()) {
 				start = System.currentTimeMillis();
-				LOG.debug("calling {} matching to service {} and method {}", environment.getField().getName(), serviceObjects.getServiceReference().getClass(), method.getName());
+				LOG.debug("calling {} matching to service {} and method {}", 
+						environment.getField().getName(), 
+						serviceObjects.getServiceReference().getClass(), 
+						method.getName());
 			}
+			
+			Parameter[] methodParameters = method.getParameters();
+			
+			List<GraphQLArgument> arguments = environment.getFieldDefinition().getArguments();
+
 			Object[] parameters = new Object[method.getParameterCount()];
-			for (int i = 0; i < method.getParameters().length; i++) {
-				Parameter parameter = method.getParameters()[i];
-				if(parameter.getType().equals(DataFetchingEnvironment.class)) {
+
+			for (int i = 0; i < methodParameters.length; i++) {
+
+				Parameter parameter = methodParameters[i];
+
+				if (parameter.getType().equals(DataFetchingEnvironment.class)) {
+
 					parameters[i] = environment;
+
 				} else {
-					parameters[i] = environment.getArguments().get(getParameterName(parameter));
+
+					String parameterName = getParameterName(parameter);
+
+					Object parameterValue = environment.getArguments().get(parameterName);
+
+					if (parameter.getType().isInstance(parameterValue)) {
+
+						parameters[i] = parameterValue;
+
+					} else {
+
+						if ((valueConverters != null && !valueConverters.isEmpty())
+								&& (parameterValue instanceof Map)) {
+							// @formatter:off
+							GraphQLArgument graphqlArgument = arguments.stream()
+									.filter(a -> a.getName().equalsIgnoreCase(parameterName))
+									.findFirst()
+									.orElse(null);
+							// @formatter:on
+
+							if (graphqlArgument != null) {
+
+								// @formatter:off
+								GeckoGraphQLValueConverter graphqlValueConverter = valueConverters.stream()
+										.filter(vc -> vc.canHandle( graphqlArgument.getType(), parameter.getType() ))
+										.findFirst().orElse(null);
+								// @formatter:on
+
+								if (graphqlValueConverter != null) {
+									parameters[i] = graphqlValueConverter.convert(graphqlArgument.getType(),
+											parameter.getType(), (Map<String, Object>) parameterValue);
+								}
+							}
+						}
+					}
 				}
 			}
+			
 			Object toInvokeOn = serviceObjects.getService();
 			try {
 				Object result = method.invoke(toInvokeOn, parameters);
@@ -300,12 +347,16 @@ public class ServiceSchemaBuilder {
 			} finally {
 				serviceObjects.ungetService(toInvokeOn);
 				if(LOG.isDebugEnabled()) {
-					LOG.debug("finished {}  after {} ms matching to service {} and method {}", environment.getField().getName(), System.currentTimeMillis() - start , serviceObjects.getServiceReference().getClass(), method.getName());
+					LOG.debug("finished {}  after {} ms matching to service {} and method {}", 
+							environment.getField().getName(), 
+							System.currentTimeMillis() - start , 
+							serviceObjects.getServiceReference().getClass(), 
+							method.getName());
 				}
 			}
 		}
 	}
-
+	
 	private static final class ParameterContext {
 		private Parameter parameter;
 		private GraphQLInputType type;

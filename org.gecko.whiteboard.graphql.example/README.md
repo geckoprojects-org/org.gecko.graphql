@@ -28,11 +28,11 @@ In this tutorial we provide some guidelines in order to be able to expose your O
 
    Then you can simply reference your internal service and delegate the actual functionality to it.
 
-4. Next setp is to set up the runtime. Create a `.bndrun` file, and put the dependencies to your service implementation and to the configurator and that`s it. All the other dependencies are resolved through the annotations. 
+4. Next step is to set up the runtime. Create a `.bndrun` file, and put the dependencies to your service implementation and to the configurator and that`s it. All the other dependencies are resolved through the annotations. 
 
    ![](./images/example7.png)
 
-5. The Result will be a GraphQL API running under http://:8080/graphql in which you can do something like
+5. The Result will be a GraphQL API running under http://:8082/graphql in which you can do something like
 
    ![](./images/example5.png)
 

@@ -46,9 +46,6 @@ import org.gecko.whiteboard.graphql.emf.datafetcher.EStructuralFeatureDataFetche
 import org.gecko.whiteboard.graphql.emf.datafetcher.PrototypeDataFetcher;
 import org.gecko.whiteboard.graphql.emf.resolver.EMFTypeResolver;
 import org.gecko.whiteboard.graphql.emf.resolver.EMFUnionTypeResolver;
-import org.gecko.whiteboard.graphql.emf.schema.GraphQLEMFFieldDefinition;
-import org.gecko.whiteboard.graphql.emf.schema.GraphQLEMFInputObjectField;
-import org.gecko.whiteboard.graphql.emf.schema.GraphQLEMFInputObjectType;
 import org.osgi.annotation.bundle.Capability;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Filter;
@@ -65,6 +62,9 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import graphql.schema.DataFetcher;
 import graphql.schema.GraphQLEnumType;
+import graphql.schema.GraphQLFieldDefinition;
+import graphql.schema.GraphQLInputObjectField;
+import graphql.schema.GraphQLInputObjectType;
 import graphql.schema.GraphQLInputType;
 import graphql.schema.GraphQLInterfaceType;
 import graphql.schema.GraphQLList;
@@ -83,7 +83,9 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder {
 	
 	@Reference(cardinality=ReferenceCardinality.MANDATORY)
 	EMFModelInfo modelInfo;
+	
 	private List<ServiceReference<DataFetcher<Object>>> dataFetchers;
+	
 	private BundleContext bundleContext;
 	
 	@Activate
@@ -109,10 +111,14 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder {
 		}
 		return Enumerator.class.isAssignableFrom(clazz) || EObject.class.isAssignableFrom(clazz);
 	}
-
+	
 	@Override
-	public GraphQLType buildType(Type type, Map<String, GraphQLType> typeMapping, boolean inputType,
+	public GraphQLType buildType(
+			Type type, 
+			Map<String, GraphQLType> typeMapping, 
+			boolean inputType,
 			List<Annotation> annotations) {
+		
 		Class<?> clazz;
 		boolean isList = false;
 		if(type instanceof Class) {
@@ -138,7 +144,7 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder {
 		if(isList) {
 			return GraphQLList.list(typeRef);
 		}
-		return typeRef ;
+		return typeRef;		
 	}
 
 	/**	 
@@ -166,7 +172,7 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder {
 			EDataType dataType = (EDataType) eClassifier;
 			GraphQLType scalarType = GraphqlSchemaTypeBuilder.getGraphQLScalarType(dataType.getInstanceClass());
 			if(scalarType == null) {
-				//TODO Could this be a Case?
+				// TODO Could this be a Case?
 			}
 			return scalarType;
 		}
@@ -183,13 +189,12 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder {
 	 * @return
 	 */
 	private String getName(EClassifier eClassifier, boolean inputType, List<Annotation> annotations) {
-		
-		if(inputType && !(eClassifier instanceof EEnum)) {
+		if (inputType && !(eClassifier instanceof EEnum)) {
 			return eClassifier.getName() + "Input";
-		} else if(getUnionTypeAnnotation(annotations) != null) {
+		} else if (getUnionTypeAnnotation(annotations) != null) {
 			return eClassifier.getName() + "Union";
 		}
-		return  eClassifier.getName();
+		return eClassifier.getName();
 	}
 
 	/**
@@ -214,6 +219,7 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder {
 	private String getDocumentation(EModelElement eClassifier) {
 		EAnnotation eAnnotation = eClassifier.getEAnnotation("http://www.eclipse.org/emf/2002/GenModel");
 		if(eAnnotation != null) {
+			// FIXME: check if "documentation" key actually exists
 			return eAnnotation.getDetails().get("documentation");
 		}
 		return null;
@@ -240,7 +246,6 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder {
 			return inputObjectType;
 		}
 	}
-	
 	
 	/**
 	 * @param annotations
@@ -302,7 +307,7 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder {
 		
 		return type;
 	}
-
+	
 	/**
 	 * @param eC
 	 * @param unionTypeAnnotation
@@ -438,10 +443,11 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder {
 			return (GraphQLInputType) typeMapping.get(name);
 		}
 		
-		GraphQLEMFInputObjectType.Builder inputObjectBuilder =  GraphQLEMFInputObjectType.newEMFInputObject().name(name).eClass(eClass);
-		GraphQLEMFInputObjectType inputObject = inputObjectBuilder.build();
+		GraphQLInputObjectType.Builder inputObjectBuilder =  GraphQLInputObjectType.newInputObject().name(name);
+		
+		GraphQLInputObjectType inputObject = inputObjectBuilder.build();
 		typeMapping.put(name, inputObject);
-		inputObjectBuilder = GraphQLEMFInputObjectType.newEMFInputObject(inputObject);
+		inputObjectBuilder = GraphQLInputObjectType.newInputObject(inputObject);
 		
 		eClass.getEAllAttributes().stream()
 		.filter(this::isMutationFeature)
@@ -523,13 +529,19 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder {
 	 * @param string
 	 * @return
 	 */
-	private GraphQLEMFFieldDefinition createField(String name, DataFetcher<?> datafetcher, GraphQLType type, String documentation, EStructuralFeature feature) {
-		GraphQLEMFFieldDefinition.Builder builder = GraphQLEMFFieldDefinition.newEMFFieldDefinition()
+	private GraphQLFieldDefinition createField(
+			String name, 
+			DataFetcher<?> datafetcher, 
+			GraphQLType type, 
+			String documentation, 
+			EStructuralFeature feature) { // TODO: remove `EStructuralFeature` as method argument if not needed
+		
+		GraphQLFieldDefinition.Builder builder = GraphQLFieldDefinition.newFieldDefinition()
 			.name(name)
 			.description(documentation)
 			.dataFetcher(datafetcher)
-			.type((GraphQLOutputType) type)
-			.feature(feature);
+			.type((GraphQLOutputType) type);
+		
 		return builder.build();
 	}
 
@@ -538,15 +550,21 @@ public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder {
 	 * @param string
 	 * @return
 	 */
-	private GraphQLEMFInputObjectField createInputField(String name, GraphQLType type, String documentation, EStructuralFeature eFeature) {
-		GraphQLEMFInputObjectField.Builder builder = GraphQLEMFInputObjectField.newEMFInputObjectField()
+	private GraphQLInputObjectField createInputField(
+			String name, 
+			GraphQLType type, 
+			String documentation, 
+			EStructuralFeature eFeature) {
+		
+		GraphQLInputObjectField.Builder builder = GraphQLInputObjectField.newInputObjectField()
 				.name(name)
 				.description(documentation)
-				.eFeature(eFeature)
 				.type((GraphQLInputType) type);
-		if(!eFeature.isMany()) {
+		
+		if (!eFeature.isMany()) {
 			builder = builder.defaultValue(eFeature.getDefaultValue());
 		}
+
 		return builder.build();
 	}
 }

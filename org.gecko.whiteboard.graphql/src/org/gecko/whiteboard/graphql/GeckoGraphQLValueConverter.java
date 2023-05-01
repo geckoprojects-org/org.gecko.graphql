@@ -11,17 +11,23 @@
  */
 package org.gecko.whiteboard.graphql;
 
-import graphql.schema.GraphQLNamedSchemaElement;
-import graphql.schema.GraphQLType;
+import java.util.Map;
 
-public enum GeckoGraphQLUtil {
-	INSTANCE;
+import org.osgi.annotation.versioning.ProviderType;
 
-	public String getTypeName(GraphQLType type) {
-		if (type != null && type instanceof GraphQLNamedSchemaElement) {
-			return ((GraphQLNamedSchemaElement) type).getName();
-		} else {
-			throw new IllegalArgumentException("Unsupported GraphQLType");
-		}
-	}
+import graphql.schema.GraphQLInputType;
+
+/**
+ * TODO: javadoc 
+ * 
+ * @author Michal H. Siemaszko 
+ * @since Apr 21, 2023
+ */
+
+@ProviderType
+public interface GeckoGraphQLValueConverter {
+
+	boolean canHandle(GraphQLInputType inputType, Class<?> outputType);
+
+	Object convert(GraphQLInputType inputType, Class<?> outputType, Map<String, Object> toConvert);
 }

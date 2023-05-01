@@ -24,6 +24,8 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
+import org.gecko.whiteboard.graphql.GeckoGraphQLValueConverter;
+
 import graphql.Scalars;
 import graphql.execution.preparsed.NoOpPreparsedDocumentProvider;
 import graphql.execution.preparsed.PreparsedDocumentProvider;
@@ -65,6 +67,7 @@ class OsgiGraphqlSchemaBuilder {
 	private final List<GraphQLSubscriptionProvider> subscriptionProviders = new ArrayList<>();
 	private final List<GraphQLTypesProvider> typesProviders = new ArrayList<>();
 	private final List<GraphQLServletListener> listeners = new ArrayList<>();
+	private final List<GeckoGraphQLValueConverter> valueConverters = new ArrayList<>();
 
 	private GraphQLServletContextBuilder contextBuilder = new DefaultGraphQLServletContextBuilder();
 	private GraphQLServletRootObjectBuilder rootObjectBuilder = new DefaultGraphQLRootObjectBuilder();
@@ -106,11 +109,21 @@ class OsgiGraphqlSchemaBuilder {
 	}
 
 	private void doUpdateSchema() {
-		this.schemaProvider = new DefaultGraphQLSchemaServletProvider(
-				newSchema().query(buildQueryType()).mutation(buildMutationType()).subscription(buildSubscriptionType())
-						.additionalTypes(buildTypes()).codeRegistry(codeRegistryProvider.getCodeRegistry()).build());
+		// @formatter:off
+	    this.schemaProvider =
+	        new DefaultGraphQLSchemaServletProvider(
+	            newSchema()
+	                .query(buildQueryType())
+	                .mutation(buildMutationType())
+	                .subscription(buildSubscriptionType())
+	                .additionalTypes(buildTypes())
+	                .codeRegistry(codeRegistryProvider.getCodeRegistry())
+	                .build());
+	    // @formatter:on
 	}
 
+	/******************************************************************************************************************************/
+	/** dropped in GraphQL Java 20.x, but {@link org.gecko.whiteboard.graphql.servlet.OsgiGraphqlWhiteboard} still depends on it **/
 	GraphQLObjectType.Builder getQueryTypeBuilder() {
 		final GraphQLObjectType.Builder queryTypeBuilder = newObject().name("Query").description("Root query type");
 
@@ -122,24 +135,36 @@ class OsgiGraphqlSchemaBuilder {
 			}
 		} else {
 			// graphql-java enforces Query type to be there with at least some field.
+			// @formatter:off
 			queryTypeBuilder.field(
-					GraphQLFieldDefinition.newFieldDefinition().name("_empty").type(Scalars.GraphQLBoolean).build());
+					GraphQLFieldDefinition.newFieldDefinition()
+						.name("_empty")
+						.type(Scalars.GraphQLBoolean)
+						.build());
+			// @formatter:on
 		}
 		return queryTypeBuilder;
 	}
-
+	
+	/********************************************************************************************************************************************************************************/
+	/** refactored as incompatible version was added in GraphQL Java 20.x, but {@link org.gecko.whiteboard.graphql.servlet.OsgiGraphqlWhiteboard} still depends on it transitively **/
 	private GraphQLObjectType buildQueryType() {
 		return getQueryTypeBuilder().build();
 	}
 
+	/********************************************************************************************************************************************************************************************/
+	/** visibility changed from package private to private in GraphQL Java 20.x, but {@link org.gecko.whiteboard.graphql.servlet.OsgiGraphqlWhiteboard} still depends on package private version*/
 	Set<GraphQLType> buildTypes() {
-		return typesProviders.stream().map(GraphQLTypesProvider::getTypes).flatMap(Collection::stream).collect(toSet());
+		// @formatter:off
+	    return typesProviders.stream()
+	        .map(GraphQLTypesProvider::getTypes)
+	        .flatMap(Collection::stream)
+	        .collect(toSet());
+	    // @formatter:on
 	}
 
-	GraphQLObjectType.Builder getMutationTypeBuilder() {
-		return getObjectTypeBuilder("Mutation", new ArrayList<>(mutationProviders));
-	}
-
+	/********************************************************************************************************************************************************************************/
+	/** refactored as incompatible version was added in GraphQL Java 20.x, but {@link org.gecko.whiteboard.graphql.servlet.OsgiGraphqlWhiteboard} still depends on it transitively **/	
 	private GraphQLObjectType buildMutationType() {
 		final GraphQLObjectType.Builder mutationTypeBuilder = getMutationTypeBuilder();
 		if (mutationTypeBuilder != null) {
@@ -148,11 +173,28 @@ class OsgiGraphqlSchemaBuilder {
 
 		return null;
 	}
+	
+	GraphQLObjectType.Builder getMutationTypeBuilder() {
+		return getObjectTypeBuilder("Mutation", new ArrayList<>(mutationProviders));
+	}
 
 	private GraphQLObjectType buildSubscriptionType() {
 		return buildObjectType("Subscription", new ArrayList<>(subscriptionProviders));
 	}
-
+	
+	/*********************************************************************************************************************************************************************************/
+	/** refactored as incompatible version was added in GraphQL Java 20.x, but {@link org.gecko.whiteboard.graphql.servlet.OsgiGraphqlWhiteboard} still depends on it transitively  **/
+	private GraphQLObjectType buildObjectType(String name, List<GraphQLFieldProvider> providers) {
+		final GraphQLObjectType.Builder objectTypeBuilder = getObjectTypeBuilder(name, providers);
+		if (objectTypeBuilder != null) {
+			return objectTypeBuilder.build();
+		}
+		
+		return null;
+	}
+	
+	/*******************************************************************************************************************************************/
+	/** dropped in GraphQL Java 20.x, but {@link org.gecko.whiteboard.graphql.servlet.OsgiGraphqlWhiteboard} still depends on it transitively **/
 	private GraphQLObjectType.Builder getObjectTypeBuilder(String name, List<GraphQLFieldProvider> providers) {
 		if (!providers.isEmpty()) {
 			final GraphQLObjectType.Builder typeBuilder = newObject().name(name)
@@ -169,16 +211,7 @@ class OsgiGraphqlSchemaBuilder {
 
 		return null;
 	}
-
-	private GraphQLObjectType buildObjectType(String name, List<GraphQLFieldProvider> providers) {
-		final GraphQLObjectType.Builder typeBuilder = getObjectTypeBuilder(name, providers);
-		if (typeBuilder != null) {
-			return typeBuilder.build();
-		}
-
-		return null;
-	}
-
+	
 	void add(GraphQLQueryProvider provider) {
 		queryProviders.add(provider);
 	}
@@ -194,7 +227,7 @@ class OsgiGraphqlSchemaBuilder {
 	void add(GraphQLTypesProvider provider) {
 		typesProviders.add(provider);
 	}
-
+	
 	void remove(GraphQLQueryProvider provider) {
 		queryProviders.remove(provider);
 	}
@@ -216,19 +249,32 @@ class OsgiGraphqlSchemaBuilder {
 	}
 
 	GraphQLConfiguration buildConfiguration() {
-		return GraphQLConfiguration.with(buildInvocationInputFactory()).with(buildQueryInvoker())
-				.with(buildObjectMapper()).with(listeners).build();
+		// @formatter:off
+	    return GraphQLConfiguration.with(buildInvocationInputFactory())
+	        .with(buildQueryInvoker())
+	        .with(buildObjectMapper())
+	        .with(listeners)
+	        .build();
+	    // @formatter:on
 	}
 
 	private GraphQLInvocationInputFactory buildInvocationInputFactory() {
-		return GraphQLInvocationInputFactory.newBuilder(this::getSchemaProvider)
-				.withGraphQLContextBuilder(contextBuilder).withGraphQLRootObjectBuilder(rootObjectBuilder).build();
+		// @formatter:off
+	    return GraphQLInvocationInputFactory.newBuilder(this::getSchemaProvider)
+	        .withGraphQLContextBuilder(contextBuilder)
+	        .withGraphQLRootObjectBuilder(rootObjectBuilder)
+	        .build();
+	    // @formatter:on
 	}
 
 	private GraphQLQueryInvoker buildQueryInvoker() {
-		return GraphQLQueryInvoker.newBuilder().withPreparsedDocumentProvider(preparsedDocumentProvider)
-				.withInstrumentation(() -> instrumentationProvider.getInstrumentation())
-				.withExecutionStrategyProvider(executionStrategyProvider).build();
+		// @formatter:off
+	    return GraphQLQueryInvoker.newBuilder()
+	        .withPreparsedDocumentProvider(preparsedDocumentProvider)
+	        .withInstrumentation(() -> instrumentationProvider.getInstrumentation())
+	        .withExecutionStrategyProvider(executionStrategyProvider)
+	        .build();
+	    // @formatter:on
 	}
 
 	private GraphQLObjectMapper buildObjectMapper() {
@@ -243,6 +289,8 @@ class OsgiGraphqlSchemaBuilder {
 		listeners.remove(listener);
 	}
 
+	/******************************************************************************************************************************/
+	/** in {@link graphql.kickstart.servlet.OsgiSchemaBuilder} setter methods are dynamically generated via {@link lombok.Setter} */
 	void setCodeRegistryProvider(GraphQLCodeRegistryProvider provider) {
 		codeRegistryProvider = provider;
 	}
@@ -269,5 +317,19 @@ class OsgiGraphqlSchemaBuilder {
 
 	void setPreparsedDocumentProvider(PreparsedDocumentProvider provider) {
 		preparsedDocumentProvider = provider;
+	}	
+	
+	/************************************************************************************/
+	/** methods for {@link org.gecko.whiteboard.graphql.GeckoGraphQLValueConverter} support **/
+	void add(GeckoGraphQLValueConverter valueConverter) {
+		valueConverters.add(valueConverter);
+	}	
+	
+	void remove(GeckoGraphQLValueConverter valueConverter) {
+		valueConverters.remove(valueConverter);
+	}
+	
+	List<GeckoGraphQLValueConverter> valueConverters() {
+		return valueConverters;
 	}
 }
