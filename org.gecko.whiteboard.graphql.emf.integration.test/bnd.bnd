@@ -1,141 +1,47 @@
-# This is the version of JUnit that will be used at build time and run time
-junit: org.apache.servicemix.bundles.junit;version="[4.11,5)"
+-include: ${workspace}/cnf/eclipse/jdt.bnd
 
-# This is the version of Mockito that will be used at build time and run time
-mockito: org.mockito.mockito-core;version="[1.9,2)",\
-  org.objenesis;version="[2.1,3)"
-
-# Discover and run all test cases annotated with the @RunWith annotation
-Test-Cases: ${classes;CONCRETE;ANNOTATED;org.junit.runner.RunWith}
-
-# Build dependencies 
--buildpath: \
-	${junit},\
-	${mockito},\
-	${geckotest},\
-	osgi.annotation;version='7.0',\
-	osgi.core;version='7.0',\
-	osgi.cmpn;version='7.0',\
-	org.osgi.util.pushstream;version='1.0',\
-	org.apache.felix.http.jetty,\
-	org.gecko.whiteboard.graphql.emf.test.model;version=latest,\
-	com.fasterxml.jackson.core.jackson-core,\
-	com.fasterxml.jackson.core.jackson-databind,\
-	com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider,\
-	org.gecko.whiteboard.graphql.api,\
-	org.gecko.whiteboard.graphql.impl,\
-	org.eclipse.emf.common,\
-	org.eclipse.emf.ecore,\
-	org.eclipse.emf.ecore.xmi,\
-	org.gecko.whiteboard.graphql.emf.test.api;version=latest,\
-	graphql-java,\
-	java-dataloader,\
-	org.eclipse.jetty.client
-
-javac.source: 17
-javac.target: 17
-
-Bundle-Version: 1.0.0.SNAPSHOT
-Private-Package: org.gecko.whiteboard.graphql.emf.integration.test
-
-Bundle-Copyright: Data In Motion Consulting GmbH
-Bundle-License: Eclipse Public License v1.0
-Bundle-Vendor: Data In Motion Consulting GmbH
+-testcontinuous: true
 
 # Needed for Mockito's mocking to work
 -runsystempackages.objenesis: sun.misc,sun.reflect
 
-# Use Felix by default
--runfw: org.apache.felix.framework;version='[7.0.5,7.0.5]'
--runvm: -ea
+-resolve.effective: active:="osgi.service"
 
--runee: JavaSE-17
+#-includeresource.resources: \
+#	data = data
 
--runproperties: \
-	org.osgi.service.http.port=8181,\
-	felix.log.level=4,\
-	org.osgi.service.log.admin.loglevel=DEBUG
+-buildpath: \
+	osgi.annotation;version='7.0',\
+	osgi.core;version='7.0',\
+	osgi.cmpn;version='7.0',\
+	org.osgi.test.assertj.framework,\
+	org.osgi.test.common,\
+	org.osgi.test.junit5,\
+	org.osgi.test.junit5.cm,\
+	junit-platform-commons,\
+	junit-jupiter-api,\
+	junit-jupiter-engine,\
+	junit-jupiter-params,\
+	junit-platform-launcher,\
+	junit-platform-runner,\
+	junit-platform-testkit,\
+	assertj-core,\
+	org.eclipse.emf.common,\
+	org.eclipse.emf.ecore,\
+	org.eclipse.emf.ecore.xmi,\
+	org.osgi.util.pushstream,\
+	org.gecko.whiteboard.graphql.api;version=latest,\
+	org.gecko.whiteboard.graphql.impl;version=latest,\
+	org.gecko.whiteboard.graphql.emf.test.api;version=latest,\
+	org.gecko.whiteboard.graphql.emf.test.model;version=latest,\
+	graphql-java,\
+	java-dataloader,\
+	org.eclipse.jetty.client	
 
--runtrace: true
+#	org.apache.felix.http.jetty,\
+#	com.fasterxml.jackson.core.jackson-core,\
+#	com.fasterxml.jackson.core.jackson-databind,\
+#	com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider,\
 
--runrequires: \
-	bnd.identity;id='org.gecko.whiteboard.graphql.emf',\
-	bnd.identity;id='org.gecko.whiteboard.graphql.emf.test.impl',\
-	bnd.identity;id='org.gecko.whiteboard.graphql.emf.integration.test',\
-	bnd.identity;id='org.apache.felix.gogo.command',\
-	bnd.identity;id='org.apache.felix.gogo.shell',\
-	bnd.identity;id='org.apache.felix.gogo.runtime',\
-	bnd.identity;id='biz.aQute.gogo.commands.provider',\
-	bnd.identity;id='slf4j.simple'	
-	
--runblacklist: bnd.identity;id='org.eclipse.osgi'
-
--runbundles: \
-	org.gecko.emf.osgi.ecore;version='[2.2.4,2.2.5)',\
-	org.gecko.emf.osgi.model.info.api;version='[1.0.0,1.0.1)',\
-	org.gecko.emf.osgi.model.info.impl;version='[1.0.0,1.0.1)',\
-	slf4j.api;version='[1.7.25,1.7.26)',\
-	org.apache.servicemix.bundles.junit;version='[4.12.0,4.12.1)',\
-	org.mockito.mockito-core;version='[1.10.19,1.10.20)',\
-	org.objenesis;version='[2.2.0,2.2.1)',\
-	org.gecko.emf.osgi.api;version='[3.1.2,3.1.3)',\
-	org.eclipse.emf.common;version='[2.15.0,2.15.1)',\
-	org.eclipse.emf.ecore;version='[2.17.0,2.17.1)',\
-	org.eclipse.emf.ecore.xmi;version='[2.15.0,2.15.1)',\
-	slf4j.simple;version='[1.7.25,1.7.26)',\
-	org.gecko.core.test;version='[1.2.0,1.2.1)',\
-	org.gecko.emf.osgi.ecore;version='[2.2.4,2.2.5)',\
-	org.gecko.emf.osgi.model.info.api;version='[1.0.0,1.0.1)',\
-	org.gecko.emf.osgi.model.info.impl;version='[1.0.0,1.0.1)',\
-	org.gecko.emf.osgi.component;version='[2.2.8,2.2.9)',\
-	com.fasterxml.jackson.core.jackson-annotations;version='[2.14.1,2.14.2)',\
-	com.fasterxml.jackson.core.jackson-core;version='[2.14.1,2.14.2)',\
-	com.fasterxml.jackson.core.jackson-databind;version='[2.14.1,2.14.2)',\
-	com.fasterxml.jackson.datatype.jackson-datatype-jdk8;version='[2.14.1,2.14.2)',\
-	graphql-java;version='[19.3.1,19.3.2)',\
-	graphql-java-extended-scalars;version='[19.1.0,19.1.1)',\
-	graphql-java-kickstart;version='[15.0.0,15.0.1)',\
-	graphql-java-servlet;version='[15.0.0,15.0.1)',\
-	jakarta.servlet-api;version='[6.0.0,6.0.1)',\
-	jakarta.websocket-api;version='[2.1.0,2.1.1)',\
-	jakarta.websocket-client-api;version='[2.1.0,2.1.1)',\
-	java-dataloader;version='[3.2.0,3.2.1)',\
-	org.apache.felix.converter;version='[1.0.18,1.0.19)',\
-	org.apache.felix.scr;version='[2.2.6,2.2.7)',\
-	org.gecko.whiteboard.graphql.api;version=snapshot,\
-	org.gecko.whiteboard.graphql.emf;version=snapshot,\
-	org.gecko.whiteboard.graphql.emf.integration.test;version=snapshot,\
-	org.gecko.whiteboard.graphql.emf.test.api;version=snapshot,\
-	org.gecko.whiteboard.graphql.emf.test.impl;version=snapshot,\
-	org.gecko.whiteboard.graphql.emf.test.model;version=snapshot,\
-	org.gecko.whiteboard.graphql.impl;version=snapshot,\
-	org.osgi.service.component;version='[1.5.1,1.5.2)',\
-	org.osgi.util.function;version='[1.1.0,1.1.1)',\
-	org.slf4j.api;version='[2.0.6,2.0.7)',\
-	org.slf4j.simple;version='[2.0.6,2.0.7)',\
-	org.apache.aries.spifly.dynamic.bundle;version='[1.3.6,1.3.7)',\
-	org.objectweb.asm;version='[9.4.0,9.4.1)',\
-	org.objectweb.asm.commons;version='[9.4.0,9.4.1)',\
-	org.objectweb.asm.tree;version='[9.4.0,9.4.1)',\
-	org.objectweb.asm.tree.analysis;version='[9.4.0,9.4.1)',\
-	org.objectweb.asm.util;version='[9.4.0,9.4.1)',\
-	biz.aQute.gogo.commands.provider;version='[1.7.0,1.7.1)',\
-	org.apache.felix.gogo.command;version='[1.1.2,1.1.3)',\
-	org.apache.felix.gogo.shell;version='[1.1.4,1.1.5)',\
-	jakarta.json-api;version='[2.1.1,2.1.2)',\
-	org.apache.felix.cm.json;version='[2.0.0,2.0.1)',\
-	org.apache.felix.configadmin;version='[1.9.26,1.9.27)',\
-	org.apache.felix.configurator;version='[1.0.18,1.0.19)',\
-	org.apache.felix.gogo.runtime;version='[1.1.6,1.1.7)',\
-	org.apache.felix.http.jetty;version='[5.0.4,5.0.5)',\
-	org.apache.felix.http.servlet-api;version='[2.1.0,2.1.1)',\
-	org.apache.felix.log;version='[1.2.6,1.2.7)',\
-	org.eclipse.jetty.client;version='[9.4.12,9.4.13)',\
-	org.eclipse.jetty.http;version='[9.4.12,9.4.13)',\
-	org.eclipse.jetty.io;version='[9.4.12,9.4.13)',\
-	org.eclipse.jetty.util;version='[9.4.12,9.4.13)',\
-	reactive-streams;version='[1.0.4,1.0.5)',\
-	com.google.guava;version='[22.0.0,22.0.1)',\
-	ch.qos.logback.core;version='[1.2.3,1.2.4)',\
-	org.apache.commons.logging;version='[1.2.0,1.2.1)',\
-	org.osgi.util.promise;version='[1.1.0,1.1.1)'
+Bundle-Version: 1.1.0.SNAPSHOT
+Private-Package: org.gecko.whiteboard.graphql.emf.integration.test

@@ -1,3 +1,5 @@
+-include: ${workspace}/cnf/eclipse/jdt.bnd
+
 -buildpath: \
 	osgi.annotation;version=7.0,\
 	osgi.core;version=7.0,\
@@ -6,7 +8,8 @@
 	org.eclipse.emf.ecore,\
 	org.eclipse.emf.common,,\
 	org.eclipse.emf.ecore.xmi,\
-	org.gecko.whiteboard.graphql.api;version=latest
+	org.gecko.whiteboard.graphql.api;version=latest,\
+	graphql-java
 
 # This is the version of JUnit that will be used at build time and run time
 junit: org.apache.servicemix.bundles.junit;version="[4.11,5)"
@@ -14,6 +17,6 @@ junit: org.apache.servicemix.bundles.junit;version="[4.11,5)"
 -testpath: \
 	${junit}
 
-Bundle-Version: 1.0.0.SNAPSHOT
+Bundle-Version: 1.1.0.SNAPSHOT
 
 -sub: *.bnd

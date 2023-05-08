@@ -160,7 +160,6 @@ public class ServiceSchemaBuilder {
 	 * @return
 	 */
 	private boolean isDeclaredQueryInterface(Class<?> curInterface, ServiceReference<Object> serviceReference) {
-
 		Object marker = serviceReference.getProperty(GeckoGraphQLConstants.GRAPHQL_QUERY_SERVICE_MARKER);
 		if(marker == null || !Boolean.valueOf(marker.toString())) {
 			return false;

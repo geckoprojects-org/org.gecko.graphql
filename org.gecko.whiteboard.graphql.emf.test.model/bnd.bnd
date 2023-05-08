@@ -1,3 +1,5 @@
+-include: ${workspace}/cnf/eclipse/jdt.bnd
+
 -buildpath: \
 	osgi.annotation;version=7.0.0,\
 	osgi.core;version=6.0,\
@@ -13,12 +15,9 @@
 
 -includeresource model/=model
 
-javac.source: 17
-javac.target: 17
-
 Bundle-Name: Test model
 Bundle-SymbolicName: org.gecko.whiteboard.graphql.emf.test.model;singleton:=true
-Bundle-Version: 1.0.0.SNAPSHOT
+Bundle-Version: 1.1.0.SNAPSHOT
 
 Private-Package: \
 	org.gecko.whiteboard.graphql.emf.test.model.GraphqlTest.configuration

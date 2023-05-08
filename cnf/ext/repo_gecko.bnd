@@ -3,9 +3,17 @@
 		releaseUrl=https://devel.data-in-motion.biz/nexus/repository/maven-releases/;\
 		snapshotUrl=https://devel.data-in-motion.biz/nexus/repository/maven-snapshots/;\
 		index=${.}/dim_nexus.maven;\
-		name='DIM_Nexus',\
-	aQute.bnd.repository.maven.provider.MavenBndRepository;\
-		releaseUrl=https://devel.data-in-motion.biz/nexus/repository/dim-release/;\
-		snapshotUrl=https://devel.data-in-motion.biz/nexus/repository/dim-snapshot/;\
-		index=${.}/dim_release.maven;\
-		name='DIM_Release'
+		name='DIM_Nexus'
+
+#-plugin.gecko: \
+#	aQute.bnd.repository.maven.provider.MavenBndRepository;\
+#		releaseUrl=https://devel.data-in-motion.biz/nexus/repository/maven-releases/;\
+#		snapshotUrl=https://devel.data-in-motion.biz/nexus/repository/maven-snapshots/;\
+#		index=${.}/dim_nexus.maven;\
+#		name='DIM_Nexus',\
+#	aQute.bnd.repository.maven.provider.MavenBndRepository;\
+#		releaseUrl=https://devel.data-in-motion.biz/nexus/repository/dim-release/;\
+#		snapshotUrl=https://devel.data-in-motion.biz/nexus/repository/dim-snapshot/;\
+#		index=${.}/dim_release.maven;\
+#		name='DIM_Release'
+		

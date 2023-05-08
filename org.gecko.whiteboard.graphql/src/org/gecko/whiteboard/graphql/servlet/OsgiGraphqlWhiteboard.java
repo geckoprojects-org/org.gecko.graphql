@@ -19,10 +19,12 @@ import static org.gecko.whiteboard.graphql.GeckoGraphQLConstants.OSGI_GRAPHQL_CA
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.gecko.whiteboard.graphql.GeckoGraphQLConstants;
@@ -84,6 +86,8 @@ import graphql.kickstart.servlet.osgi.GraphQLSubscriptionProvider;
 import graphql.kickstart.servlet.osgi.GraphQLTypesProvider;
 import graphql.schema.GraphQLCodeRegistry;
 
+import graphql.schema.GraphQLType;
+
 /**
  * This GraphQL Whiteboard originally is a fork of the {@link OsgiGraphQLHttpServlet}.
  * 
@@ -117,7 +121,9 @@ public class OsgiGraphqlWhiteboard extends AbstractGraphQLHttpServlet
 	private Logger logger;
 	
 	@Activate
-	public void activate(ComponentContext componentContext) throws InvalidSyntaxException {
+	public OsgiGraphqlWhiteboard(ComponentContext componentContext) throws InvalidSyntaxException {
+		super();
+		
 		bundleContext = componentContext.getBundleContext();
 		copyProperties(componentContext);
 
@@ -135,7 +141,8 @@ public class OsgiGraphqlWhiteboard extends AbstractGraphQLHttpServlet
 
 		schemaBuilder.activate(schemaUpdateDelay);
 
-		updateSchema();
+		// 2023/05/06: temporarily disabled;
+	//	updateSchema();
 	}
 
 	/**
@@ -163,7 +170,80 @@ public class OsgiGraphqlWhiteboard extends AbstractGraphQLHttpServlet
 		}
 		properties.put(Constants.SERVICE_CHANGECOUNT, changeCount.get());
 	}
+	
+	protected synchronized void updateSchema() {
+		Map<ServiceReference<Object>, ServiceObjects<Object>> copiedServiceMap = new HashMap<ServiceReference<Object>, ServiceObjects<Object>>(
+				serviceReferences);
+		
+		final Set<GraphQLType> types = new HashSet<>();
 
+		if (!copiedServiceMap.isEmpty()) {
+			// @formatter:off
+			ServiceSchemaBuilder sb = new ServiceSchemaBuilder(
+					schemaBuilder.getQueryTypeBuilder(),
+					schemaBuilder.getMutationTypeBuilder(), 
+					types,
+				//	schemaBuilder.buildTypes(), 
+					typeBuilder, 
+					schemaBuilder.valueConverters());
+			// @formatter:on
+			copiedServiceMap.forEach(sb::build);
+		}
+		
+		try {
+		//	if (!types.isEmpty()) {
+				schemaBuilder.setGraphQLTypes(types);
+		//	}
+			
+			schemaBuilder.updateSchema();
+
+			updateRuntime();
+			
+			// FIXME: this method is called from both #bindGraphqlSechemaTypeBuilder and #bindValueConverter BEFORE logger reference is injected, resulting in NullPointerException
+			if (logger != null)
+				logger.info("Schema generation sucessfull");
+		} catch (AssertException e) {
+			if (logger != null)
+				logger.warn("The current Configuration is invalid: " + e.getMessage());
+		}
+	}	
+
+	/*
+	protected synchronized void updateSchema() {
+		Map<ServiceReference<Object>, ServiceObjects<Object>> copiedServiceMap = new HashMap<ServiceReference<Object>, ServiceObjects<Object>>(
+				serviceReferences);
+		
+		final Set<GraphQLType> types = new HashSet<>();
+
+		if (!copiedServiceMap.isEmpty()) {
+			// @formatter:off
+			ServiceSchemaBuilder sb = new ServiceSchemaBuilder(
+					schemaBuilder.getQueryTypeBuilder(),
+					schemaBuilder.getMutationTypeBuilder(), 
+					types,
+				//	schemaBuilder.buildTypes(), 
+					typeBuilder, 
+					schemaBuilder.valueConverters());
+			// @formatter:on
+			copiedServiceMap.forEach(sb::build);
+		}
+		
+		try {
+			schemaBuilder.updateSchema();
+
+			updateRuntime();
+			
+			// FIXME: this method is called from both #bindGraphqlSechemaTypeBuilder and #bindValueConverter BEFORE logger reference is injected, resulting in NullPointerException
+			if (logger != null)
+				logger.info("Schema generation sucessfull");
+		} catch (AssertException e) {
+			if (logger != null)
+				logger.warn("The current Configuration is invalid: " + e.getMessage());
+		}
+	}
+	*/
+	
+	/*
 	protected synchronized void updateSchema() {
 		Map<ServiceReference<Object>, ServiceObjects<Object>> copiedServiceMap = new HashMap<ServiceReference<Object>, ServiceObjects<Object>>(
 				serviceReferences);
@@ -193,6 +273,7 @@ public class OsgiGraphqlWhiteboard extends AbstractGraphQLHttpServlet
 				logger.warn("The current Configuration is invalid: " + e.getMessage());
 		}
 	}
+	 */
 
 	/**
 	 * Updates the runtime properties or registers the Runtime, if it wasn't set
@@ -418,9 +499,40 @@ public class OsgiGraphqlWhiteboard extends AbstractGraphQLHttpServlet
 			return null;
 		}
 		serviceReferences.put(reference, serviceObjects);
+		
+		// TODO: re-enable once issue with 'EMFSchemaTypeBuilder' is cleared up...
 		updateSchema();
+		
 		return bundleContext.getService(reference);
 	}
+	
+	/*
+	public Object addingService(ServiceReference<Object> reference) {
+		ServiceObjects<Object> serviceObjects = bundleContext.getServiceObjects(reference);
+		if (serviceObjects == null) {
+			return null;
+		}
+		serviceReferences.put(reference, serviceObjects);
+		
+		updateSchema();
+		
+		return bundleContext.getService(reference);
+	}
+	 */
+	
+	/*
+	public Object addingService(ServiceReference<Object> reference) {
+		ServiceObjects<Object> serviceObjects = bundleContext.getServiceObjects(reference);
+		if (serviceObjects == null) {
+			return null;
+		}
+		serviceReferences.put(reference, serviceObjects);
+		
+		// 2023/05/06: temporarily disabled;
+	//	updateSchema();
+		return bundleContext.getService(reference);
+	}
+	 */
 
 	/*
 	 * (non-Javadoc)

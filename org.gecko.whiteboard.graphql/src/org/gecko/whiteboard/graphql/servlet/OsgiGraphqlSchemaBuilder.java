@@ -16,7 +16,9 @@ import static graphql.schema.GraphQLSchema.newSchema;
 import static java.util.stream.Collectors.toSet;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executors;
@@ -68,6 +70,10 @@ class OsgiGraphqlSchemaBuilder {
 	private final List<GraphQLTypesProvider> typesProviders = new ArrayList<>();
 	private final List<GraphQLServletListener> listeners = new ArrayList<>();
 	private final List<GeckoGraphQLValueConverter> valueConverters = new ArrayList<>();
+	
+	///
+	private final Set<GraphQLType> types = new HashSet<>();
+	///
 
 	private GraphQLServletContextBuilder contextBuilder = new DefaultGraphQLServletContextBuilder();
 	private GraphQLServletRootObjectBuilder rootObjectBuilder = new DefaultGraphQLRootObjectBuilder();
@@ -107,7 +113,73 @@ class OsgiGraphqlSchemaBuilder {
 			updateFuture = executor.schedule(this::doUpdateSchema, schemaUpdateDelay, TimeUnit.MILLISECONDS);
 		}
 	}
+	
+	// getGraphQLTypes()
+	
+	private void doUpdateSchema() {
+		try {
+			
+			System.err.print("Types (: " + Arrays.toString(types.toArray()));
+			
+			graphql.schema.GraphQLSchema.Builder graphQLSchemaBuilder = newSchema()
+	                .query(buildQueryType())
+	                .mutation(buildMutationType())
+	                .subscription(buildSubscriptionType())
+	                .additionalTypes(buildTypes())
+	                .codeRegistry(codeRegistryProvider.getCodeRegistry());
+			
+			System.err.print("Types are (after): " + Arrays.toString(types.toArray()));
+			
+			graphql.schema.GraphQLSchema graphQLSchema = graphQLSchemaBuilder.build();
+			
+			this.schemaProvider = new DefaultGraphQLSchemaServletProvider(graphQLSchema);
+			
+			System.err.println("The schema was created successfully! ");
+			
+		} catch (Throwable t) {
+			System.err.println("Sorry the schema could not be created...");
+			t.printStackTrace();
+		}
 
+	}	
+	
+	private void doUpdateSchema_2() {
+		// TODO: catch this exception 'graphql.schema.validation.InvalidSchemaException' and log as error / warning, 
+		//	but do not re-throw it... (e.g. "Sorry, the schema could not be created ... e.g. EMF Schema Type builder is missing") 
+		//	because this will result in: 
+		/*
+org.gecko.whiteboard.graphql.impl:1.1.0.SNAPSHOT (36)[org.gecko.whiteboard.graphql.servlet.OsgiGraphqlWhiteboard(11)] : Failed creating the component instance; see log for reason
+2023-05-08 21:01:17.778 [FelixDispatchQueue] ERROR E.F.org.apache.felix.http.jetty - FrameworkEvent ERROR
+org.apache.felix.log.LogException: org.osgi.framework.ServiceException: Service factory returned null. (Component: GeckoGraphQLWhiteboard (11))
+		 */
+		graphql.schema.GraphQLSchema.Builder graphQLSchemaBuilder = newSchema()
+                .query(buildQueryType())
+                .mutation(buildMutationType())
+                .subscription(buildSubscriptionType())
+                .additionalTypes(buildTypes())
+                .codeRegistry(codeRegistryProvider.getCodeRegistry());
+		
+		graphql.schema.GraphQLSchema graphQLSchema = graphQLSchemaBuilder.build();
+		
+		this.schemaProvider = new DefaultGraphQLSchemaServletProvider(graphQLSchema);
+	}	
+	
+	/*
+	private void doUpdateSchema() {
+		graphql.schema.GraphQLSchema.Builder graphQLSchemaBuilder = newSchema()
+                .query(buildQueryType())
+                .mutation(buildMutationType())
+                .subscription(buildSubscriptionType())
+                .additionalTypes(buildTypes())
+                .codeRegistry(codeRegistryProvider.getCodeRegistry());
+		
+		graphql.schema.GraphQLSchema graphQLSchema = graphQLSchemaBuilder.build();
+		
+		this.schemaProvider = new DefaultGraphQLSchemaServletProvider(graphQLSchema);
+	}
+	*/	
+
+	/*
 	private void doUpdateSchema() {
 		// @formatter:off
 	    this.schemaProvider =
@@ -121,6 +193,7 @@ class OsgiGraphqlSchemaBuilder {
 	                .build());
 	    // @formatter:on
 	}
+	*/
 
 	/******************************************************************************************************************************/
 	/** dropped in GraphQL Java 20.x, but {@link org.gecko.whiteboard.graphql.servlet.OsgiGraphqlWhiteboard} still depends on it **/
@@ -155,6 +228,20 @@ class OsgiGraphqlSchemaBuilder {
 	/********************************************************************************************************************************************************************************************/
 	/** visibility changed from package private to private in GraphQL Java 20.x, but {@link org.gecko.whiteboard.graphql.servlet.OsgiGraphqlWhiteboard} still depends on package private version*/
 	Set<GraphQLType> buildTypes() {
+		if (!this.types.isEmpty()) {
+			return this.types;
+		} else {
+			// @formatter:off
+		    return typesProviders.stream()
+		        .map(GraphQLTypesProvider::getTypes)
+		        .flatMap(Collection::stream)
+		        .collect(toSet());
+		    // @formatter:on
+		}
+	}
+	
+	/*
+	Set<GraphQLType> buildTypes() {
 		// @formatter:off
 	    return typesProviders.stream()
 	        .map(GraphQLTypesProvider::getTypes)
@@ -162,6 +249,9 @@ class OsgiGraphqlSchemaBuilder {
 	        .collect(toSet());
 	    // @formatter:on
 	}
+	 */
+	
+	// getGraphQLTypes()
 
 	/********************************************************************************************************************************************************************************/
 	/** refactored as incompatible version was added in GraphQL Java 20.x, but {@link org.gecko.whiteboard.graphql.servlet.OsgiGraphqlWhiteboard} still depends on it transitively **/	
@@ -196,20 +286,24 @@ class OsgiGraphqlSchemaBuilder {
 	/*******************************************************************************************************************************************/
 	/** dropped in GraphQL Java 20.x, but {@link org.gecko.whiteboard.graphql.servlet.OsgiGraphqlWhiteboard} still depends on it transitively **/
 	private GraphQLObjectType.Builder getObjectTypeBuilder(String name, List<GraphQLFieldProvider> providers) {
+		final GraphQLObjectType.Builder typeBuilder = newObject().name(name).description("Root " + name.toLowerCase() + " type");
+		
 		if (!providers.isEmpty()) {
-			final GraphQLObjectType.Builder typeBuilder = newObject().name(name)
-					.description("Root " + name.toLowerCase() + " type");
-
 			for (GraphQLFieldProvider provider : providers) {
 				provider.getFields().forEach(typeBuilder::field);
 			}
-
-			if (!typeBuilder.build().getFieldDefinitions().isEmpty()) {
-				return typeBuilder;
-			}
+		} else {
+			// graphql-java enforces both Query, Mutation and Subscription type to have at least one field
+			// @formatter:off
+			typeBuilder.field(
+					GraphQLFieldDefinition.newFieldDefinition()
+						.name("_empty")
+						.type(Scalars.GraphQLBoolean)
+						.build());
+			// @formatter:on
 		}
 
-		return null;
+		return typeBuilder;
 	}
 	
 	void add(GraphQLQueryProvider provider) {
@@ -332,4 +426,22 @@ class OsgiGraphqlSchemaBuilder {
 	List<GeckoGraphQLValueConverter> valueConverters() {
 		return valueConverters;
 	}
+	
+	///
+	void setGraphQLTypes(Set<GraphQLType> types) {
+		this.types.clear();
+		this.types.addAll(types);
+	}
+	
+	/*
+	void setGraphQLTypes(Set<GraphQLType> types) {
+		this.types.addAll(types);
+	}
+	 */
+	
+	Set<GraphQLType> getGraphQLTypes() {
+		return this.types;
+	}
+ 	
+	///	
 }

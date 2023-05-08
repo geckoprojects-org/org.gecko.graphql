@@ -1,7 +1,9 @@
+// TODO: verify and remove if not needed
 plugins {
   id 'java'
 }
 
+// TODO: verify and remove if not needed
 repositories {
     mavenCentral()
 }
@@ -9,4 +11,25 @@ repositories {
 // Available to customize the build
 tasks.named('wrapper') {
   jarFile = rootProject.file('.gradle-wrapper/gradle-wrapper.jar')
+}
+
+// Disable bnd plugin built-in task 'testOSGi' and register custom task for testing
+gradle.startParameter.excludedTaskNames += "testOSGi"
+
+tasks.register('itest'){
+  subprojects.each { sp ->
+    sp.tasks.each { t ->
+      if(t.name ==~ "resolve\\.test(.*)?"){
+        dependsOn t
+      }
+    }
+  }
+  
+  subprojects.each { sp ->
+    sp.tasks.each { t ->
+      if(t.name ==~ "testrun\\.test(.*)?"){
+        dependsOn t
+      }
+    }
+  }
 }

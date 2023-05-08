@@ -1,11 +1,10 @@
 pluginManagement {
+  
   plugins {
     id 'biz.aQute.bnd.workspace' version bnd_version
   }
+   
   repositories {
-  	maven {
-      url = uri("https://bndtools.jfrog.io/bndtools/libs-release")
-    }
     maven {
       url = uri(bnd_snapshots)
       content {
@@ -13,8 +12,10 @@ pluginManagement {
         includeGroup('biz.aQute.bnd')
         includeGroup('biz.aQute.bnd.workspace')
       }
-    }    
+    }
+    
     mavenCentral()
+    
     gradlePluginPortal()
   }
 }

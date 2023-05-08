@@ -1,130 +1,56 @@
-# This is the version of JUnit that will be used at build time and run time
-junit: org.apache.servicemix.bundles.junit;version="[4.11,5)"
+-include: ${workspace}/cnf/eclipse/jdt.bnd
 
-# This is the version of Mockito that will be used at build time and run time
-mockito: org.mockito.mockito-core;version="[1.9,2)",\
-  org.objenesis;version="[2.1,3)"
+-testcontinuous: true
 
-# Discover and run all test cases annotated with the @RunWith annotation
-Test-Cases: ${classes;CONCRETE;ANNOTATED;org.junit.runner.RunWith}
+# Needed for Mockito's mocking to work
+-runsystempackages.objenesis: sun.misc,sun.reflect
 
-# Build dependencies 
+-resolve.effective: active:="osgi.service"
+
+#-includeresource.resources: \
+#	data = data
+
 -buildpath: \
-	${junit},\
-	${mockito},\
-	${geckotest},\
 	osgi.annotation;version='7.0',\
 	osgi.core;version='7.0',\
 	osgi.cmpn;version='7.0',\
-	org.osgi.util.pushstream;version='1.0',\
+	org.osgi.test.assertj.framework,\
+	org.osgi.test.common,\
+	org.osgi.test.junit5,\
+	org.osgi.test.junit5.cm,\
+	junit-platform-commons,\
+	junit-jupiter-api,\
+	junit-jupiter-engine,\
+	junit-jupiter-params,\
+	junit-platform-launcher,\
+	junit-platform-runner,\
+	junit-platform-testkit,\
+	assertj-core,\
+	org.eclipse.emf.common,\
+	org.eclipse.emf.ecore,\
+	org.eclipse.emf.ecore.xmi,\
+	org.osgi.util.pushstream,\
 	org.gecko.whiteboard.graphql.api;version=latest,\
 	graphql-java,\
 	graphql-java-servlet,\
-	org.apache.felix.http.servlet-api,\
-	org.apache.felix.http.jetty,\
 	java-dataloader,\
-	com.fasterxml.jackson.core.jackson-core,\
-	com.fasterxml.jackson.core.jackson-databind,\
-	com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider,\
-	org.gecko.emf.osgi.json,\
 	org.eclipse.jetty.client
 
-javac.source: 17
-javac.target: 17
+#	org.apache.felix.http.servlet-api,\
+#	org.apache.felix.http.jetty,\
+#	com.fasterxml.jackson.core.jackson-core,\
+#	com.fasterxml.jackson.core.jackson-databind,\
+#	com.fasterxml.jackson.jaxrs.jackson-jaxrs-json-provider,\
+#	org.gecko.emf.osgi.json,\
 
-Bundle-Version: 1.0.0.SNAPSHOT
+Bundle-Version: 1.1.0.SNAPSHOT
 Private-Package: \
 	org.gecko.whiteboard.graphql.test,\
 	org.gecko.whiteboard.graphql.test.service.impl
-
-Bundle-Copyright: Data In Motion Consulting GmbH
-Bundle-License: Eclipse Public License v1.0
-Bundle-Vendor: Data In Motion Consulting GmbH
-
--includeresource: OSGI-INF/configurator/=configs/
-Require-Capability: osgi.extender;filter:='(osgi.extender=osgi.configurator)'
 
 Export-Package: \
 	org.gecko.whiteboard.graphql.test.dto,\
 	org.gecko.whiteboard.graphql.test.service.api
 
-# Needed for Mockito's mocking to work
--runsystempackages.objenesis: sun.misc,sun.reflect
-
--runfw: org.apache.felix.framework;version='[7.0.5,7.0.5]'
--runvm: -ea
-
--runee: JavaSE-17
-
--runproperties: \
-	org.osgi.service.http.port=8181,\
-	felix.log.level=4,\
-	org.osgi.service.log.admin.loglevel=DEBUG
-
--runtrace: true
-
--runrequires: \
-	bnd.identity;id='org.gecko.whiteboard.graphql.test',\
-	bnd.identity;id='org.apache.felix.gogo.command',\
-	bnd.identity;id='org.apache.felix.gogo.shell',\
-	bnd.identity;id='org.apache.felix.gogo.runtime',\
-	bnd.identity;id='biz.aQute.gogo.commands.provider',\
-	bnd.identity;id='slf4j.simple'	
-
-# We need JUnit and Mockito to resolve the test cases at runtime. 
-# Other runtime dependencies should be added as necessary
--runbundles: \
-	org.apache.servicemix.bundles.junit;version='[4.12.0,4.12.1)',\
-	org.mockito.mockito-core;version='[1.10.19,1.10.20)',\
-	org.objenesis;version='[2.2.0,2.2.1)',\
-	slf4j.api;version='[1.7.25,1.7.26)',\
-	slf4j.simple;version='[1.7.25,1.7.26)',\
-	org.gecko.core.test;version='[1.2.0,1.2.1)',\
-	com.fasterxml.jackson.core.jackson-annotations;version='[2.14.1,2.14.2)',\
-	com.fasterxml.jackson.core.jackson-core;version='[2.14.1,2.14.2)',\
-	com.fasterxml.jackson.core.jackson-databind;version='[2.14.1,2.14.2)',\
-	com.fasterxml.jackson.datatype.jackson-datatype-jdk8;version='[2.14.1,2.14.2)',\
-	graphql-java;version='[19.3.1,19.3.2)',\
-	graphql-java-extended-scalars;version='[19.1.0,19.1.1)',\
-	graphql-java-kickstart;version='[15.0.0,15.0.1)',\
-	graphql-java-servlet;version='[15.0.0,15.0.1)',\
-	jakarta.servlet-api;version='[6.0.0,6.0.1)',\
-	jakarta.websocket-api;version='[2.1.0,2.1.1)',\
-	jakarta.websocket-client-api;version='[2.1.0,2.1.1)',\
-	java-dataloader;version='[3.2.0,3.2.1)',\
-	org.apache.felix.converter;version='[1.0.18,1.0.19)',\
-	org.apache.felix.scr;version='[2.2.6,2.2.7)',\
-	org.gecko.whiteboard.graphql.api;version=snapshot,\
-	org.gecko.whiteboard.graphql.impl;version=snapshot,\
-	org.gecko.whiteboard.graphql.test;version=snapshot,\
-	org.osgi.service.component;version='[1.5.1,1.5.2)',\
-	org.osgi.util.function;version='[1.1.0,1.1.1)',\
-	org.slf4j.api;version='[2.0.6,2.0.7)',\
-	org.slf4j.simple;version='[2.0.6,2.0.7)',\
-	biz.aQute.gogo.commands.provider;version='[1.7.0,1.7.1)',\
-	org.apache.aries.spifly.dynamic.bundle;version='[1.3.6,1.3.7)',\
-	org.apache.felix.gogo.command;version='[1.1.2,1.1.3)',\
-	org.apache.felix.gogo.shell;version='[1.1.4,1.1.5)',\
-	org.objectweb.asm;version='[9.4.0,9.4.1)',\
-	org.objectweb.asm.commons;version='[9.4.0,9.4.1)',\
-	org.objectweb.asm.tree;version='[9.4.0,9.4.1)',\
-	org.objectweb.asm.tree.analysis;version='[9.4.0,9.4.1)',\
-	org.objectweb.asm.util;version='[9.4.0,9.4.1)',\
-	jakarta.json-api;version='[2.1.1,2.1.2)',\
-	org.apache.felix.cm.json;version='[2.0.0,2.0.1)',\
-	org.apache.felix.configadmin;version='[1.9.26,1.9.27)',\
-	org.apache.felix.configurator;version='[1.0.18,1.0.19)',\
-	org.apache.felix.gogo.runtime;version='[1.1.6,1.1.7)',\
-	org.apache.felix.http.jetty;version='[5.0.4,5.0.5)',\
-	org.apache.felix.http.servlet-api;version='[2.1.0,2.1.1)',\
-	org.apache.felix.log;version='[1.2.6,1.2.7)',\
-	org.eclipse.jetty.client;version='[9.4.12,9.4.13)',\
-	org.eclipse.jetty.http;version='[9.4.12,9.4.13)',\
-	org.eclipse.jetty.io;version='[9.4.12,9.4.13)',\
-	org.eclipse.jetty.util;version='[9.4.12,9.4.13)',\
-	reactive-streams;version='[1.0.4,1.0.5)',\
-	ch.qos.logback.core;version='[1.2.3,1.2.4)',\
-	org.apache.commons.logging;version='[1.2.0,1.2.1)',\
-	org.osgi.util.promise;version='[1.1.0,1.1.1)'
-
-
+-includeresource: OSGI-INF/configurator/=configs/
+Require-Capability: osgi.extender;filter:='(osgi.extender=osgi.configurator)'
