@@ -11,8 +11,11 @@
  */
 package org.gecko.whiteboard.graphql.emf.test.impl;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import org.gecko.whiteboard.graphql.annotation.GraphqlMutationService;
 import org.gecko.whiteboard.graphql.annotation.GraphqlQueryService;
@@ -21,33 +24,42 @@ import org.gecko.whiteboard.graphql.emf.test.api.ExampleMutationService;
 import org.gecko.whiteboard.graphql.emf.test.api.ExampleQueryService;
 import org.gecko.whiteboard.graphql.emf.test.model.GraphqlTest.Catalog;
 import org.gecko.whiteboard.graphql.emf.test.model.GraphqlTest.CatalogEntry;
+import org.gecko.whiteboard.graphql.emf.test.model.GraphqlTest.Currency;
 import org.gecko.whiteboard.graphql.emf.test.model.GraphqlTest.GraphQLTestFactory;
 import org.gecko.whiteboard.graphql.emf.test.model.GraphqlTest.Product;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ServiceScope;
 
 import graphql.schema.DataFetchingEnvironment;
 
-@Component(scope = ServiceScope.PROTOTYPE)
-//@Component
-@GraphqlQueryService( value = ExampleQueryService.class, name = "ExampleQuery" )
-@GraphqlMutationService( value = ExampleMutationService.class, name = "ExampleMutation" )
+@Component
+@GraphqlQueryService(value = ExampleQueryService.class, name = "ExampleQuery")
+@GraphqlMutationService(value = ExampleMutationService.class, name = "ExampleMutation")
 @RequireEMFGraphQLWhiteboard
 public class ExampleImpl implements ExampleQueryService, ExampleMutationService {
 
 	private List<Catalog> catalogs = new LinkedList<>();
-	
+
+	private Map<String, Product> productsMap = new HashMap<>();
+
 	@Activate
 	public void activate() {
 		Catalog catalog = GraphQLTestFactory.eINSTANCE.createCatalog();
-		
 		catalog.setId("Catalog1");
-		catalog.setName("Catalog Number One");
-		
+		catalog.setName("Catalog number one");
 		catalogs.add(catalog);
+
+		Product product = GraphQLTestFactory.eINSTANCE.createProduct();
+		product.setId("Product1");
+		product.setName("Product number one");
+		product.setActive(true);
+		product.setCurrency(Currency.EUR);
+		product.setPrice(9.99);
+		product.setCatalog(catalog);
+		catalog.getEntries().add(product);
+		productsMap.put(product.getId(), product);
 	}
-	
+
 	/* 
 	 * (non-Javadoc)
 	 * @see org.gecko.whiteboard.graphql.emf.test.api.ExampleMutationService#halloWorld(java.lang.String, graphql.schema.DataFetchingEnvironment)
@@ -72,12 +84,11 @@ public class ExampleImpl implements ExampleQueryService, ExampleMutationService 
 	 */
 	@Override
 	public CatalogEntry getEntryById(String id, DataFetchingEnvironment env) {
-		// TODO: implement
-		Product prod = GraphQLTestFactory.eINSTANCE.createProduct();
-		prod.setActive(true);
-		prod.setId("test");
-		prod.setName("A name");
-		return prod;
+		if (productsMap.containsKey(id)) {
+			return productsMap.get(id);
+		} else {
+			return null;
+		}
 	}
 
 	/* 
@@ -86,8 +97,7 @@ public class ExampleImpl implements ExampleQueryService, ExampleMutationService 
 	 */
 	@Override
 	public List<Product> getProducts(String name, DataFetchingEnvironment env) {
-		// TODO: implement
-		return null;
+		return productsMap.values().stream().toList();
 	}
 
 	/* 
@@ -96,8 +106,12 @@ public class ExampleImpl implements ExampleQueryService, ExampleMutationService 
 	 */
 	@Override
 	public Catalog saveCatalog(Catalog catalog, DataFetchingEnvironment env) {
-		// TODO: implement
-		catalog.setId("My ID");
+		if (catalog.getId() == null) {
+			catalog.setId(UUID.randomUUID().toString());
+		}
+
+		catalogs.add(catalog);
+
 		return catalog;
 	}
 
@@ -107,17 +121,32 @@ public class ExampleImpl implements ExampleQueryService, ExampleMutationService 
 	 */
 	@Override
 	public Product saveProduct(Product product, DataFetchingEnvironment env) {
-		// TODO: implement
+		if (product.getId() == null) {
+			product.setId(UUID.randomUUID().toString());
+		}
+
+		productsMap.put(product.getId(), product);
+
 		return product;
 	}
-
+	
 	/* 
 	 * (non-Javadoc)
 	 * @see org.gecko.whiteboard.graphql.emf.test.api.ExampleMutationService#saveProducts(java.util.List, graphql.schema.DataFetchingEnvironment)
 	 */
 	@Override
 	public String saveProducts(List<Product> products, DataFetchingEnvironment env) {
-		// TODO: implement
-		return "List size " + products.size();
+		int savedProductsCount = 0;
+
+		for (Product product : products) {
+			if (product.getId() == null) {
+				product.setId(UUID.randomUUID().toString());
+			}
+			productsMap.put(product.getId(), product);
+
+			savedProductsCount++;
+		}
+
+		return "Saved " + savedProductsCount + " product(s)";
 	}
 }

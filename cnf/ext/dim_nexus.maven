@@ -23,10 +23,6 @@ org.gecko.emf:org.gecko.emf.osgi.model.info.impl:1.0.0
 
 org.gecko.emf.mongo:org.gecko.emf.collections:2.0.9
 
-# TODO: clarify w/ Juergen
-#	https://devel.data-in-motion.biz/nexus/#browse/search=keyword%3Dorg.gecko.emf.pushstreams%20AND%20group.raw%3Dorg.gecko.emf.mongo
-#	https://devel.data-in-motion.biz/nexus/#browse/search=keyword%3Dorg.gecko.emf.pushstreams
-#org.gecko.emf.mongo:org.gecko.emf.pushstreams:1.0.7
 org.gecko.runtime:org.gecko.runtime.application:2.0.5
 org.gecko.runtime:org.gecko.runtime.boot:1.1.1
 org.gecko.runtime:org.gecko.runtime.config:1.0.3
@@ -34,7 +30,5 @@ org.gecko.runtime:org.gecko.runtime.logging:1.0.14
 org.gecko.runtime:org.gecko.runtime.resources:1.0.1
 
 org.gecko.runtime:org.gecko.templates:1.0.31
-#org.gecko.runtime:org.gecko.templates:1.0.24-SNAPSHOT
 
 org.gecko.core:org.gecko.core.test:2.1.0
-#org.gecko.core:org.gecko.core.test:1.2.0

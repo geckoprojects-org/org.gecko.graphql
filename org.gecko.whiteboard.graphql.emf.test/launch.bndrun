@@ -32,6 +32,7 @@
 	slf4j.api;version='[2.0.7,2.0.8)'
 
 -runrequires: \
+	bnd.identity;id='org.gecko.whiteboard.graphql.impl',\
 	bnd.identity;id='org.gecko.whiteboard.graphql.emf.test.impl',\
 	bnd.identity;id='org.apache.felix.gogo.command',\
 	bnd.identity;id='org.apache.felix.gogo.shell',\

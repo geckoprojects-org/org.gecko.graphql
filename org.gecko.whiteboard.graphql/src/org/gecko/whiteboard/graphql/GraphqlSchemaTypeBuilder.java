@@ -20,7 +20,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.gecko.whiteboard.graphql.schema.GeckoGraphQLDateScalar;
+import org.gecko.whiteboard.graphql.scalars.GeckoGraphQLDateScalar;
 
 import graphql.Scalars;
 import graphql.schema.DataFetcher;

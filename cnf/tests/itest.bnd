@@ -13,13 +13,15 @@
 # Needed for Mockito's mocking to work
 -runsystempackages.objenesis: sun.misc,sun.reflect
 
--runrequires.console: \
-	bnd.identity;id='org.apache.felix.gogo.command',\
-	bnd.identity;id='org.apache.felix.gogo.shell',\
-	bnd.identity;id='org.apache.felix.gogo.runtime',\
-	bnd.identity;id='biz.aQute.gogo.commands.provider'
-
 ###################################
+# Uncomment to enable gogo console
+#-runrequires.console: \
+#	bnd.identity;id='org.apache.felix.gogo.command',\
+#	bnd.identity;id='org.apache.felix.gogo.shell',\
+#	bnd.identity;id='org.apache.felix.gogo.runtime',\
+#	bnd.identity;id='biz.aQute.gogo.commands.provider'
+
+########################################
 # Uncomment to enable Felix web console
 #-runrequires.webconsole: \
 #  bnd.identity;id='org.apache.felix.webconsole',\

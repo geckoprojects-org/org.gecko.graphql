@@ -11,23 +11,19 @@
  */
 package org.gecko.whiteboard.graphql;
 
-import java.util.Map;
-
 import org.osgi.annotation.versioning.ProviderType;
 
 import graphql.schema.GraphQLInputType;
 
 /**
- * TODO: javadoc 
- * 
- * @author Michal H. Siemaszko 
+ * @author Michal H. Siemaszko
  * @since Apr 21, 2023
  */
 
 @ProviderType
 public interface GeckoGraphQLValueConverter {
 
-	boolean canHandle(GraphQLInputType inputType, Class<?> outputType);
-
-	Object convert(GraphQLInputType inputType, Class<?> outputType, Map<String, Object> toConvert);
+	boolean canHandle(GraphQLInputType inputType, Class<?> outputType, Object outputValue);
+	
+	Object convert(Class<?> outputType, Object toConvert);
 }

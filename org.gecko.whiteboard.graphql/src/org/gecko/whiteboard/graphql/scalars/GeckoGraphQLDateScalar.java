@@ -9,7 +9,7 @@
  * Contributors:
  *     Data In Motion - initial API and implementation
  */
-package org.gecko.whiteboard.graphql.schema;
+package org.gecko.whiteboard.graphql.scalars;
 
 import java.math.BigDecimal;
 import java.text.DateFormat;

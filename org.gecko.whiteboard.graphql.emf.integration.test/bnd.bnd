@@ -36,7 +36,11 @@
 	org.gecko.whiteboard.graphql.emf.test.model;version=latest,\
 	graphql-java,\
 	java-dataloader,\
-	org.eclipse.jetty.client	
+	org.eclipse.jetty.client,\
+	org.apache.felix.http.jetty,\
+	com.fasterxml.jackson.core.jackson-databind,\
+	com.fasterxml.jackson.core.jackson-annotations,\
+	com.fasterxml.jackson.core.jackson-core
 
 #	org.apache.felix.http.jetty,\
 #	com.fasterxml.jackson.core.jackson-core,\
