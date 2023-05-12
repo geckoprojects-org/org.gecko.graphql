@@ -4,11 +4,12 @@
 	osgi.annotation;version=7.0,\
 	osgi.core;version=7.0,\
 	osgi.cmpn;version=7.0,\
-	org.gecko.whiteboard.graphql.emf.example.model,\
-	org.gecko.whiteboard.graphql.api,\
-	org.eclipse.emf.common,\
+	org.gecko.whiteboard.graphql.emf.example.model;version=latest,\
 	org.eclipse.emf.ecore,\
-	org.eclipse.emf.ecore.xmi
+	org.eclipse.emf.common,,\
+	org.eclipse.emf.ecore.xmi,\
+	org.gecko.whiteboard.graphql.api;version=latest,\
+	graphql-java
 
 # This is the version of JUnit that will be used at build time and run time
 junit: org.apache.servicemix.bundles.junit;version="[4.11,5)"
@@ -19,4 +20,3 @@ junit: org.apache.servicemix.bundles.junit;version="[4.11,5)"
 Bundle-Version: 1.1.0.SNAPSHOT
 
 -sub: *.bnd
-

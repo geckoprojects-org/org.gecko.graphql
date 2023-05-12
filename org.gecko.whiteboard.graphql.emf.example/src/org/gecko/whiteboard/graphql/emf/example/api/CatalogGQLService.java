@@ -13,7 +13,7 @@ package org.gecko.whiteboard.graphql.emf.example.api;
 
 import org.gecko.whiteboard.graphql.annotation.GraphqlArgument;
 import org.gecko.whiteboard.graphql.annotation.GraphqlDocumentation;
-import org.gecko.whiteboard.graphql.emf.test.model.GraphqlTest.Catalog;
+import org.gecko.whiteboard.graphql.emf.example.model.GraphqlTest.Catalog;
 import org.osgi.annotation.versioning.ProviderType;
 
 @ProviderType

@@ -15,7 +15,7 @@ import org.gecko.whiteboard.graphql.annotation.GraphqlQueryService;
 import org.gecko.whiteboard.graphql.annotation.RequireEMFGraphQLWhiteboard;
 import org.gecko.whiteboard.graphql.emf.example.api.CatalogGQLService;
 import org.gecko.whiteboard.graphql.emf.example.api.CatalogService;
-import org.gecko.whiteboard.graphql.emf.test.model.GraphqlTest.Catalog;
+import org.gecko.whiteboard.graphql.emf.example.model.GraphqlTest.Catalog;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceScope;

@@ -1,5 +1,9 @@
 # Expose OSGi Services via GraphQL 
 
+**Please note**: example contained in this bundle is incomplete and is now deprecated. Please use automated test contained in `org.gecko.whiteboard.graphql.emf.example.test` bundle, which covers all methods from implementation contained in `org.gecko.whiteboard.graphql.emf.example.service` bundle.
+
+---
+
 In this tutorial we provide some guidelines in order to be able to expose your OSGi services,  which return simple Pojos, via GraphQL. If instead you are using EMF, the only thing that changes is an annotation and a few dependencies, as we mention at the end of the tutorial, but you can read the tutorial as well, since the basic steps are the same. Let`s start!
 
 1. Create your Pojos (or your Ecore model, if you are using EMF). We created a simple Pojo called *MyTestObject*

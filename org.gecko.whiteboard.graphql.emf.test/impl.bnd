@@ -1,4 +1,0 @@
-Private-Package: org.gecko.whiteboard.graphql.emf.test.impl
-
--includeresource: OSGI-INF/configurator/=configs/
-Require-Capability: osgi.extender;filter:='(osgi.extender=osgi.configurator)'
