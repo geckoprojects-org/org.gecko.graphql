@@ -5,6 +5,9 @@
 	felix.log.level=4,\
 	org.osgi.service.log.admin.loglevel=DEBUG
 
+-runproperties.http: \
+	org.osgi.service.http.port=-1
+
 -runtrace: true
 
 -includeresource.resources: \
