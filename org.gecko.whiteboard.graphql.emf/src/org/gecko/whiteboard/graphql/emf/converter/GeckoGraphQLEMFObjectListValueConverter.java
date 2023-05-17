@@ -34,7 +34,7 @@ import graphql.schema.GraphQLNonNull;
  * @since May 12, 2023
  */
 @Component(immediate = true, name = "GeckoGraphQLEMFObjectListValueConverter")
-@Capability(namespace = ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name = OSGI_EMF_GRAPHQL_VALUE_CONVERTER_CAPABILITY_NAME, version = "1.1.0")
+@Capability(namespace = ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name = OSGI_EMF_GRAPHQL_VALUE_CONVERTER_CAPABILITY_NAME, version = "2.0.0")
 public class GeckoGraphQLEMFObjectListValueConverter implements GeckoGraphQLValueConverter {
 
 	@Reference

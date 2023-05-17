@@ -33,7 +33,7 @@ import org.gecko.whiteboard.graphql.GeckoGraphQLConstants;
 @Target({
 		ElementType.TYPE, ElementType.PACKAGE
 })
-@Requirement(namespace=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name=GeckoGraphQLConstants.OSGI_GRAPHQL_CAPABILITY_NAME, version="1.1.0")
+@Requirement(namespace=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name=GeckoGraphQLConstants.OSGI_GRAPHQL_CAPABILITY_NAME, version="2.0.0")
 public @interface RequireGraphQLWhiteboard {
 
 }
