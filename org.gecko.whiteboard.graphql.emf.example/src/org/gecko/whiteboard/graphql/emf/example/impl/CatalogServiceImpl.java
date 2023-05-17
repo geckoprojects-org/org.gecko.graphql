@@ -14,8 +14,8 @@ package org.gecko.whiteboard.graphql.emf.example.impl;
 import org.osgi.service.component.annotations.*;
 
 import org.gecko.whiteboard.graphql.emf.example.api.CatalogService;
-import org.gecko.whiteboard.graphql.emf.test.model.GraphqlTest.Catalog;
-import org.gecko.whiteboard.graphql.emf.test.model.GraphqlTest.GraphQLTestFactory;
+import org.gecko.whiteboard.graphql.emf.example.model.GraphqlTest.Catalog;
+import org.gecko.whiteboard.graphql.emf.example.model.GraphqlTest.GraphQLTestFactory;
 
 @Component(scope = ServiceScope.PROTOTYPE)
 public class CatalogServiceImpl implements CatalogService{

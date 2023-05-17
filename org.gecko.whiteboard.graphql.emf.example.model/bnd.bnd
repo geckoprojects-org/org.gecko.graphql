@@ -1,0 +1,34 @@
+-include: ${workspace}/cnf/eclipse/jdt.bnd
+
+-buildpath: \
+	osgi.annotation;version=7.0.0,\
+	osgi.core;version=6.0,\
+	osgi.cmpn;version=7.0,\
+	org.gecko.emf.osgi.annotation;version=latest,\
+	org.gecko.emf.osgi.api;version=latest,\
+	org.eclipse.emf.common,\
+	org.eclipse.emf.ecore,\
+	org.eclipse.emf.ecore.xmi
+
+-testpath: \
+	${junit}
+
+-includeresource model/=model
+
+Bundle-Name: Example model
+Bundle-SymbolicName: org.gecko.whiteboard.graphql.emf.example.model;singleton:=true
+Bundle-Version: 1.1.0.SNAPSHOT
+
+Private-Package: \
+	org.gecko.whiteboard.graphql.emf.example.model.GraphqlTest.configuration
+
+Export-Package: \
+	org.gecko.whiteboard.graphql.emf.example.model.GraphqlTest,\
+ 	org.gecko.whiteboard.graphql.emf.example.model.GraphqlTest.impl,\
+ 	org.gecko.whiteboard.graphql.emf.example.model.GraphqlTest.util
+
+Import-Package: \
+	,\
+	!org.gecko.whiteboard.graphql.emf.example.model.GraphqlTest.*,\
+ 	*
+

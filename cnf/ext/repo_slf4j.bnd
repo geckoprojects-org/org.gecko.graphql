@@ -1,0 +1,19 @@
+-plugin.slf4j: \
+	aQute.bnd.repository.maven.pom.provider.BndPomRepository;\
+		releaseUrl			= "https://repo.maven.apache.org/maven2/,https://devel.data-in-motion.biz/nexus/repository/dim-release/"; \
+		snapshotUrl			= "https://devel.data-in-motion.biz/nexus/repository/dim-snapshot/";\
+		name                = "Slf4j and Logback Dependencies";\
+		revision            = "${logDependencies}" ;\
+		poll_time			= -1;\
+		transitive          = false
+
+logDependencies: \
+	ch.qos.logback:logback-classic:1.4.6,\
+	ch.qos.logback:logback-core:1.4.6,\
+	org.slf4j:jul-to-slf4j:2.0.7,\
+	org.slf4j:log4j-over-slf4j:2.0.7,\
+	org.slf4j:osgi-over-slf4j:2.0.7,\
+	org.slf4j:slf4j-api:2.0.7,\
+	org.slf4j:slf4j-simple:2.0.7,\
+	org.slf4j:slf4j-ext:2.0.7,\
+	org.slf4j:slf4j-jcl:1.7.36

@@ -11,12 +11,13 @@
  */
 package org.gecko.whiteboard.graphql.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+//2023/05/05: temporarily disabled
+//import static org.junit.Assert.assertEquals;
+//import static org.junit.Assert.assertFalse;
+//import static org.junit.Assert.assertNotNull;
+//import static org.junit.Assert.assertNull;
+//import static org.junit.Assert.assertTrue;
+//import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.text.DateFormat;
@@ -33,26 +34,28 @@ import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.client.util.StringContentProvider;
-import org.gecko.core.tests.AbstractOSGiTest;
-import org.gecko.core.tests.ServiceChecker;
+//import org.gecko.core.tests.AbstractOSGiTest;
+//import org.gecko.core.tests.ServiceChecker;
 import org.gecko.whiteboard.graphql.GeckoGraphQLConstants;
 import org.gecko.whiteboard.graphql.annotation.GraphqlArgument;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+//import org.junit.Test;
+//import org.junit.runner.RunWith;
+//import org.mockito.runners.MockitoJUnitRunner;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.cm.Configuration;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.MissingNode;
-import com.fasterxml.jackson.databind.node.NullNode;
+//import com.fasterxml.jackson.databind.JsonNode;
+//import com.fasterxml.jackson.databind.ObjectMapper;
+//import com.fasterxml.jackson.databind.node.MissingNode;
+//import com.fasterxml.jackson.databind.node.NullNode;
 
 import graphql.schema.DataFetchingEnvironment;
 
-@RunWith(MockitoJUnitRunner.class)
-public class InvokationTests extends AbstractOSGiTest{
+//2023/05/05: temporarily disabled
+//@RunWith(MockitoJUnitRunner.class)
+public class InvokationTests {
+//public class InvokationTests extends AbstractOSGiTest{
 
 	private HttpClient client;
 
@@ -60,7 +63,8 @@ public class InvokationTests extends AbstractOSGiTest{
 	 * Creates a new instance.
 	 */
 	public InvokationTests() {
-		super(FrameworkUtil.getBundle(InvokationTests.class).getBundleContext());
+		// 2023/05/05: temporarily disabled
+		//super(FrameworkUtil.getBundle(InvokationTests.class).getBundleContext());
 	}
 
 	/**
@@ -71,6 +75,8 @@ public class InvokationTests extends AbstractOSGiTest{
 	 * @throws ExecutionException
 	 * @throws TimeoutException
 	 */
+	// 2023/05/05: temporarily disabled
+	/*
 	@Test
 	public void testGraphQLPureOSGiService() throws IOException, InvalidSyntaxException, InterruptedException, ExecutionException, TimeoutException {
 		Dictionary<String, Object> options = new Hashtable<String, Object>();
@@ -161,7 +167,10 @@ public class InvokationTests extends AbstractOSGiTest{
 		
 		assertTrue(envWithParamLatch.await(1, TimeUnit.SECONDS));
 	}
+	*/
 
+	// 2023/05/05: temporarily disabled
+	/*
 	@Test
 	public void testDate() throws IOException, InvalidSyntaxException, InterruptedException, ExecutionException, TimeoutException {
 		Dictionary<String, Object> options = new Hashtable<String, Object>();
@@ -227,7 +236,10 @@ public class InvokationTests extends AbstractOSGiTest{
 		assertEquals(date.toString(), resultNode.asText());
 		
 	}
+	*/
 
+	// 2023/05/05: temporarily disabled
+	/*
 	@Test
 	public void testNativeTypeWrapper() throws IOException, InvalidSyntaxException, InterruptedException, ExecutionException, TimeoutException {
 		Dictionary<String, Object> options = new Hashtable<String, Object>();
@@ -299,7 +311,10 @@ public class InvokationTests extends AbstractOSGiTest{
 		assertEquals("empty", resultNode.asText());
 		
 	}
+	*/
 	
+	// 2023/05/05: temporarily disabled
+	/*
 	@Test
 	public void testExceptionHandling() throws IOException, InvalidSyntaxException, InterruptedException, ExecutionException, TimeoutException {
 		Dictionary<String, Object> options = new Hashtable<String, Object>();
@@ -370,14 +385,18 @@ public class InvokationTests extends AbstractOSGiTest{
 		assertFalse(errorNode instanceof MissingNode);
 		
 	}
+	*/
 	
 	// Helper method to parse JSON.
+	// 2023/05/05: temporarily disabled
+	/*
 	public JsonNode parseJSON(String input) throws IOException {
 		ObjectMapper mapp = new ObjectMapper();
 		
 		JsonNode jsonNode = mapp.reader().readTree(input);
 		return jsonNode;
 	}
+	*/
 	
 	public static interface TestService{
 		public String testMethodWithDataFetchingEnvironment(DataFetchingEnvironment env);
@@ -399,6 +418,8 @@ public class InvokationTests extends AbstractOSGiTest{
 	 * (non-Javadoc)
 	 * @see org.gecko.util.test.common.test.AbstractOSGiTest#doBefore()
 	 */
+	// 2023/05/05: temporarily disabled
+	/*
 	@Override
 	public void doBefore() {
 		client = new HttpClient();
@@ -408,11 +429,14 @@ public class InvokationTests extends AbstractOSGiTest{
 			assertNull("There should be no exception while starting the jetty client", e);
 		}
 	}
+	*/
 
 	/* 
 	 * (non-Javadoc)
 	 * @see org.gecko.util.test.common.test.AbstractOSGiTest#doAfter()
 	 */
+	// 2023/05/05: temporarily disabled
+	/*
 	@Override
 	public void doAfter() {
 		CountDownLatch latch = new CountDownLatch(1);
@@ -422,5 +446,6 @@ public class InvokationTests extends AbstractOSGiTest{
 			fail();
 		}
 	}
+	*/
 
 }

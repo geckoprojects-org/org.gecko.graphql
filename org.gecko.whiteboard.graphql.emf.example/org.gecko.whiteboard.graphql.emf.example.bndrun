@@ -1,55 +1,102 @@
--runfw: org.apache.felix.framework;version=4
--runee: JavaSE-1.8
--runprovidedcapabilities: ${native_capability}
+
+-runfw: org.apache.felix.framework;version='[7.0.5,7.0.5]'
+-runee: JavaSE-17
+
+-runprovidedcapabilities: \
+	${native_capability}
 
 -resolve.effective: active;skip:="osgi.service"
 
--runbundles: \
-	com.fasterxml.jackson.core.jackson-annotations;version='[2.9.7,2.9.8)',\
-	com.fasterxml.jackson.core.jackson-core;version='[2.9.7,2.9.8)',\
-	com.fasterxml.jackson.core.jackson-databind;version='[2.9.7,2.9.8)',\
-	com.fasterxml.jackson.datatype.jackson-datatype-jdk8;version='[2.9.2,2.9.3)',\
-	com.google.guava;version='[22.0.0,22.0.1)',\
-	com.graphql-java;version='[11.0.0,11.0.1)',\
-	javax.websocket-api;version='[1.1.0,1.1.1)',\
-	org.antlr.antlr4-runtime;version='[4.7.1,4.7.2)',\
-	org.apache.commons.logging;version='[1.2.0,1.2.1)',\
-	org.apache.felix.gogo.command;version='[1.0.2,1.0.3)',\
-	org.apache.felix.gogo.runtime;version='[1.1.0,1.1.1)',\
-	org.apache.felix.gogo.shell;version='[1.1.0,1.1.1)',\
-	org.apache.felix.http.jetty;version='[4.0.6,4.0.7)',\
-	org.apache.felix.http.servlet-api;version='[1.1.2,1.1.3)',\
-	org.apache.felix.scr;version='[2.1.14,2.1.15)',\
-	org.dataloader.java-dataloader;version='[2.2.0,2.2.1)',\
-	org.gecko.whiteboard.graphql.api;version='[1.0.0,1.0.1)',\
-	org.gecko.whiteboard.graphql.impl;version='[1.0.0,1.0.1)',\
-	org.reactivestreams.reactive-streams;version='[1.0.2,1.0.3)',\
-	slf4j.api;version='[1.7.25,1.7.26)',\
-	ch.qos.logback.core;version='[1.2.3,1.2.4)',\
-	slf4j.jcl;version='[1.7.25,1.7.26)',\
-	slf4j.simple;version='[1.7.25,1.7.26)',\
-	org.apache.felix.configadmin;version='[1.9.10,1.9.11)',\
-	org.apache.felix.configurator;version='[1.0.8,1.0.9)',\
-	org.gecko.emf.osgi.api;version='[3.1.2,3.1.3)',\
-	org.gecko.emf.osgi.component;version='[2.2.8,2.2.9)',\
-	org.gecko.emf.osgi.ecore;version='[2.2.4,2.2.5)',\
-	org.gecko.emf.osgi.model.info.api;version='[1.0.0,1.0.1)',\
-	org.gecko.emf.osgi.model.info.impl;version='[1.0.0,1.0.1)',\
-	org.gecko.whiteboard.graphql.emf;version='[1.0.0,1.0.1)',\
-	org.gecko.whiteboard.graphql.emf.example.api;version='[1.0.0,1.0.1)',\
-	org.gecko.whiteboard.graphql.emf.example.config;version='[1.0.0,1.0.1)',\
-	org.gecko.whiteboard.graphql.emf.example.impl;version='[1.0.0,1.0.1)',\
-	org.gecko.whiteboard.graphql.emf.test.model;version='[1.0.0,1.0.1)',\
-	com.google.guava;version='[20.0.0,20.0.1)',\
-	org.apache.felix.metatype;version='[1.2.2,1.2.3)',\
-	org.eclipse.emf.common;version='[2.15.0,2.15.1)',\
-	org.eclipse.emf.ecore;version='[2.17.0,2.17.1)',\
-	org.eclipse.emf.ecore.xmi;version='[2.15.0,2.15.1)'
+-runproperties: \
+	felix.log.level=4,\
+	org.osgi.service.log.admin.loglevel=DEBUG
+	
+-runproperties.slf4j: \
+	logback.configurationFile=file:${.}/configs/logback.xml,\
+	eclipse.log.enabled=false
+
+-runproperties.http: \
+	org.osgi.service.http.port=-1
+
+-runtrace: true
+
+-runsystempackages.slf4j: \
+	org.slf4j;version=2.0.7,\
+	org.slf4j.helpers;version=2.0.7,\
+	org.slf4j.spi;version=2.0.7
+
+-runpath.slf4j: \
+	ch.qos.logback.classic;version='[1.4.6,1.4.7)',\
+	ch.qos.logback.core;version='[1.4.6,1.4.7)',\
+	jul.to.slf4j;version='[2.0.7,2.0.8)',\
+	slf4j.api;version='[2.0.7,2.0.8)'
 
 -runrequires: \
-	osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.shell)',\
-	osgi.identity;filter:='(osgi.identity=org.apache.felix.gogo.command)',\
-	bnd.identity;id='slf4j.simple',\
-	bnd.identity;id='slf4j.api',\
 	bnd.identity;id='org.gecko.whiteboard.graphql.emf.example.impl',\
-	bnd.identity;id='org.gecko.whiteboard.graphql.emf.example.config'
+	bnd.identity;id='org.gecko.whiteboard.graphql.emf.example.config',\
+	bnd.identity;id='org.apache.felix.gogo.command',\
+	bnd.identity;id='org.apache.felix.gogo.shell',\
+	bnd.identity;id='org.apache.felix.gogo.runtime',\
+	bnd.identity;id='biz.aQute.gogo.commands.provider',\
+	bnd.identity;id='org.apache.felix.http.servlet-api',\
+	bnd.identity;id='org.apache.felix.eventadmin'
+
+-runrequires.slf4j: \
+	bnd.identity;id='org.apache.felix.logback'
+
+# see: 
+#  * https://felix.apache.org/documentation/subprojects/apache-felix-log.html
+#  * https://felix.apache.org/documentation/subprojects/apache-felix-logback.html
+-runbundles+.slf4j: \
+	org.apache.felix.log;version='[1.2.6,1.2.7)';startlevel=10,\
+	org.apache.felix.logback;version='[1.0.6,1.0.7)';startlevel=11,\
+	*;startlevel=100
+
+-runstartlevel: \
+    order = sortbynameversion, \
+    begin = 10, \
+    step  = 1
+
+-runbundles: \
+	biz.aQute.gogo.commands.provider;version='[1.7.0,1.7.1)';startlevel=10,\
+	com.fasterxml.jackson.core.jackson-annotations;version='[2.14.2,2.14.3)';startlevel=11,\
+	com.fasterxml.jackson.core.jackson-core;version='[2.14.2,2.14.3)';startlevel=12,\
+	com.fasterxml.jackson.core.jackson-databind;version='[2.14.2,2.14.3)';startlevel=13,\
+	com.fasterxml.jackson.datatype.jackson-datatype-jdk8;version='[2.14.2,2.14.3)';startlevel=14,\
+	graphql-java;version='[20.2.0,20.2.1)';startlevel=15,\
+	graphql-java-extended-scalars;version='[20.0.0,20.0.1)';startlevel=16,\
+	graphql-java-kickstart;version='[15.0.1,15.0.2)';startlevel=17,\
+	graphql-java-servlet;version='[15.0.1,15.0.2)';startlevel=18,\
+	jakarta.websocket-api;version='[2.1.0,2.1.1)';startlevel=19,\
+	jakarta.websocket-client-api;version='[2.1.0,2.1.1)';startlevel=20,\
+	java-dataloader;version='[3.2.0,3.2.1)';startlevel=21,\
+	org.apache.felix.configadmin;version='[1.9.8,1.9.9)';startlevel=22,\
+	org.apache.felix.configurator;version='[1.0.8,1.0.9)';startlevel=23,\
+	org.apache.felix.eventadmin;version='[1.6.4,1.6.5)';startlevel=24,\
+	org.apache.felix.gogo.command;version='[1.1.2,1.1.3)';startlevel=25,\
+	org.apache.felix.gogo.runtime;version='[1.1.6,1.1.7)';startlevel=26,\
+	org.apache.felix.gogo.shell;version='[1.1.4,1.1.5)';startlevel=27,\
+	org.apache.felix.http.jetty;version='[5.0.4,5.0.5)';startlevel=28,\
+	org.apache.felix.http.servlet-api;version='[2.1.0,2.1.1)';startlevel=29,\
+	org.apache.felix.log;version='[1.2.6,1.2.7)';startlevel=30,\
+	org.apache.felix.logback;version='[1.0.6,1.0.7)';startlevel=31,\
+	org.apache.felix.scr;version='[2.2.6,2.2.7)';startlevel=32,\
+	org.eclipse.emf.common;version='[2.15.0,2.15.1)';startlevel=33,\
+	org.eclipse.emf.ecore;version='[2.17.0,2.17.1)';startlevel=34,\
+	org.eclipse.emf.ecore.xmi;version='[2.15.0,2.15.1)';startlevel=35,\
+	org.gecko.emf.osgi.api;version='[3.1.2,3.1.3)';startlevel=36,\
+	org.gecko.emf.osgi.component;version='[2.2.8,2.2.9)';startlevel=37,\
+	org.gecko.emf.osgi.ecore;version='[2.2.4,2.2.5)';startlevel=38,\
+	org.gecko.emf.osgi.model.info.api;version='[1.0.0,1.0.1)';startlevel=39,\
+	org.gecko.emf.osgi.model.info.impl;version='[1.0.0,1.0.1)';startlevel=40,\
+	org.gecko.whiteboard.graphql.api;version=snapshot;startlevel=41,\
+	org.gecko.whiteboard.graphql.emf;version=snapshot;startlevel=42,\
+	org.gecko.whiteboard.graphql.emf.example.api;version=snapshot;startlevel=43,\
+	org.gecko.whiteboard.graphql.emf.example.config;version=snapshot;startlevel=44,\
+	org.gecko.whiteboard.graphql.emf.example.impl;version=snapshot;startlevel=45,\
+	org.gecko.whiteboard.graphql.emf.example.model;version=snapshot;startlevel=46,\
+	org.gecko.whiteboard.graphql.impl;version=snapshot;startlevel=47,\
+	org.osgi.service.component;version='[1.5.1,1.5.2)';startlevel=48,\
+	org.osgi.util.function;version='[1.1.0,1.1.1)';startlevel=49,\
+	org.osgi.util.promise;version='[1.1.0,1.1.1)';startlevel=50,\
+	reactive-streams;version='[1.0.4,1.0.5)';startlevel=51

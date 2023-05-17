@@ -1,0 +1,32 @@
+-remoteworkspace true
+
+# Detailed logging
+-runproperties.debug: \
+	felix.log.level=4,\
+	org.osgi.service.log.admin.loglevel=DEBUG
+
+-runtrace: true
+
+-includeresource.resources: \
+	data=data/	
+
+# Needed for Mockito's mocking to work
+-runsystempackages.objenesis: sun.misc,sun.reflect
+
+###################################
+# Uncomment to enable gogo console
+#-runrequires.console: \
+#	bnd.identity;id='org.apache.felix.gogo.command',\
+#	bnd.identity;id='org.apache.felix.gogo.shell',\
+#	bnd.identity;id='org.apache.felix.gogo.runtime',\
+#	bnd.identity;id='biz.aQute.gogo.commands.provider'
+
+########################################
+# Uncomment to enable Felix web console
+#-runrequires.webconsole: \
+#  bnd.identity;id='org.apache.felix.webconsole',\
+#  bnd.identity;id='org.apache.felix.webconsole.plugins.ds',\
+#  bnd.identity;id='slf4j.simple'
+
+-runfw: org.apache.felix.framework;version='[7.0.5,7.0.5]'
+-runee: JavaSE-17

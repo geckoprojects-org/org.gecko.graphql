@@ -1,8 +1,18 @@
 {
-  ":configurator:resource-version": 1,
-  
-	"GeckoGraphQLWhiteboard": 
-  	{
-	}
-
+	":configurator:resource-version": 1,
+	":configurator:version": "1.0.0",
+	":configurator:symbolic-name": "GraphQLEMFExampleMainConfig",
+	
+	"org.apache.felix.http~GraphQL": {
+		"org.osgi.service.http.port": "8082",
+		"org.osgi.service.http.host": "0.0.0.0",
+		"org.apache.felix.http.context_path": "/",
+		"org.apache.felix.http.name": "graphql_http",
+		"org.apache.felix.http.runtime.init.id": "graphql_http"
+	},
+	
+	"GeckoGraphQLWhiteboard~example": {
+		"osgi.http.whiteboard.target": "(id=graphql_http)",
+		"osgi.graphql.tracing.enabled": true
+	}	
 }

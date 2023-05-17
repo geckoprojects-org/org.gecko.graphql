@@ -1,23 +1,24 @@
+-include: ${workspace}/cnf/eclipse/jdt.bnd
+
 -buildpath: \
-	osgi.annotation;version=7.0,\
-	osgi.core;version=7.0,\
-	osgi.cmpn;version=7.0,\
-	com.graphql-java-kickstart.graphql-java-servlet,\
-	org.apache.felix.http.servlet-api,\
-	javax.websocket-api,\
-	com.graphql-java,\
+	osgi.annotation;version='7.0',\
+	osgi.core;version='7.0',\
+	osgi.cmpn;version='7.0',\
+	graphql-java,\
+	graphql-java-extended-scalars,\
+	graphql-java-kickstart,\
+	graphql-java-servlet,\
+	jakarta.servlet-api,\
+	jakarta.websocket-api,\
+	jakarta.websocket-client-api,\
 	slf4j.api
+
+# This is the version of JUnit that will be used at build time and run time
+junit: org.apache.servicemix.bundles.junit;version="[4.11,5)"
 
 -testpath: \
 	${junit}
 
-javac.source: 1.8
-javac.target: 1.8
-
-Bundle-Version: 1.0.0.SNAPSHOT
-
-Bundle-Copyright: Data In Motion Consulting GmbH
-Bundle-License: Eclipse Public License v1.0
-Bundle-Vendor: Data In Motion Consulting GmbH
+Bundle-Version: 1.1.0.SNAPSHOT
 
 -sub: *.bnd

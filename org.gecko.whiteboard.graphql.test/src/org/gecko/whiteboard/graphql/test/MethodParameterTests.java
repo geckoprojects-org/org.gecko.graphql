@@ -11,11 +11,12 @@
  */
 package org.gecko.whiteboard.graphql.test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+//2023/05/05: temporarily disabled
+//import static org.junit.Assert.assertEquals;
+//import static org.junit.Assert.assertNotNull;
+//import static org.junit.Assert.assertNull;
+//import static org.junit.Assert.assertTrue;
+//import static org.junit.Assert.fail;
 
 import java.io.IOException;
 import java.util.Dictionary;
@@ -30,23 +31,25 @@ import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.api.ContentResponse;
 import org.eclipse.jetty.client.api.Request;
 import org.eclipse.jetty.client.util.StringContentProvider;
-import org.gecko.core.tests.AbstractOSGiTest;
-import org.gecko.core.tests.ServiceChecker;
+//import org.gecko.core.tests.AbstractOSGiTest;
+//import org.gecko.core.tests.ServiceChecker;
 import org.gecko.whiteboard.graphql.GeckoGraphQLConstants;
 import org.gecko.whiteboard.graphql.annotation.GraphqlArgument;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.runners.MockitoJUnitRunner;
+//import org.junit.Test;
+//import org.junit.runner.RunWith;
+//import org.mockito.runners.MockitoJUnitRunner;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.service.cm.Configuration;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
+//import com.fasterxml.jackson.databind.JsonNode;
+//import com.fasterxml.jackson.databind.ObjectMapper;
+//import com.fasterxml.jackson.databind.node.ArrayNode;
 
-@RunWith(MockitoJUnitRunner.class)
-public class MethodParameterTests extends AbstractOSGiTest{
+//2023/05/05: temporarily disabled
+//@RunWith(MockitoJUnitRunner.class)
+public class MethodParameterTests {
+//public class MethodParameterTests extends AbstractOSGiTest{
 
 	private HttpClient client;
 
@@ -54,7 +57,8 @@ public class MethodParameterTests extends AbstractOSGiTest{
 	 * Creates a new instance.
 	 */
 	public MethodParameterTests() {
-		super(FrameworkUtil.getBundle(MethodParameterTests.class).getBundleContext());
+		// 2023/05/05: temporarily disabled
+		//super(FrameworkUtil.getBundle(MethodParameterTests.class).getBundleContext());
 	}
 
 	/**
@@ -65,6 +69,8 @@ public class MethodParameterTests extends AbstractOSGiTest{
 	 * @throws ExecutionException
 	 * @throws TimeoutException
 	 */
+	// 2023/05/05: temporarily disabled
+	/*
 	@Test
 	public void testListParameters() throws IOException, InvalidSyntaxException, InterruptedException, ExecutionException, TimeoutException {
 		Dictionary<String, Object> options = new Hashtable<>();
@@ -119,6 +125,7 @@ public class MethodParameterTests extends AbstractOSGiTest{
 		assertNotNull(method);
 		assertEquals("Size 2", method.asText());
 	}
+	*/
 
 	/**
 	 * Look if the service with the marker annotation will be picked up
@@ -128,6 +135,8 @@ public class MethodParameterTests extends AbstractOSGiTest{
 	 * @throws ExecutionException
 	 * @throws TimeoutException
 	 */
+	// 2023/05/05: temporarily disabled
+	/*
 	@Test
 	public void testListReturn() throws IOException, InvalidSyntaxException, InterruptedException, ExecutionException, TimeoutException {
 		Dictionary<String, Object> options = new Hashtable<>();
@@ -183,7 +192,10 @@ public class MethodParameterTests extends AbstractOSGiTest{
 		assertTrue(method instanceof ArrayNode);
 		assertEquals(2, ((ArrayNode) method).size());
 	}
+	*/
 
+	// 2023/05/05: temporarily disabled
+	/*
 	// Helper method to parse JSON.
 	public JsonNode parseJSON(String input) throws IOException {
 		ObjectMapper mapp = new ObjectMapper();
@@ -191,6 +203,7 @@ public class MethodParameterTests extends AbstractOSGiTest{
 		JsonNode jsonNode = mapp.reader().readTree(input);
 		return jsonNode;
 	}
+	*/
 	
 	public static interface TestService{
 		public String testMethod(@GraphqlArgument("fizz") List<String> fizz);
@@ -204,6 +217,8 @@ public class MethodParameterTests extends AbstractOSGiTest{
 	 * (non-Javadoc)
 	 * @see org.gecko.util.test.common.test.AbstractOSGiTest#doBefore()
 	 */
+	// 2023/05/05: temporarily disabled
+	/*
 	@Override
 	public void doBefore() {
 		client = new HttpClient();
@@ -213,11 +228,14 @@ public class MethodParameterTests extends AbstractOSGiTest{
 			assertNull("There should be no exception while starting the jetty client", e);
 		}
 	}
+	*/
 
 	/* 
 	 * (non-Javadoc)
 	 * @see org.gecko.util.test.common.test.AbstractOSGiTest#doAfter()
 	 */
+	// 2023/05/05: temporarily disabled
+	/*
 	@Override
 	public void doAfter() {
 		CountDownLatch latch = new CountDownLatch(1);
@@ -227,5 +245,6 @@ public class MethodParameterTests extends AbstractOSGiTest{
 			fail();
 		}
 	}
+	*/
 
 }

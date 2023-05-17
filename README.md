@@ -16,7 +16,8 @@ Two examples, one with simple Pojos and one with EMF, are provided. Look at `org
 
 The whiteboard provides a Servlet, that handles all GraphQL in different manners for you. As such, it makes use of the  [OSGi Http Whiteboad](https://osgi.org/specification/osgi.cmpn/7.0.0/service.http.whiteboard.html) and thus has a strong requirement for such an implementation. Thus it also requires a R/ compatible OSGi implementation.
 
-The current implementation is based on GraphQL (Version 11) and Java 1.8 as a minimum.
+The current implementation is based on [GraphQL Java](https://github.com/graphql-java/graphql-java), patched version of [GraphQL Java Servlet](https://github.com/graphql-java-kickstart/graphql-java-servlet) and Java 17 as a minimum.
+
 
 ## Artifacts and Repositories
 
@@ -26,13 +27,12 @@ Release Repository - https://devel.data-in-motion.biz/nexus/repository/dim-relea
 Snapshot Repository - https://devel.data-in-motion.biz/nexus/repository/dim-snapshot/
 
 Artifacts
-
-org.gecko.graphql:org.gecko.whiteboard.graphql.api:1.0.0
-org.gecko.graphql:org.gecko.whiteboard.graphql.impl:1.0.0
+ - `org.gecko.graphql:org.gecko.whiteboard.graphql.api:1.0.0`
+ - `org.gecko.graphql:org.gecko.whiteboard.graphql.impl:1.0.0`
 
 For EMF Support:
+ - `org.gecko.graphql:org.gecko.whiteboard.graphql.emf:1.0.0`
 
-org.gecko.graphql:org.gecko.whiteboard.graphql.emf:1.0.0
 
 POM Repository:
 
@@ -86,7 +86,7 @@ GET /person/{id}/relatives/{id} ?
 
 ```
 
-This only covers a couple of the possible use cases, that highly depend on what one intents to do with this model. Besides the question on how to structure your endpoint, one needs to decide on how many levels of the hierarchy one wants to return and how to handle this. If you build and API for a brought audience this is is often hard to answer and might have multiple answers.
+This only covers a couple of the possible use cases, that highly depend on what one intends to do with this model. Besides the question on how to structure your endpoint, one needs to decide on how many levels of the hierarchy one wants to return and how to handle this. If you build and API for a brought audience this is is often hard to answer and might have multiple answers.
 
 ### A solution with GraphQL
 
@@ -161,7 +161,7 @@ The Whiteboard gives you the ability to register your Service with a property or
 
 ### Configuration
 
-A Whiteboard needs to be configured first. As initially mentioned, it needs a configured HTTPWhiteboard. An example using the the  [Apache Felix Http Service (A HTTP Whiteboard Implementation)](https://felix.apache.org/documentation/subprojects/apache-felix-http-service.html)  together with the [Configurator Spec](https://osgi.org/specification/osgi.cmpn/7.0.0/service.configurator.html)  can look as follows:
+A Whiteboard needs to be configured first. As initially mentioned, it needs a configured HTTPWhiteboard. An example using the the  [Apache Felix Http Service (A HTTP Whiteboard Implementation)](https://felix.apache.org/documentation/subprojects/apache-felix-http-service.html) together with the [Configurator Spec](https://osgi.org/specification/osgi.cmpn/7.0.0/service.configurator.html) can look as follows:
 
 #### The Whiteboard with DS
 
@@ -201,7 +201,7 @@ TODO
 
 
 
-The Result will be a GraphQL API running under http://<yourIPOrLocalhost>:8080/graphql what will provide the following Schema:
+The Result will be a GraphQL API running under http://<yourIPOrLocalhost>:8082/graphql what will provide the following Schema:
 
 ```
 type Address {
@@ -301,7 +301,8 @@ type BusinessPersonImpl implements Person & BusinessPerson {
  ```
 
 As you can see, we don't have any relation between Person and BusinessPerson, except the duplicated attributes, but as the BusinessPersonImpl implements both it is kind of close.
-As GrphQL is more oriented towards JS, the following setup is different:
+
+As GraphQL is more oriented towards JS, the following setup is different:
 
  ```pseudocode
 
@@ -326,10 +327,10 @@ public interface GraphQLQueryInterface{
 
 In order to use GraphQL with EMF the following Artifacts are necessary:
 
-org.gecko.graphql:org.gecko.whiteboard.graphql.emf:1.0.0
-org.gecko.emf:org.gecko.emf.osgi.ecore:2.2.4
-org.gecko.emf:org.gecko.emf.osgi.model.info.api:1.0.0
-org.gecko.emf:org.gecko.emf.osgi.model.info.impl:1.0.0
-org.gecko.emf:org.gecko.emf.osgi.component:2.2.8
+- `org.gecko.graphql:org.gecko.whiteboard.graphql.emf:1.0.0`
+- `org.gecko.emf:org.gecko.emf.osgi.ecore:2.2.4`
+- `org.gecko.emf:org.gecko.emf.osgi.model.info.api:1.0.0`
+- `org.gecko.emf:org.gecko.emf.osgi.model.info.impl:1.0.0`
+- `org.gecko.emf:org.gecko.emf.osgi.component:2.2.8`
 
 With this dependencies The GraphQL Whiteboard will now be able to understand Services returning generated EMF Objects. The Schema is then generated using the registered EPackage. In Addition to that incoming Objects can now be complex EMF Objects as well.
