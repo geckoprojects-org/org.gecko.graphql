@@ -78,7 +78,7 @@ import graphql.schema.GraphQLUnionType.Builder;
 
 @Component
 @RequireGraphQLWhiteboard
-@Capability(namespace=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name= OSGI_EMF_GRAPHQL_CAPABILITY_NAME, version="1.1.0")
+@Capability(namespace=ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name= OSGI_EMF_GRAPHQL_CAPABILITY_NAME, version="2.0.0")
 public class EMFSchemaTypeBuilder implements GraphqlSchemaTypeBuilder {
 	
 	@Reference(cardinality=ReferenceCardinality.MANDATORY)

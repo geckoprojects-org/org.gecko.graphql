@@ -93,7 +93,7 @@ import graphql.schema.GraphQLCodeRegistry;
 				"jmx.objectname=graphql.servlet:type=graphql" }, scope = ServiceScope.PROTOTYPE, configurationPolicy = ConfigurationPolicy.REQUIRE)
 @HttpWhiteboardServletPattern(DEFAULT_SERVLET_PATTERN)
 @RequireHttpWhiteboard
-@Capability(namespace = ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name = OSGI_GRAPHQL_CAPABILITY_NAME, version = "1.1.0")
+@Capability(namespace = ImplementationNamespace.IMPLEMENTATION_NAMESPACE, name = OSGI_GRAPHQL_CAPABILITY_NAME, version = "2.0.0")
 public class OsgiGraphQLWhiteboard extends AbstractGraphQLHttpServlet
 		implements ServiceTrackerCustomizer<Object, Object>, GraphqlServiceRuntime {
 	private static final long serialVersionUID = -5524795258270847878L;

@@ -17,7 +17,7 @@
 
 Bundle-Name: Example model
 Bundle-SymbolicName: org.gecko.whiteboard.graphql.emf.example.model;singleton:=true
-Bundle-Version: 1.1.0.SNAPSHOT
+Bundle-Version: 2.0.0.SNAPSHOT
 
 Private-Package: \
 	org.gecko.whiteboard.graphql.emf.example.model.GraphqlTest.configuration
