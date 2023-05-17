@@ -56,7 +56,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class ExampleImplIntegrationTest {
 
-	private static final String GRAPHQL_ENDPOINT = "http://localhost:8082/graphql";
+	private static final String GRAPHQL_ENDPOINT = "http://localhost:8099/graphql";
 
 	private static final ObjectMapper OBJECT_MAPPER;
 	static {

@@ -36,7 +36,7 @@ In this tutorial we provide some guidelines in order to be able to expose your O
 
    ![](./images/example7.png)
 
-5. The Result will be a GraphQL API running under http://:8082/graphql in which you can do something like
+5. The Result will be a GraphQL API running under http://:8099/graphql in which you can do something like
 
    ![](./images/example5.png)
 

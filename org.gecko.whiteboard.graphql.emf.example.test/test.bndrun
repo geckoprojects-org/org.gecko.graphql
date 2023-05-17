@@ -101,6 +101,5 @@
 	org.gecko.whiteboard.graphql.emf.example.model;version=snapshot,\
 	org.gecko.whiteboard.graphql.emf.example.service.api;version=snapshot,\
 	org.gecko.whiteboard.graphql.emf.example.service.impl;version=snapshot,\
-	org.gecko.whiteboard.graphql.emf.example.test;version=snapshot,\
-	org.gecko.emf.collections;version='[2.0.9,2.0.10)'
+	org.gecko.whiteboard.graphql.emf.example.test;version=snapshot
 	

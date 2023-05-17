@@ -201,7 +201,7 @@ TODO
 
 
 
-The Result will be a GraphQL API running under http://<yourIPOrLocalhost>:8082/graphql what will provide the following Schema:
+The Result will be a GraphQL API running under http://<yourIPOrLocalhost>:8099/graphql what will provide the following Schema:
 
 ```
 type Address {
@@ -236,7 +236,7 @@ As a Servlet, the GraphQLWhiteboard can be targeted to a specific HTTP Whiteboar
     ":configurator:resource-version": 1,
     "org.apache.felix.http~test":
 	{
-		"org.osgi.service.http.port": "8082",
+		"org.osgi.service.http.port": "8099",
 		"org.osgi.service.http.host": "0.0.0.0",
 		"org.apache.felix.http.context_path": "/",
 		"org.apache.felix.http.name": "my_http_whiteboard",
