@@ -4,7 +4,7 @@
 	":configurator:symbolic-name": "GraphQLEMFExampleMainConfig",
 	
 	"org.apache.felix.http~GraphQL": {
-		"org.osgi.service.http.port": "8082",
+		"org.osgi.service.http.port": "8099",
 		"org.osgi.service.http.host": "0.0.0.0",
 		"org.apache.felix.http.context_path": "/",
 		"org.apache.felix.http.name": "graphql_http",
