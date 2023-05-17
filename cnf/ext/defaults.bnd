@@ -60,10 +60,6 @@ mockito: org.mockito.mockito-core;version="[3.6,4)",\
 # define global blacklist
 -runblacklist.default: osgi.identity;filter:='(osgi.identity=osgi.cmpn)'
 
--testpath: ${junit},\
-  ${mockito},\
-  ${geckotest}
-
 -resolve.effective: active
 #-resolve.effective: active;skip:="osgi.service"
 
