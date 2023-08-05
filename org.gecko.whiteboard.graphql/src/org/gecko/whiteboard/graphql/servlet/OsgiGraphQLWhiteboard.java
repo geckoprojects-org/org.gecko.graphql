@@ -49,10 +49,10 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.osgi.service.component.annotations.ServiceScope;
-import org.osgi.service.http.whiteboard.annotations.RequireHttpWhiteboard;
-import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletPattern;
 import org.osgi.service.log.Logger;
 import org.osgi.service.log.LoggerFactory;
+import org.osgi.service.servlet.whiteboard.annotations.RequireHttpWhiteboard;
+import org.osgi.service.servlet.whiteboard.propertytypes.HttpWhiteboardServletPattern;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
@@ -380,7 +380,6 @@ public class OsgiGraphQLWhiteboard extends AbstractGraphQLHttpServlet
 
 	@Reference(cardinality = ReferenceCardinality.MULTIPLE, policyOption = ReferencePolicyOption.GREEDY)
 	public void bindGraphqlSechemaTypeBuilder(GraphqlSchemaTypeBuilder typeBuilder) {
-		System.err.println("bindGraphqlSechemaTypeBuilder: " + typeBuilder.toString());
 		schemaBuilder.add(typeBuilder);
 		updateSchema();
 	}
@@ -392,7 +391,6 @@ public class OsgiGraphQLWhiteboard extends AbstractGraphQLHttpServlet
 
 	@Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
 	public void bindValueConverter(GeckoGraphQLValueConverter valueConverter) {
-		System.err.println("bindValueConverter: " + valueConverter.toString());
 		schemaBuilder.add(valueConverter);
 	}
 

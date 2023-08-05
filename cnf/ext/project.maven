@@ -3,18 +3,17 @@ com.fasterxml.jackson.core:jackson-core:2.14.2
 com.fasterxml.jackson.core:jackson-databind:2.14.2
 com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.14.2
 
-com.graphql-java:graphql-java:20.2
+com.graphql-java:graphql-java:19.5
 com.graphql-java:java-dataloader:3.2.0
 
-# included from local repo - downgraded to Jakarta Servlet API 5.x
-#com.graphql-java-kickstart:graphql-java-servlet:15.0.0
-#com.graphql-java-kickstart:graphql-java-kickstart:15.0.0
+com.graphql-java-kickstart:graphql-java-servlet:15.0.0
+com.graphql-java-kickstart:graphql-java-kickstart:15.0.0
 
-com.graphql-java:graphql-java-extended-scalars:20.0
+com.graphql-java:graphql-java-extended-scalars:19.1
 
-jakarta.servlet:jakarta.servlet-api:5.0.0
-jakarta.websocket:jakarta.websocket-api:2.1.0
-jakarta.websocket:jakarta.websocket-client-api:2.1.0
+jakarta.servlet:jakarta.servlet-api:6.0.0
+jakarta.websocket:jakarta.websocket-api:2.1.1
+jakarta.websocket:jakarta.websocket-client-api:2.1.1
 
 org.reactivestreams:reactive-streams:1.0.4
 
