@@ -14,5 +14,12 @@
 	"GeckoGraphQLWhiteboard~test": {
 		"osgi.http.whiteboard.target": "(id=graphql_http)",
 		"osgi.graphql.tracing.enabled": true
+	},
+
+	"org.apache.felix.webconsole.internal.servlet.OsgiManager": {
+		"username": "gadmin",
+		"password": "gadmin",
+		"osgi.http.whiteboard.target": "(id=graphql_http)",
+		"osgi.http.whiteboard.context.select": "OsgiManagerDefaultHttpContext"
 	}
 }
