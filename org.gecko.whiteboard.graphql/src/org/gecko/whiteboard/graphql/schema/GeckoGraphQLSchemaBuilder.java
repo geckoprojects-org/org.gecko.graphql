@@ -13,7 +13,6 @@ package org.gecko.whiteboard.graphql.schema;
 
 import static graphql.schema.GraphQLObjectType.newObject;
 import static graphql.schema.GraphQLSchema.newSchema;
-import static java.util.stream.Collectors.toSet;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
@@ -25,16 +24,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import org.gecko.whiteboard.graphql.GeckoGraphQLConstants;
 import org.gecko.whiteboard.graphql.GeckoGraphQLUtil;
@@ -84,6 +85,7 @@ import graphql.schema.GraphQLCodeRegistry;
 import graphql.schema.GraphQLFieldDefinition;
 import graphql.schema.GraphQLInputType;
 import graphql.schema.GraphQLList;
+import graphql.schema.GraphQLNamedSchemaElement;
 import graphql.schema.GraphQLNonNull;
 import graphql.schema.GraphQLObjectType;
 import graphql.schema.GraphQLOutputType;
@@ -98,21 +100,21 @@ import graphql.schema.StaticDataFetcher;
  */
 public class GeckoGraphQLSchemaBuilder {
 	private static final Logger LOG = LoggerFactory.getLogger(GeckoGraphQLSchemaBuilder.class);
-	
+
 	private final List<GraphQLQueryProvider> queryProviders = new ArrayList<>();
 	private final List<GraphQLMutationProvider> mutationProviders = new ArrayList<>();
 	private final List<GraphQLSubscriptionProvider> subscriptionProviders = new ArrayList<>();
 	private final List<GraphQLTypesProvider> typesProviders = new ArrayList<>();
 	private final List<GraphQLServletListener> listeners = new ArrayList<>();
 	private final List<GeckoGraphQLValueConverter> valueConverters = new ArrayList<>();
-	private final Map<String, GraphQLType> typeMapping = new HashMap<String, GraphQLType>();
-	private final List<GraphqlSchemaTypeBuilder> schemaTypeBuilder = new LinkedList<>();
-	private final GraphqlSchemaTypeBuilder defaultBuilder = new DefaultGraphQLSchemaTypeBuilder();	
-	
-	private BundleContext ctx = FrameworkUtil.getBundle(getClass()).getBundleContext();	
+	private final Map<String, GraphQLType> typeMappings = new HashMap<String, GraphQLType>();
+	private final List<GraphqlSchemaTypeBuilder> schemaTypeBuilders = new LinkedList<>();
+	private final GraphqlSchemaTypeBuilder defaultBuilder = new DefaultGraphQLSchemaTypeBuilder();
+
+	private BundleContext ctx = FrameworkUtil.getBundle(getClass()).getBundleContext();
 	private GraphQLObjectType.Builder queryTypeBuilder;
-	private GraphQLObjectType.Builder mutationTypeBuilder;	
-	private Set<GraphQLType> types = new HashSet<>();
+	private GraphQLObjectType.Builder mutationTypeBuilder;
+	private Set<GraphQLType> types = new TreeSet<>(typesComparator);
 	private GraphQLServletContextBuilder contextBuilder = new DefaultGraphQLServletContextBuilder();
 	private GraphQLServletRootObjectBuilder rootObjectBuilder = new DefaultGraphQLRootObjectBuilder();
 	private ExecutionStrategyProvider executionStrategyProvider = new DefaultExecutionStrategyProvider();
@@ -124,27 +126,27 @@ public class GeckoGraphQLSchemaBuilder {
 	private ScheduledExecutorService executor;
 	private ScheduledFuture<?> updateFuture;
 	private int schemaUpdateDelay;
-	
+
 	public void activate(int schemaUpdateDelay) {
 		this.schemaUpdateDelay = schemaUpdateDelay;
 		if (schemaUpdateDelay != 0) {
 			executor = Executors.newSingleThreadScheduledExecutor();
 		}
-		
+
 		this.queryTypeBuilder = getQueryTypeBuilder();
-		
+
 		this.mutationTypeBuilder = getMutationTypeBuilder();
-		
+
 		this.types = buildTypes();
 
-		this.types.forEach(type -> typeMapping.put(GeckoGraphQLUtil.INSTANCE.getTypeName(type), type));
+		this.types.forEach(type -> typeMappings.put(GeckoGraphQLUtil.INSTANCE.getTypeName(type), type));
 	}
-	
+
 	public void deactivate() {
 		if (executor != null) {
 			executor.shutdown();
 		}
-	}	
+	}
 
 	public void updateSchema() {
 		if (schemaUpdateDelay == 0) {
@@ -157,7 +159,7 @@ public class GeckoGraphQLSchemaBuilder {
 			updateFuture = executor.schedule(this::doUpdateSchema, schemaUpdateDelay, TimeUnit.MILLISECONDS);
 		}
 	}
-	
+
 	public GraphQLConfiguration buildConfiguration() {
 		// @formatter:off
 	    return GraphQLConfiguration.with(buildInvocationInputFactory())
@@ -166,8 +168,8 @@ public class GeckoGraphQLSchemaBuilder {
 	        .with(listeners)
 	        .build();
 	    // @formatter:on
-	}	
-	
+	}
+
 	public void prepareForBuild() {
 		this.queryTypeBuilder = getQueryTypeBuilder();
 		/**
@@ -185,60 +187,75 @@ public class GeckoGraphQLSchemaBuilder {
 		 */
 		if (this.mutationTypeBuilder.hasField("_empty")) {
 			this.mutationTypeBuilder.clearFields();
-		}		
-		
+		}
+
 		this.types = buildTypes();
-		this.types.forEach(type -> typeMapping.put(GeckoGraphQLUtil.INSTANCE.getTypeName(type), type));
+		this.types.forEach(type -> typeMappings.put(GeckoGraphQLUtil.INSTANCE.getTypeName(type), type));
 	}
-	
+
 	/**
 	 * Builds the query and mutation Schema
 	 */
 	public void build(Map.Entry<ServiceReference<Object>, ServiceObjects<Object>> entry) {
 		build(entry.getKey(), entry.getValue());
 	}
-	
+
 	/**
 	 * Builds the query and mutation Schema
 	 */
 	public void build(ServiceReference<Object> serviceReference, ServiceObjects<Object> serviceObjects) {
 		try {
 			List<Class<?>> interfaces = getDeclaredObjectClasses(serviceReference);
-			
-			for(Class<?> curInterface : interfaces) {
+
+			for (Class<?> curInterface : interfaces) {
 				boolean isQuery = isDeclaredQueryInterface(curInterface, serviceReference);
 				boolean isMutation = isDeclaredMutationInterface(curInterface, serviceReference);
-				if(isQuery && isMutation) {
-					LOG.warn("The Interace {} is marked as query and mutation. You must chose one. The Interface will be ignored", curInterface.getName());
+				if (isQuery && isMutation) {
+					LOG.warn(
+							"The Interace {} is marked as query and mutation. You must chose one. The Interface will be ignored",
+							curInterface.getName());
 					continue;
 				}
-				if(isQuery) {
+
+				if (isQuery) {
 					String name = getQueryName(serviceReference, curInterface);
-					
-					queryTypeBuilder.field(GraphqlSchemaTypeBuilder.createReferenceField(name, new StaticDataFetcher(serviceObjects), createService(name, curInterface, typeMapping)));
-					
-				} else if (isMutation){
+
+					// @formatter:off
+					queryTypeBuilder.field(GraphqlSchemaTypeBuilder.createReferenceField(
+							name, 
+							new StaticDataFetcher(serviceObjects), 
+							createService(name, curInterface, typeMappings)));
+					// @formatter:on
+
+				} else if (isMutation) {
 					String name = getMutationName(serviceReference, curInterface);
 
-					mutationTypeBuilder.field(GraphqlSchemaTypeBuilder.createReferenceField(name, new StaticDataFetcher(serviceObjects), createService(name, curInterface, typeMapping)));
+					// @formatter:off
+					mutationTypeBuilder.field(GraphqlSchemaTypeBuilder.createReferenceField(
+							name, 
+							new StaticDataFetcher(serviceObjects), 
+							createService(name, curInterface, typeMappings)));
+					// @formatter:on
 				}
 			}
-			types.addAll(typeMapping.values());
+
+			types.addAll(typeMappings.values());
+
 		} catch (Throwable e) {
 			LOG.error("Args... " + e.getMessage(), e);
 		} finally {
 			ctx.ungetService(serviceReference);
 		}
-	}	
-	
-	public void add(GraphqlSchemaTypeBuilder typeBuilder) {
-		schemaTypeBuilder.add(typeBuilder);
 	}
-	
+
+	public void add(GraphqlSchemaTypeBuilder typeBuilder) {
+		schemaTypeBuilders.add(typeBuilder);
+	}
+
 	public void remove(GraphqlSchemaTypeBuilder typeBuilder) {
-		schemaTypeBuilder.remove(typeBuilder);
-	}	
-	
+		schemaTypeBuilders.remove(typeBuilder);
+	}
+
 	public void add(GraphQLQueryProvider provider) {
 		queryProviders.add(provider);
 	}
@@ -254,11 +271,11 @@ public class GeckoGraphQLSchemaBuilder {
 	public void add(GraphQLTypesProvider provider) {
 		typesProviders.add(provider);
 	}
-	
+
 	public void add(GraphQLServletListener listener) {
 		listeners.add(listener);
-	}	
-	
+	}
+
 	public void remove(GraphQLQueryProvider provider) {
 		queryProviders.remove(provider);
 	}
@@ -278,11 +295,11 @@ public class GeckoGraphQLSchemaBuilder {
 	public void remove(GraphQLServletListener listener) {
 		listeners.remove(listener);
 	}
-	
+
 	public void setCodeRegistryProvider(GraphQLCodeRegistryProvider provider) {
 		codeRegistryProvider = provider;
 	}
-	
+
 	public void setContextBuilder(GraphQLServletContextBuilder builder) {
 		contextBuilder = builder;
 	}
@@ -306,18 +323,50 @@ public class GeckoGraphQLSchemaBuilder {
 	public void setPreparsedDocumentProvider(PreparsedDocumentProvider provider) {
 		preparsedDocumentProvider = provider;
 	}
-	
+
 	public void add(GeckoGraphQLValueConverter valueConverter) {
 		valueConverters.add(valueConverter);
 	}
-	
+
 	public void remove(GeckoGraphQLValueConverter valueConverter) {
 		valueConverters.remove(valueConverter);
 	}
-	
+
+	public List<GraphQLQueryProvider> getQueryProviders() {
+		return List.copyOf(queryProviders);
+	}
+
+	public List<GraphQLMutationProvider> getMutationProviders() {
+		return List.copyOf(mutationProviders);
+	}
+
+	public List<GraphQLSubscriptionProvider> getSubscriptionProviders() {
+		return List.copyOf(subscriptionProviders);
+	}
+
+	public List<GraphQLTypesProvider> getTypesProviders() {
+		return List.copyOf(typesProviders);
+	}
+
+	public List<GraphQLServletListener> getListeners() {
+		return List.copyOf(listeners);
+	}
+
+	public List<GeckoGraphQLValueConverter> getValueConverters() {
+		return List.copyOf(valueConverters);
+	}
+
+	public Map<String, GraphQLType> getTypeMappings() {
+		return Map.copyOf(typeMappings);
+	}
+
+	public List<GraphqlSchemaTypeBuilder> getSchemaTypeBuilders() {
+		return List.copyOf(schemaTypeBuilders);
+	}
+
 	private void doUpdateSchema() {
 		try {
-			
+
 			// @formatter:off
 			graphql.schema.GraphQLSchema.Builder graphQLSchemaBuilder = newSchema()
 	                .query(this.queryTypeBuilder.build())
@@ -326,16 +375,16 @@ public class GeckoGraphQLSchemaBuilder {
 	                .additionalTypes(this.types)
 	                .codeRegistry(codeRegistryProvider.getCodeRegistry());
 			// @formatter:on
-			
+
 			this.schemaProvider = new DefaultGraphQLSchemaServletProvider(graphQLSchemaBuilder.build());
-			
+
 			LOG.info("Schema created successfully!");
-			
+
 		} catch (Throwable t) {
 			LOG.warn("Schema could not be created!", t);
 		}
-	}	
-	
+	}
+
 	private GraphQLObjectType.Builder getQueryTypeBuilder() {
 		final GraphQLObjectType.Builder queryTypeBuilder = newObject().name("Query").description("Root query type");
 
@@ -357,7 +406,7 @@ public class GeckoGraphQLSchemaBuilder {
 		}
 		return queryTypeBuilder;
 	}
-	
+
 	private Set<GraphQLType> buildTypes() {
 		if (!this.types.isEmpty()) {
 			return this.types;
@@ -366,7 +415,7 @@ public class GeckoGraphQLSchemaBuilder {
 		    return typesProviders.stream()
 		        .map(GraphQLTypesProvider::getTypes)
 		        .flatMap(Collection::stream)
-		        .collect(toSet());
+		        .collect(Collectors.toCollection(() -> new TreeSet<>(typesComparator)));
 		    // @formatter:on
 		}
 	}
@@ -378,25 +427,27 @@ public class GeckoGraphQLSchemaBuilder {
 	private GraphQLObjectType buildSubscriptionType() {
 		return buildObjectType("Subscription", new ArrayList<>(subscriptionProviders));
 	}
-	
+
 	private GraphQLObjectType buildObjectType(String name, List<GraphQLFieldProvider> providers) {
 		final GraphQLObjectType.Builder objectTypeBuilder = getObjectTypeBuilder(name, providers);
 		if (objectTypeBuilder != null) {
 			return objectTypeBuilder.build();
 		}
-		
+
 		return null;
 	}
-	
+
 	private GraphQLObjectType.Builder getObjectTypeBuilder(String name, List<GraphQLFieldProvider> providers) {
-		final GraphQLObjectType.Builder typeBuilder = newObject().name(name).description("Root " + name.toLowerCase() + " type");
-		
+		final GraphQLObjectType.Builder typeBuilder = newObject().name(name)
+				.description("Root " + name.toLowerCase() + " type");
+
 		if (!providers.isEmpty()) {
 			for (GraphQLFieldProvider provider : providers) {
 				provider.getFields().forEach(typeBuilder::field);
 			}
 		} else {
-			// graphql-java enforces both Query, Mutation and Subscription type to have at least one field
+			// graphql-java enforces both Query, Mutation and Subscription type to have at
+			// least one field
 			// @formatter:off
 			typeBuilder.field(
 					GraphQLFieldDefinition.newFieldDefinition()
@@ -435,7 +486,7 @@ public class GeckoGraphQLSchemaBuilder {
 	private GraphQLObjectMapper buildObjectMapper() {
 		return GraphQLObjectMapper.newBuilder().withGraphQLErrorHandler(errorHandler).build();
 	}
-	
+
 	/**
 	 * Tries to get all declared object classes
 	 * @param serviceReference the
@@ -566,64 +617,63 @@ public class GeckoGraphQLSchemaBuilder {
 	 * @return the Object type of th service
 	 */
 	private GraphQLObjectType createService(String name, Class<?> curInterface, Map<String, GraphQLType> typeMapping) {
-		GraphQLType existingType = typeMapping.get(name);
-		graphql.schema.GraphQLObjectType.Builder serviceBuilder = null;
-		if(existingType != null) {
-			serviceBuilder = GraphQLObjectType.newObject((GraphQLObjectType) existingType);
+		if (typeMapping.containsKey(name)) {
+			return (GraphQLObjectType) typeMapping.get(name);
 		} else {
-			serviceBuilder = GraphQLObjectType.newObject().name(name);
-		}
-		for(Method method : curInterface.getMethods()) {
-			String methodName = method.getName();
+			graphql.schema.GraphQLObjectType.Builder serviceBuilder = GraphQLObjectType.newObject().name(name);
 			
-			GraphQLOutputType returnType = (GraphQLOutputType) createType(method.getGenericReturnType(), typeMapping, false, getMethodAnnotations(method));
-			Map<String, ParameterContext> parameters = new HashMap<>();
-			boolean ignore = false;
-			String methodDocumentation = getDocumentation(method);
-			for(Parameter p : method.getParameters()) {
-				if(p.getType().equals(DataFetchingEnvironment.class)) {
-					continue;
-				}
+			for(Method method : curInterface.getMethods()) {
+				String methodName = method.getName();
 				
-				String parameterName = getParameterName(p);
-				final Type parameterType = Collection.class.isAssignableFrom(p.getType()) ? p.getParameterizedType() : p.getType();
-				GraphQLType basicType = null;
-				if(Collection.class.isAssignableFrom(p.getType())) {
-					Type theType = ((ParameterizedType) parameterType).getActualTypeArguments()[0];
-					
-					basicType = GraphqlSchemaTypeBuilder.getGraphQLScalarType((Class<?>) theType);
-					if(basicType != null) {
-						basicType = GraphQLList.list(basicType);
+				GraphQLOutputType returnType = (GraphQLOutputType) createType(method.getGenericReturnType(), typeMapping, false, getMethodAnnotations(method));
+				Map<String, ParameterContext> parameters = new HashMap<>();
+				boolean ignore = false;
+				String methodDocumentation = getDocumentation(method);
+				for(Parameter p : method.getParameters()) {
+					if(p.getType().equals(DataFetchingEnvironment.class)) {
+						continue;
 					}
 					
-				} else {
-					basicType = GraphqlSchemaTypeBuilder.getGraphQLScalarType(p.getType());
-				}
-				if(basicType == null) {
-					boolean hasHandler = schemaTypeBuilder
-						.stream()
-						.filter(stb -> stb.canHandle(parameterType, true))
-						.map(stb -> Boolean.TRUE)
-						.findFirst()
-						.orElseGet(() -> defaultBuilder.canHandle(parameterType, true));
-					if(hasHandler) {
-						parameters.put(parameterName, new ParameterContext(p, (GraphQLInputType) createType(parameterType, typeMapping, true, getParameterAnnotations(p))));
+					String parameterName = getParameterName(p);
+					final Type parameterType = Collection.class.isAssignableFrom(p.getType()) ? p.getParameterizedType() : p.getType();
+					GraphQLType basicType = null;
+					if(Collection.class.isAssignableFrom(p.getType())) {
+						Type theType = ((ParameterizedType) parameterType).getActualTypeArguments()[0];
+						
+						basicType = GraphqlSchemaTypeBuilder.getGraphQLScalarType((Class<?>) theType);
+						if(basicType != null) {
+							basicType = GraphQLList.list(basicType);
+						}
+						
 					} else {
-						LOG.error("{} parameter {} is a complex type and no handler is available. Thus the Method will be ignored", method, parameterName);
-						ignore = true;
+						basicType = GraphqlSchemaTypeBuilder.getGraphQLScalarType(p.getType());
 					}
-				} else {
-					parameters.put(parameterName, new ParameterContext(p,(GraphQLInputType) basicType));
+					if(basicType == null) {
+						boolean hasHandler = schemaTypeBuilders
+							.stream()
+							.filter(stb -> stb.canHandle(parameterType, true))
+							.map(stb -> Boolean.TRUE)
+							.findFirst()
+							.orElseGet(() -> defaultBuilder.canHandle(parameterType, true));
+						if(hasHandler) {
+							parameters.put(parameterName, new ParameterContext(p, (GraphQLInputType) createType(parameterType, typeMapping, true, getParameterAnnotations(p))));
+						} else {
+							LOG.error("{} parameter {} is a complex type and no handler is available. Thus the Method will be ignored", method, parameterName);
+							ignore = true;
+						}
+					} else {
+						parameters.put(parameterName, new ParameterContext(p,(GraphQLInputType) basicType));
+					}
+				}
+				if(!ignore) {
+					GraphQLFieldDefinition operation = createOperation(methodName, methodDocumentation, parameters, new DataFetcherImplementation(method), returnType);
+					serviceBuilder.field(operation);
 				}
 			}
-			if(!ignore) {
-				GraphQLFieldDefinition operation = createOperation(methodName, methodDocumentation, parameters, new DataFetcherImplementation(method), returnType);
-				serviceBuilder.field(operation);
-			}
+			GraphQLObjectType objectType = serviceBuilder.build();
+			typeMapping.put(name, objectType);
+			return objectType;
 		}
-		GraphQLObjectType objectType = serviceBuilder.build();
-		typeMapping.put(name, objectType);
-		return objectType;
 	}
 	
 	/**
@@ -703,7 +753,7 @@ public class GeckoGraphQLSchemaBuilder {
 	 * @return
 	 */
 	private GraphQLType createType(Type type, Map<String, GraphQLType> typeMapping, boolean inputType, List<Annotation> annotations) {
-		GraphqlSchemaTypeBuilder builder = schemaTypeBuilder.stream().filter(stb -> stb.canHandle(type, inputType)).findFirst().orElseGet(() -> defaultBuilder);
+		GraphqlSchemaTypeBuilder builder = schemaTypeBuilders.stream().filter(stb -> stb.canHandle(type, inputType)).findFirst().orElseGet(() -> defaultBuilder);
 		return builder.buildType(type, typeMapping, inputType, annotations);
 	}
 	
@@ -889,5 +939,18 @@ public class GeckoGraphQLSchemaBuilder {
 		public Parameter getParameter() {
 			return parameter;
 		}
-	}	
+	}
+	
+	private static final Comparator<GraphQLType> typesComparator = new Comparator<GraphQLType>() {
+
+		@Override
+		public int compare(GraphQLType o1, GraphQLType o2) {
+			if (o1 instanceof GraphQLNamedSchemaElement && o2 instanceof GraphQLNamedSchemaElement) {
+				return (((GraphQLNamedSchemaElement) o1).getName())
+						.compareTo(((GraphQLNamedSchemaElement) o2).getName());
+			} else {
+				return Integer.compare(o1.hashCode(), o2.hashCode());
+			}
+		}
+	};	
 }

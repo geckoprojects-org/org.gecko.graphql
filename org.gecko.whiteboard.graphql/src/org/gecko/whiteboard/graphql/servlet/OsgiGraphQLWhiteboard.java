@@ -28,6 +28,7 @@ import org.gecko.whiteboard.graphql.GeckoGraphQLValueConverter;
 import org.gecko.whiteboard.graphql.GraphqlSchemaTypeBuilder;
 import org.gecko.whiteboard.graphql.GraphqlServiceRuntime;
 import org.gecko.whiteboard.graphql.dto.RuntimeDTO;
+import org.gecko.whiteboard.graphql.dto.builders.RuntimeDTOBuilder;
 import org.gecko.whiteboard.graphql.instrumentation.TracingInstrumentationProvider;
 import org.gecko.whiteboard.graphql.schema.GeckoGraphQLSchemaBuilder;
 import org.osgi.annotation.bundle.Capability;
@@ -38,6 +39,7 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceObjects;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.framework.dto.ServiceReferenceDTO;
 import org.osgi.namespace.implementation.ImplementationNamespace;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -379,12 +381,12 @@ public class OsgiGraphQLWhiteboard extends AbstractGraphQLHttpServlet
 	}
 
 	@Reference(cardinality = ReferenceCardinality.MULTIPLE, policyOption = ReferencePolicyOption.GREEDY)
-	public void bindGraphqlSechemaTypeBuilder(GraphqlSchemaTypeBuilder typeBuilder) {
+	public void bindGraphqlSchemaTypeBuilder(GraphqlSchemaTypeBuilder typeBuilder) {
 		schemaBuilder.add(typeBuilder);
 		updateSchema();
 	}
 
-	public void unbindGraphqlSechemaTypeBuilder(GraphqlSchemaTypeBuilder typeBuilder) {
+	public void unbindGraphqlSchemaTypeBuilder(GraphqlSchemaTypeBuilder typeBuilder) {
 		schemaBuilder.remove(typeBuilder);
 		updateSchema();
 	}
@@ -439,7 +441,17 @@ public class OsgiGraphQLWhiteboard extends AbstractGraphQLHttpServlet
 	 */
 	@Override
 	public RuntimeDTO getRuntimeDTO() {
-		// TODO Auto-generated method stub
-		return null;
+		final ServiceRegistration<GraphqlServiceRuntime> reg = this.runtimeRegistration;
+		if (reg != null) {
+			// @formatter:off
+			final RuntimeDTOBuilder runtimeDTOBuilder = new RuntimeDTOBuilder(
+					reg.getReference().adapt(ServiceReferenceDTO.class), 
+					this.schemaBuilder, 
+					getQueries(),
+					getMutations());
+			// @formatter:on
+			return runtimeDTOBuilder.build();
+		}
+		throw new IllegalStateException("GraphqlServiceRuntime is already unregistered!");
 	}
 }

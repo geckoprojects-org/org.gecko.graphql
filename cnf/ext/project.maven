@@ -11,6 +11,8 @@ com.graphql-java-kickstart:graphql-java-kickstart:15.0.0
 
 com.graphql-java:graphql-java-extended-scalars:19.1
 
+io.github.graphql-java:graphql-java-annotations:9.1
+
 jakarta.servlet:jakarta.servlet-api:6.0.0
 jakarta.websocket:jakarta.websocket-api:2.1.1
 jakarta.websocket:jakarta.websocket-client-api:2.1.1
