@@ -1,9 +1,9 @@
 -include: ${workspace}/cnf/eclipse/jdt.bnd
 
 -buildpath: \
-	osgi.annotation;version=7.0,\
-	osgi.core;version=7.0,\
-	osgi.cmpn;version=7.0,\
+	osgi.annotation,\
+	osgi.core,\
+	org.osgi.service.component.annotations,\
 	graphql-java,\
 	org.gecko.whiteboard.graphql.api
 

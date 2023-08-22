@@ -1,12 +1,14 @@
 -include: ${workspace}/cnf/eclipse/jdt.bnd
 
 -buildpath: \
-	osgi.annotation;version='7.0',\
-	osgi.core;version='7.0',\
-	osgi.cmpn;version='7.0',\
+	osgi.annotation,\
+	osgi.core,\
+	org.osgi.service.component,\
+	org.osgi.namespace.implementation,\
+	org.osgi.service.component.annotations,\
 	org.gecko.whiteboard.graphql;version=project,\
 	graphql-java,\
-	graphql-java-kickstart,\
+	graphql-java-kickstart-jakarta5,\
 	org.gecko.emf.osgi.model.info.api,\
 	org.eclipse.emf.common,\
 	org.eclipse.emf.ecore,\
