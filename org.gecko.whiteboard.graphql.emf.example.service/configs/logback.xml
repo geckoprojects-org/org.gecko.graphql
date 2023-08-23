@@ -1,9 +1,9 @@
 <configuration>
-	
+
 	<contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
 		<resetJUL>true</resetJUL>
 	</contextListener>
-	
+
 	<appender name="CONSOLE"
 		class="ch.qos.logback.core.ConsoleAppender">
 		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
@@ -13,26 +13,30 @@
 			<pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
 		</encoder>
 	</appender>
-	
+
 	<logger name="geckoLogger" id="org.gecko" level="DEBUG">
 		<appender-ref ref="CONSOLE" />
 	</logger>
 
 	<!-- log OSGi events; see https://felix.apache.org/documentation/subprojects/apache-felix-logback.html#_mapping_of_osgi_events -->
-	<logger name="Events.Bundle" level="INFO">
-		<appender-ref ref="CONSOLE" />
-	</logger>
-	
-	<logger name="Events.Service.org.gecko" level="INFO">
-		<appender-ref ref="CONSOLE" />
-	</logger>
-	
-	<logger name="LogService" level="INFO">
+	<logger name="Events.Bundle" level="DEBUG">
 		<appender-ref ref="CONSOLE" />
 	</logger>
 
-	<root level="INFO">
+	<logger name="Events.Service.org.gecko" level="DEBUG">
+		<appender-ref ref="CONSOLE" />
+	</logger>
+
+	<logger name="LogService" level="DEBUG">
+		<appender-ref ref="CONSOLE" />
+	</logger>
+
+	<logger name="org.eclipse.jetty" level="INFO">
+		<appender-ref ref="CONSOLE" />
+	</logger>
+
+    <root level="DEBUG">
 		<appender-ref ref="CONSOLE" />
 	</root>
-	
+
 </configuration>

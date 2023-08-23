@@ -1,9 +1,9 @@
 -include: ${workspace}/cnf/eclipse/jdt.bnd
 
 -buildpath: \
-	osgi.annotation;version=7.0.0,\
-	osgi.core;version=6.0,\
-	osgi.cmpn;version=7.0,\
+	osgi.annotation,\
+	osgi.core,\
+	org.osgi.service.component.annotations,\
 	org.gecko.emf.osgi.annotation;version=latest,\
 	org.gecko.emf.osgi.api;version=latest,\
 	org.eclipse.emf.common,\

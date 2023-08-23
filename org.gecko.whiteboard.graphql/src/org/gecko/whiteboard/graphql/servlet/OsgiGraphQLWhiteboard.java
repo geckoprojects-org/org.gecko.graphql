@@ -28,6 +28,7 @@ import org.gecko.whiteboard.graphql.GeckoGraphQLValueConverter;
 import org.gecko.whiteboard.graphql.GraphqlSchemaTypeBuilder;
 import org.gecko.whiteboard.graphql.GraphqlServiceRuntime;
 import org.gecko.whiteboard.graphql.dto.RuntimeDTO;
+import org.gecko.whiteboard.graphql.dto.builders.RuntimeDTOBuilder;
 import org.gecko.whiteboard.graphql.instrumentation.TracingInstrumentationProvider;
 import org.gecko.whiteboard.graphql.schema.GeckoGraphQLSchemaBuilder;
 import org.osgi.annotation.bundle.Capability;
@@ -38,6 +39,7 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceObjects;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.framework.dto.ServiceReferenceDTO;
 import org.osgi.namespace.implementation.ImplementationNamespace;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -49,10 +51,10 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
 import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.osgi.service.component.annotations.ServiceScope;
-import org.osgi.service.http.whiteboard.annotations.RequireHttpWhiteboard;
-import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletPattern;
 import org.osgi.service.log.Logger;
 import org.osgi.service.log.LoggerFactory;
+import org.osgi.service.servlet.whiteboard.annotations.RequireHttpWhiteboard;
+import org.osgi.service.servlet.whiteboard.propertytypes.HttpWhiteboardServletPattern;
 import org.osgi.util.tracker.ServiceTracker;
 import org.osgi.util.tracker.ServiceTrackerCustomizer;
 
@@ -379,20 +381,18 @@ public class OsgiGraphQLWhiteboard extends AbstractGraphQLHttpServlet
 	}
 
 	@Reference(cardinality = ReferenceCardinality.MULTIPLE, policyOption = ReferencePolicyOption.GREEDY)
-	public void bindGraphqlSechemaTypeBuilder(GraphqlSchemaTypeBuilder typeBuilder) {
-		System.err.println("bindGraphqlSechemaTypeBuilder: " + typeBuilder.toString());
+	public void bindGraphqlSchemaTypeBuilder(GraphqlSchemaTypeBuilder typeBuilder) {
 		schemaBuilder.add(typeBuilder);
 		updateSchema();
 	}
 
-	public void unbindGraphqlSechemaTypeBuilder(GraphqlSchemaTypeBuilder typeBuilder) {
+	public void unbindGraphqlSchemaTypeBuilder(GraphqlSchemaTypeBuilder typeBuilder) {
 		schemaBuilder.remove(typeBuilder);
 		updateSchema();
 	}
 
 	@Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
 	public void bindValueConverter(GeckoGraphQLValueConverter valueConverter) {
-		System.err.println("bindValueConverter: " + valueConverter.toString());
 		schemaBuilder.add(valueConverter);
 	}
 
@@ -441,7 +441,18 @@ public class OsgiGraphQLWhiteboard extends AbstractGraphQLHttpServlet
 	 */
 	@Override
 	public RuntimeDTO getRuntimeDTO() {
-		// TODO Auto-generated method stub
-		return null;
+		final ServiceRegistration<GraphqlServiceRuntime> reg = this.runtimeRegistration;
+		if (reg != null) {
+			// @formatter:off
+			final RuntimeDTOBuilder runtimeDTOBuilder = new RuntimeDTOBuilder(
+					reg.getReference().adapt(ServiceReferenceDTO.class), 
+					this.schemaBuilder, 
+					getQueries(),
+					getMutations());
+			// @formatter:on
+			return runtimeDTOBuilder.build();
+		}
+		throw new IllegalStateException("GraphqlServiceRuntime is already unregistered!");
 	}
 }
+

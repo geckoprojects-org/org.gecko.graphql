@@ -1,13 +1,16 @@
 -include: ${workspace}/cnf/eclipse/jdt.bnd
 
 -buildpath: \
-	osgi.annotation;version='7.0',\
-	osgi.core;version='7.0',\
-	osgi.cmpn;version='7.0',\
+	osgi.annotation,\
+	osgi.core,\
+	org.osgi.namespace.implementation,\
+	org.osgi.service.component,\
+	org.osgi.service.component.annotations,\
+	org.osgi.service.servlet,\
 	graphql-java,\
 	graphql-java-extended-scalars,\
-	graphql-java-kickstart,\
-	graphql-java-servlet,\
+	graphql-java-servlet-jakarta5,\
+	graphql-java-kickstart-jakarta5,\
 	jakarta.servlet-api,\
 	jakarta.websocket-api,\
 	jakarta.websocket-client-api,\

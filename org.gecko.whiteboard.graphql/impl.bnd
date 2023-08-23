@@ -1,4 +1,5 @@
 Private-Package: \
+	org.gecko.whiteboard.graphql.dto.builders,\
 	org.gecko.whiteboard.graphql.instrumentation,\
 	org.gecko.whiteboard.graphql.schema,\
 	org.gecko.whiteboard.graphql.servlet

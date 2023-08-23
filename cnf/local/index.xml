@@ -1,590 +1,691 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<repository xmlns="http://www.osgi.org/xmlns/repository/v1.0.0" name="Local" increment="1682025532311">
+<repository xmlns="http://www.osgi.org/xmlns/repository/v1.0.0" name="Local" increment="1692720140663">
   <resource>
     <capability namespace="osgi.identity">
-      <attribute name="osgi.identity" value="graphql-java-servlet"/>
+      <attribute name="osgi.identity" value="graphql-java"/>
       <attribute name="type" value="osgi.bundle"/>
-      <attribute name="version" value="15.0.1.SNAPSHOT" type="Version"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
     </capability>
     <capability namespace="osgi.wiring.package">
-      <directive name="uses" value="graphql.execution.preparsed,graphql.kickstart.execution,graphql.kickstart.execution.config,graphql.kickstart.execution.context,graphql.kickstart.execution.error,graphql.kickstart.execution.input,graphql.kickstart.execution.subscriptions,graphql.kickstart.servlet.cache,graphql.kickstart.servlet.config,graphql.kickstart.servlet.context,graphql.kickstart.servlet.core,graphql.kickstart.servlet.input,graphql.kickstart.servlet.osgi,graphql.schema,jakarta.servlet,jakarta.servlet.http,jakarta.websocket,jakarta.websocket.server"/>
-      <attribute name="bundle-symbolic-name" value="graphql-java-servlet"/>
-      <attribute name="bundle-version" value="15.0.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.servlet"/>
-      <attribute name="version" value="15.0.1" type="Version"/>
-      <attribute name="bnd.hashes" value="527079638,-1111596334,2046778170,-1233126924,1873127225,86074627,637357042,-210230284,350498685,1895597947,1538460589,-2008946420,-951709420,-754506352,1125728950,-90518192,1903471207,-620310397,1652010307,647087155,1124157683,-1982120330,-167186474,2024042338,-2143270534,1824723356,515095156,68501462,2030395100,1568357006,1631721934,-800210932,1708197236,-723821180,1491049747" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <directive name="uses" value="graphql.kickstart.execution,graphql.kickstart.execution.subscriptions,graphql.kickstart.execution.subscriptions.apollo,graphql.kickstart.servlet.subscriptions,graphql.schema,jakarta.websocket"/>
-      <attribute name="bundle-symbolic-name" value="graphql-java-servlet"/>
-      <attribute name="bundle-version" value="15.0.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.servlet.apollo"/>
-      <attribute name="version" value="15.0.1" type="Version"/>
-      <attribute name="bnd.hashes" value="-138282472,-1850773091,2006994913" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <directive name="uses" value="graphql.kickstart.execution,graphql.kickstart.execution.input,graphql.kickstart.servlet,jakarta.servlet,jakarta.servlet.http"/>
-      <attribute name="bundle-symbolic-name" value="graphql-java-servlet"/>
-      <attribute name="bundle-version" value="15.0.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.servlet.cache"/>
-      <attribute name="version" value="15.0.1" type="Version"/>
-      <attribute name="bnd.hashes" value="2019398272,-880959361,-2111868219,781403043,86197778,1822693597,-1097306771,487763477" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <directive name="uses" value="graphql.kickstart.execution.config,graphql.schema,jakarta.servlet.http,jakarta.websocket.server"/>
-      <attribute name="bundle-symbolic-name" value="graphql-java-servlet"/>
-      <attribute name="bundle-version" value="15.0.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.servlet.config"/>
-      <attribute name="version" value="15.0.1" type="Version"/>
-      <attribute name="bnd.hashes" value="507274701,1635025708" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <directive name="uses" value="graphql.kickstart.execution.context,jakarta.servlet.http,jakarta.websocket,jakarta.websocket.server,org.dataloader"/>
-      <attribute name="bundle-symbolic-name" value="graphql-java-servlet"/>
-      <attribute name="bundle-version" value="15.0.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.servlet.context"/>
-      <attribute name="version" value="15.0.1" type="Version"/>
-      <attribute name="bnd.hashes" value="1895597947,-673090478,2020668137,1448245872,37753811,-1146548152,1669807537" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <directive name="uses" value="graphql.kickstart.execution,jakarta.servlet.http,jakarta.websocket.server"/>
-      <attribute name="bundle-symbolic-name" value="graphql-java-servlet"/>
-      <attribute name="bundle-version" value="15.0.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.servlet.core"/>
-      <attribute name="version" value="15.0.1" type="Version"/>
-      <attribute name="bnd.hashes" value="-1181615118,1413531508,1419784148,-1211127024,953335486" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <directive name="uses" value="jakarta.servlet.http"/>
-      <attribute name="bundle-symbolic-name" value="graphql-java-servlet"/>
-      <attribute name="bundle-version" value="15.0.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.servlet.core.internal"/>
-      <attribute name="version" value="15.0.1" type="Version"/>
-      <attribute name="bnd.hashes" value="-1360899497,152048399,-1997493663,1272675325" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <directive name="uses" value="graphql.kickstart.execution,graphql.kickstart.execution.config,graphql.kickstart.execution.context,graphql.kickstart.execution.input,graphql.kickstart.execution.subscriptions,graphql.kickstart.servlet.config,graphql.kickstart.servlet.context,graphql.kickstart.servlet.core,graphql.schema,jakarta.servlet.http,jakarta.websocket"/>
-      <attribute name="bundle-symbolic-name" value="graphql-java-servlet"/>
-      <attribute name="bundle-version" value="15.0.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.servlet.input"/>
-      <attribute name="version" value="15.0.1" type="Version"/>
-      <attribute name="bnd.hashes" value="-1349343623,-1521844705,1895597947,2081191353,-1063167935" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <directive name="uses" value="graphql.schema"/>
-      <attribute name="bundle-symbolic-name" value="graphql-java-servlet"/>
-      <attribute name="bundle-version" value="15.0.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.servlet.osgi"/>
-      <attribute name="version" value="15.0.1" type="Version"/>
-      <attribute name="bnd.hashes" value="-468237628,-1719597118,-457826909,-747579174,416010640,1250890647,-2019962815" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.package">
-      <directive name="uses" value="graphql.kickstart.execution,graphql.kickstart.execution.subscriptions,jakarta.websocket,org.reactivestreams"/>
-      <attribute name="bundle-symbolic-name" value="graphql-java-servlet"/>
-      <attribute name="bundle-version" value="15.0.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.servlet.subscriptions"/>
-      <attribute name="version" value="15.0.1" type="Version"/>
-      <attribute name="bnd.hashes" value="-563184043,-1662219245,-834012745,65510446,-762274958" type="List&lt;Long&gt;"/>
-    </capability>
-    <capability namespace="osgi.wiring.bundle">
-      <attribute name="bundle-version" value="15.0.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.bundle" value="graphql-java-servlet"/>
-    </capability>
-    <capability namespace="osgi.wiring.host">
-      <attribute name="bundle-version" value="15.0.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.host" value="graphql-java-servlet"/>
-    </capability>
-    <capability namespace="osgi.content">
-      <attribute name="size" value="170406" type="Long"/>
-      <attribute name="mime" value="application/vnd.osgi.bundle"/>
-      <attribute name="url" value="graphql-java-servlet/graphql-java-servlet-15.0.1.jar"/>
-      <attribute name="osgi.content" value="4522F62D6BE040DDF47ECA52EFC41F4FDDA18FB946DA57E98336DADB5CBC6724"/>
-    </capability>
-    <capability namespace="osgi.service">
-      <directive name="uses" value="jakarta.servlet,jakarta.servlet.http"/>
-      <attribute name="objectClass" value="jakarta.servlet.Servlet,jakarta.servlet.http.HttpServlet" type="List&lt;String&gt;"/>
-    </capability>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql)(version&gt;=20.1.0)(!(version&gt;=21.0.0)))"/>
+      <directive name="uses" value="graphql.cachecontrol,graphql.com.google.common.collect,graphql.execution,graphql.execution.instrumentation,graphql.execution.preparsed,graphql.language,graphql.parser,graphql.schema,graphql.validation,org.dataloader"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
       <attribute name="osgi.wiring.package" value="graphql"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.execution.instrumentation)(version&gt;=20.1.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="1970626406,1143636873,-855826074,-2077041116,-1348440848,1438093382,-1869779986,-1961447102,393026068,1895597947,1802065842,278906165,-2075985675,-1646472206,1944995785,-2088771162,1407586239,329079430,-189699457,-854452516,138792172,2091985744,-1948681139,635054813,989465998,-1216934138,-1410505862,377623607,-844109103,-844091805,-719424025,925542424,808454359,1875869684,1580562082,-1209127008,-1579792755,-499531715,1362665209" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql,graphql.execution,graphql.execution.instrumentation,graphql.execution.instrumentation.parameters,graphql.language,graphql.schema,graphql.util,graphql.validation"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.analysis"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="-1667626086,691971195,80204913,-609150964,-433463761,-981364733,1895597947,1501957780,-1790984631,-1603495420,1383748433,-459354151,164273528,2074547878,-853705598,-783662654,-586628232,-609411656,-276854061,-1133854829,-650573953,-25295297,410289482,350201482,-2138912214,-1870627990,213015108,1540779652,-1888038796" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql,graphql.schema"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.analysis.values"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="1303265985,-1347431697,1299791325" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql,graphql.execution,graphql.schema"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.cachecontrol"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="2249383,79711796,-1172272229" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql,graphql.com.google.common.collect"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.collect"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="674552340,1170289193" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="com.google.errorprone.annotations,javax.annotation,org.checkerframework.checker.nullness.qual"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.com.google.common.base"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="1954926425,80204913,-7643440,63553329,65975,65996,63424707,2004119357,-1660022400,66029837,-2005266154,-1719016690,-703773960,102162317,2378,-564216145,70921513,1135543307,-1970453254,1067840776,-1522918686,1713806767,-1843129648,-1785466787,-799485566,-2124768684,2433880,2563,1385637212,-71578050,-2024590691,993781980,-1397016409,1265998597,-2077353974,-900095675,712339042,-39732994,1654237568,-162451795,2135131247,67115890,2083351519,-725076846,-71117602,-1034806157,1652039948,2140248953,1445582840,-927582455,-2006257247,656757759,-1640660045,-2070662281,923850256,-76457379,-2103994022,-1220653089,1280967478,5004532,-14372992,1116108718,-1486965202,1441621039,-227854914,1939328147,2093771131,655935895,-2111257152,-2122435763,-1201624181,-535977882,-1814143502,1556937131,-2029861102,-1079381948,1774523672,-497003788,1029587942,-1140823620,1346375835,322239893,-946656221,-293243530,1852442515,-1861944601,-1975476895,-217105822,-1598661140,1721084755,-1923478059" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="com.google.errorprone.annotations,graphql.com.google.common.base,javax.annotation,org.checkerframework.checker.nullness.qual"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.com.google.common.collect"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="1090687771,80204913,-7643440,-1033140829,-172286586,-2064216520,63531946,73863,-2050817629,198840911,2143760286,-2036122596,-675074323,822191808,-1781771277,1419848931,-694509519,-644381021,-157352692,1364693437,-1706032768,-1557241156,1727780366,-1557235262,-1035287848,73079920,-2029030736,-1739945662,-536350747,-1725575194,-536344853,1143090980,32717411,-937329593,390242927,1029746275,-1162060570,-1967177856,-1210232660,-1651841753,859331124,64157557,853437880,1409360995,-586757018,371196171,975530565,-1226615248,1428353201,-1273983959,1952392353,572770538,-1644922854,696556226,-251836770,783084973,999146032,1090960470,1516784416,1255321653,119473079,-1917202489,1175548388,215737652,588355049,1800397149,872439018,153126957,-1139290088,374652095,-276493434,-86943590,65298671,1684455652,-421719052,1702993872,213641184,68130,2023997302,-142167546,-900330555,82362,-1841243838,-1899575221,-1463672261,-1184828766,-695530622,892704384,-1898953411,-162451795,1933926536,2005423245,471602102,-584281616,-967458744,1592635297,-2093185708,1902716275,2335252,330371942,1417901854,1887285386,-158797559,-309473248,-287071072,2092891723,1473592893,-1287187238,-2097081700,1049520462,-1433139628,356387534,1523136923,1539936264,1863679323,-1852258163,1064446656,1375318623,1029950719,2084541107,-1711489088,649142915,-1711483194,-331017619,318159812,73610428,1029956613,-317233470,-317227576,1946617521,-1072891514,956809129,219533462,1518876747,-86831294,1766779059,-670403824,-1606338664,-2008494329,-1204017967,-1135581818,-1204012073,-1932776460,-841360398,1895597947,-303609005,-1484529583,1854075296,-300651472,1907055593,-1162520359,-1162514465,-1883308642,-204121378,-563684064,-543507773,-1841332001,307994000,674554010,1026579958,-793225521,547457016,1883135800,1300819500,1301223754,971458795,-45119811,265752156,889906320,-2086159386,-662057060,1046394117,1046400011,362566080,645409377,63537840,-702779592,806293692,645415271,1505348719,-209024730,-687021871,-1797755920,1595405621,-647887175,674559904,760034216,-1863953085,-1897951345,-399986207,-722200035,-1070463589,-722194141,-1847436767,-287203444,736765681,2147073039,7268897,-1228257362,890642941,-1713172065,1837953635,1182840647,7808421,-1840507040,-1453477750,-1918818415,1965770612,-1918812521,-1764399471,-282353247,-1345530543,-1477187349,-330749558,-1523873089,-330743664,1901954145,294163571,274932775,145939831,204157642,-2111276178,359133827,1797231609,-1105994112,-787606083,413500027,2005193971,1810681681,73429877,-2075688594,-1449303143,66393224,226525288,-1880479680,1333687788,1432223309,-226406947,-1093814259,917115616,-675310660,-1693503595,1666148259,1588126669,-1843402127,-656591085,935698558,1855960161,-2137064498,760404538,1006379777,33640962,760799143,-203903040,887991041,-1781505272,-1912117919,-29000606,-19969128,1236675807,574353179,-1369522782,1713883235,-711825690,-842438337,1435893952,-2064601593,-880381280,-667535903,-249358535,-730295662,-368324654,-1217030644,1555949527,1796668963,-459262609,213730731,1115520586,-2036148889,1004169178,260272865,846626076,-2090362076,-537828460,939174183,1146625237,247645529,-1862073964,-743399630,-277169124,-88242697,-1171160378,1028687290,-1302110952,1349035347,-1129118163,2070464030,684716206,-1992946624,2390711,718470563,704895331,80603245,-1767988672,-845728025,458090851,-1535867910,859727986,1208740854,2119355795,-1436371536,-2086503304,1242901106,1126847540,-1667779660,-793484937,1633758943,2057948678,-282598968,1004605790,1618383136,125648712,1394601483,797751088,67115090,718476457,-1223680688,-1756589100,-1287181344,1619569399,1618389030,521612910,797933802,1164583165,1280967478,835074136,-281324458,-1634397831,229129670,1996753682,-844789859,1298958836,-1486965202,2101244437,1939328147,-1900451643,-1135208522,-1160063996,78727453,-148938798,317485823,317491717,262515358,-18760458,-1220684352,1939683791,-214225116,-1674035837,-699646442,-1788005975,1290959887,-699640548,-1730772577,1956089352,20716027,-1249537354,808801527,2013143545,1721768912,16048101,-573110374,1143096874,645723102,782976683,-48772114,2065150260,923190589,-645266937,-1807693278,2070469924,2573425,228273150,-407979243,-567343349,244678711,545258095,-276868124,2013284554,-2109992978,-665176392,1661809628,16574086,1423112623,1838277864,837289420,-1477851120,485039233,-1159712962,1214906007,-528822119,-1486963018,-1511448888,-830787116,-1204417807,-1843893152,-386480278,501023403,1388527084,1379019459,-1984048492,137652901,742040440,-1902320851,-233048917,-217237293,1908683510,-1690580806,1943940024,1909309121,1667330802,1911072204,1912266654,2001552370,383659925,341661576,-1657707817,-1657701923,1449518165,1449524059,-574377581,1923543101,-980769127,341667470,936902193,1349985931,1349991825,1568676404,1925714682,-1302275788,2096514,80563118,1409490608,-137619064,1801759700,-593731388,-563956252,-1672629853,1373092917,-708804158,-1285705391,-1797510523,-1333649483,-1322301831,-896213065,-1257185848,1452048966,74361232,1247353801,-1059737563,-384713297,-955788349,2147090443,1533313097,953231427,907696356,-1923478059" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.com.google.common.math"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="40896320,-162451795,-672982153,1871165870,-2009987132,-1313910957,-1923478059" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="com.google.errorprone.annotations,graphql.com.google.common.base,javax.annotation"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.com.google.common.primitives"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="-1739223423,478003966,-685944237,2070707563,-162451795,1969468432,1895597947,-614941189,-791601062,1070457489,2284164,-1242276871,-1454280841,-1596247187,-883450268,73603415,-704912260,377730512,1803087676,-1272397345,1817225814,1305744153,968017488,1826157410,-1923478059" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql,graphql.cachecontrol,graphql.execution.instrumentation,graphql.language,graphql.normalized,graphql.schema,graphql.schema.visibility,org.dataloader"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.execution"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="2026711879,-1252588943,1470044967,-2135944010,67081517,2390655,-1818398616,63574620,-1776276561,-2057846501,-380707826,-1109595157,-653743144,1895597947,630152162,-258925035,-1163379654,1495907023,912993016,-89859177,-586365948,1212962355,-1942561468,-790122318,-658027528,-430523765,118286037,-1570125768,-1000697645,-1961917667,-923864334,644746757,-1095976119,-1990487794,2105764002,-152327219,-1294204858,1042512484,1982524075,2044756336,-499521969,-674277594,1421485570,614038214,451383022,1800653246,2073114160,-1694480270,-142042108,539915822,1238056596,1993885544,-1544599906,-734070447" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql,graphql.execution,graphql.language,graphql.schema"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.execution.directives"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="1402378826,1895597947,1040601370,858937847,333599948,-34216692" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql,graphql.com.google.common.collect,graphql.execution,graphql.execution.instrumentation.parameters,graphql.language,graphql.schema,graphql.validation"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
       <attribute name="osgi.wiring.package" value="graphql.execution.instrumentation"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.execution.preparsed)(version&gt;=20.1.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="1252160460,2056143233,-201941789,-1106364338,1895597947,47828539,1530864332,-452466866,656519809,-525185565,-635300,-1818940612,-234174765,-1239693834" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql,graphql.execution.instrumentation,graphql.execution.instrumentation.parameters,graphql.schema,org.dataloader,org.slf4j"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.execution.instrumentation.dataloader"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="-1241301046,-1961597068,1923539687,946815658,-1930307991,-2066999464" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql,graphql.execution,graphql.execution.instrumentation,graphql.execution.instrumentation.parameters,graphql.language,graphql.schema"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.execution.instrumentation.fieldvalidation"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="-725233863,740887795,-807254240,-1248135685,-1730130161,1384931577,-112423584,-1590025380,-625585951" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql,graphql.execution,graphql.execution.instrumentation,graphql.language,graphql.schema"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.execution.instrumentation.parameters"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="1103545873,-1231526166,890076404,855432903,136955759,631386200,802707798,-258094159" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql,graphql.execution.instrumentation,graphql.execution.instrumentation.parameters,graphql.schema"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.execution.instrumentation.threadpools"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="1955883606,1895597947,-57039365" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql,graphql.execution.instrumentation,graphql.execution.instrumentation.parameters,graphql.language,graphql.schema,graphql.validation"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.execution.instrumentation.tracing"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="415178366,-54532500,552585901,2041255117" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql,graphql.language"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
       <attribute name="osgi.wiring.package" value="graphql.execution.preparsed"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.execution.reactive)(version&gt;=20.1.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="-1218531522,-106835933,927749280" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql,graphql.execution.preparsed"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.execution.preparsed.persisted"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="802134347,1895597947,1794510055,362558797,-690266135,364926931,871186599,1133275844,-1868316966" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql,org.reactivestreams"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
       <attribute name="osgi.wiring.package" value="graphql.execution.reactive"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.kickstart.execution)(version&gt;=15.0.0)(!(version&gt;=16.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.execution"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.kickstart.execution.config)(version&gt;=15.0.0)(!(version&gt;=16.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.execution.config"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.kickstart.execution.context)(version&gt;=15.0.0)(!(version&gt;=16.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.execution.context"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.kickstart.execution.error)(version&gt;=15.0.0)(!(version&gt;=16.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.execution.error"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.kickstart.execution.input)(version&gt;=15.0.0)(!(version&gt;=16.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.execution.input"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.kickstart.execution.instrumentation)(version&gt;=15.0.0)(!(version&gt;=16.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.execution.instrumentation"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.kickstart.execution.subscriptions)(version&gt;=15.0.0)(!(version&gt;=16.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.execution.subscriptions"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.kickstart.execution.subscriptions.apollo)(version&gt;=15.0.0)(!(version&gt;=16.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.execution.subscriptions.apollo"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=graphql.kickstart.servlet)"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.servlet"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=graphql.kickstart.servlet.apollo)"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.servlet.apollo"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=graphql.kickstart.servlet.cache)"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.servlet.cache"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=graphql.kickstart.servlet.config)"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.servlet.config"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=graphql.kickstart.servlet.context)"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.servlet.context"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=graphql.kickstart.servlet.core)"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.servlet.core"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=graphql.kickstart.servlet.core.internal)"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.servlet.core.internal"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=graphql.kickstart.servlet.input)"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.servlet.input"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=graphql.kickstart.servlet.osgi)"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.servlet.osgi"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=graphql.kickstart.servlet.subscriptions)"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.servlet.subscriptions"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.schema)(version&gt;=20.1.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="-1731541398,94871888,1789498207,-1080477939,-1162748784,-418924255,-1384734705,373741804,-609703617" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.extensions"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="69610671,224419015,-107994994" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.i18n"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="-924254468,2223678,1821159523" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql,graphql.language,graphql.schema"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.introspection"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="1797557508,-611944946,1553424283,364702530,1688963046,324489709,415178366,-1469144850,-1482152012,-261134776,341194411,899894314" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql,graphql.com.google.common.collect,graphql.parser,graphql.util"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.language"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="598767481,-593394332,1895597947,-1525038371,772119224,-1070851880,1231608619,-2138115176,65162072,1066288246,-607244339,-421133993,-882974135,-1679915457,979046771,1392398459,-56677412,1041377327,-1680340254,1797557508,2104374973,926364987,761800622,1482272503,-2057952048,-1356500413,67875034,-229967411,967734421,-1870197789,2091683843,1158975196,-1085361368,713536075,-103470580,1297484841,805296150,188609423,1622544538,620694242,1679579558,569521151,1410308376,-1053633349,2433570,-1592452327,-1154432192,989945589,1681835818,1331277118,-480170418,1187751236,-1356636180,-1384053062,-1859631314,-1256630262,367256795,-1888622228,415171321,381801810,-628296377,-2140710406,-1927751340,-1822189018,987547482,-1851532178,-840225842,1244221143,271438801,-800509095,-1216113748,-1842856763,-1449740812,952094577,288002412,-1464718506,-986865205,-464458480,148655040,2622298,788671565,-611944946,-611863291,1870050492,1432220073,82420049,34321679,-60041201" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql,graphql.com.google.common.collect,graphql.execution,graphql.language,graphql.schema"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.normalized"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="-1658086825,1895597947,493790841,-131202202,1723196159,-297314479,-368207442,-1399759953,1098139332,-845465156,226613760,-2030539733,1688096228,1276518974,-323018808,-1727373238,-482917765,1835006542" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql.org.antlr.v4.runtime.atn,graphql.org.antlr.v4.runtime.dfa,graphql.org.antlr.v4.runtime.misc,graphql.org.antlr.v4.runtime.tree,graphql.org.antlr.v4.runtime.tree.pattern"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.org.antlr.v4.runtime"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="-779903409,-338264818,1520664605,-845188359,147732331,239912026,-1441246570,-1728970595,1895597947,2622298,-40757853,1376016219,2118387041,2008518734,-683176359,-267205970,-1730197892,472892366,-1657366811,1265422586,550372245,-54827113,1993475119,-201666471,73315052,-2028489600,-55791658,1711517588,1715418361,-1999236398,-1911543745,-1707579205,703976788,1389721390,-406429064,-1871649340,2071415539,2021425959,80988633,1946872049,171349844,175865529,1065823494,-1633677242,858188313" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql.org.antlr.v4.runtime,graphql.org.antlr.v4.runtime.dfa,graphql.org.antlr.v4.runtime.misc"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.org.antlr.v4.runtime.atn"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="65147,1376609693,184671664,-1413872526,978302642,-2063262331,-1463061782,26462256,1879540482,1059981038,1054834633,1167698646,37702741,1221636810,-1837547445,-1473087077,376581351,941833638,1887832014,858409251,653203459,748702108,456313438,473609676,840109770,283008501,1710088307,1858199615,-1961785674,-510224777,-1681179599,523758106,-1584582475,333724738,-1322436811,-751808868,1487435149,1676665363,1209601548,-1725991483,1198516727,-1590569122,-1576107393,1326501025,-262406628,-2048277978,196753242,-296506524,760750918,1373348434,170557921,1613906312,-1852613470,-911505876,53088226,-871857631,-1671151028,1439438336,-131110558,476691379,355225435,247309042,-235493681,-1067478446,1887252875,-208645645,1747329425,64951,2531,-435909436,257981101,655935895,-94425879,-448814281,-1688604299,-263562006,-1207959531,-516556684,-992318807,269306229,-2056768785" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql.org.antlr.v4.runtime,graphql.org.antlr.v4.runtime.atn"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.org.antlr.v4.runtime.dfa"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="67583,-1767921935,-1172513360,-2106133550,-1985473659" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql.org.antlr.v4.runtime"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.org.antlr.v4.runtime.misc"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="1352560978,544755408,-132358231,968088014,-126228080,67115090,1005787907,-2099913197,-1828421924,-839730166,635062501,-183888579,718439811,-742742770,-1804337361,2479866,-909350471,655935895,82059409" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql.org.antlr.v4.runtime,graphql.org.antlr.v4.runtime.misc"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.org.antlr.v4.runtime.tree"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="366374559,-1961635830,1029411146,170889425,1234524325,-368124323,827932478,-1887091135,809659070,529904126,2615230,81072245" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql.org.antlr.v4.runtime,graphql.org.antlr.v4.runtime.misc,graphql.org.antlr.v4.runtime.tree"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.org.antlr.v4.runtime.tree.pattern"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="65090125,505033588,-1625975425,-1637852861,1187486433,1551183539,-417444421,-725383405,940196128,-1062011016" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql.org.antlr.v4.runtime,graphql.org.antlr.v4.runtime.atn,graphql.org.antlr.v4.runtime.tree"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.org.antlr.v4.runtime.tree.xpath"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="83750045,519360415,1495081071,286125741,1661701512,1189884803,-2062070523,-740704256,-182596246,493188453" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql,graphql.i18n,graphql.language,graphql.org.antlr.v4.runtime,graphql.org.antlr.v4.runtime.tree,graphql.parser.antlr"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.parser"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="-691628133,-753220802,-1651887314,-579424905,835705045,1895597947,30995888,881891022,-974108553,-615731088,-161472919,-1911543745,214525012,1478230367,80988633,1505527652,-798804433,-760330873,-1667241264,64213087" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql.org.antlr.v4.runtime,graphql.org.antlr.v4.runtime.atn,graphql.org.antlr.v4.runtime.dfa,graphql.org.antlr.v4.runtime.tree"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.parser.antlr"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="-1656813298,-1985413932,665148611,1883610013,1790628191,169576466,-1654486119,-1679622586,-1390332969,75045909,-1812394765,-1554414657,-1286159172,377279027,116908672,-39706515,-980986869,1332756160,1007779563,-1207414796,1505157250,-227916255,607693496,-1692557633,-15410708,1200846079,-890383948,-1102144128,810801156,316091894,1243501429,-1772379358,2121680643,2132880460,364866580,-1499151316,-2099101691,-217812666,709284025,-1502442720,-92817001,-1296254027,1156607273,452586672,-1175565961,-1502865276,196064929,440716372,385016082,213430947,-894488458,981776381,-1943431365,-467130795,1123350862,-1732014661,-1866476522,320536675,1425161499,1172176977,619645603,-550742663,-1690316914,-948424459,-652304222,1382256618,1185437930,-1156397645,-1682045767,1033214693,971838986,-1734111917,-2099815482,1784561438,-1781238564,912207731,-1838147168,530590667,-744572600,-347186075" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql,graphql.i18n,graphql.language,graphql.parser"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.parser.exceptions"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="1893410246,-800273859,-1699923471,-800010259,2040248391" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql,graphql.language,graphql.schema"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.relay"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="1217813246,-430660620,-819178529,-253054955,1230460798,1860205854,2154973,700818114,-189600280,923779069,-1520591786,78844529,612216974" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql,graphql.execution,graphql.language,graphql.schema"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.scalar"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="-1708757382,-480380041,-950202517,-1475569412,-275217474,263059858" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql,graphql.cachecontrol,graphql.com.google.common.collect,graphql.execution,graphql.execution.directives,graphql.introspection,graphql.language,graphql.normalized,graphql.schema.visibility,graphql.util,org.dataloader"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
       <attribute name="osgi.wiring.package" value="graphql.schema"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=jakarta.servlet)(version&gt;=5.0.0)(!(version&gt;=6.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="jakarta.servlet"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=jakarta.servlet.http)(version&gt;=5.0.0)(!(version&gt;=6.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="jakarta.servlet.http"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=jakarta.websocket)(version&gt;=2.1.0)(!(version&gt;=3.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="jakarta.websocket"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=jakarta.websocket.server)(version&gt;=2.1.0)(!(version&gt;=3.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="jakarta.websocket.server"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=java.io)"/>
-      <attribute name="osgi.wiring.package" value="java.io"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=java.lang)"/>
-      <attribute name="osgi.wiring.package" value="java.lang"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=java.lang.annotation)"/>
-      <attribute name="osgi.wiring.package" value="java.lang.annotation"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=java.lang.invoke)"/>
-      <attribute name="osgi.wiring.package" value="java.lang.invoke"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=java.nio.charset)"/>
-      <attribute name="osgi.wiring.package" value="java.nio.charset"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=java.time)"/>
-      <attribute name="osgi.wiring.package" value="java.time"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=java.util)"/>
-      <attribute name="osgi.wiring.package" value="java.util"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=java.util.concurrent)"/>
-      <attribute name="osgi.wiring.package" value="java.util.concurrent"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=java.util.concurrent.atomic)"/>
-      <attribute name="osgi.wiring.package" value="java.util.concurrent.atomic"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=java.util.function)"/>
-      <attribute name="osgi.wiring.package" value="java.util.function"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=java.util.regex)"/>
-      <attribute name="osgi.wiring.package" value="java.util.regex"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=java.util.stream)"/>
-      <attribute name="osgi.wiring.package" value="java.util.stream"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=org.dataloader)(version&gt;=3.2.0)(!(version&gt;=4.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="org.dataloader"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=org.reactivestreams)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="org.reactivestreams"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=org.slf4j)(version&gt;=2.0.0)(!(version&gt;=3.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="org.slf4j"/>
-    </requirement>
-    <requirement namespace="osgi.ee">
-      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=17))"/>
-    </requirement>
-    <requirement namespace="osgi.extender"/>
-    <requirement namespace="osgi.extender">
-      <directive name="filter" value="(&amp;(osgi.extender=osgi.component)(version&gt;=1.5.0)(!(version&gt;=2.0.0)))"/>
-    </requirement>
-    <requirement namespace="osgi.service">
-      <directive name="filter" value="(objectClass=graphql.execution.preparsed.PreparsedDocumentProvider)"/>
-      <directive name="effective" value="active"/>
-      <directive name="resolution" value="optional"/>
-    </requirement>
-    <requirement namespace="osgi.service">
-      <directive name="filter" value="(objectClass=graphql.kickstart.execution.config.ExecutionStrategyProvider)"/>
-      <directive name="effective" value="active"/>
-      <directive name="resolution" value="optional"/>
-    </requirement>
-    <requirement namespace="osgi.service">
-      <directive name="filter" value="(objectClass=graphql.kickstart.execution.config.InstrumentationProvider)"/>
-      <directive name="effective" value="active"/>
-      <directive name="resolution" value="optional"/>
-    </requirement>
-    <requirement namespace="osgi.service">
-      <directive name="filter" value="(objectClass=graphql.kickstart.execution.error.GraphQLErrorHandler)"/>
-      <directive name="effective" value="active"/>
-      <directive name="resolution" value="optional"/>
-    </requirement>
-    <requirement namespace="osgi.service">
-      <directive name="filter" value="(objectClass=graphql.kickstart.servlet.context.GraphQLServletContextBuilder)"/>
-      <directive name="effective" value="active"/>
-      <directive name="resolution" value="optional"/>
-    </requirement>
-    <requirement namespace="osgi.service">
-      <directive name="filter" value="(objectClass=graphql.kickstart.servlet.core.GraphQLServletListener)"/>
-      <directive name="effective" value="active"/>
-      <directive name="resolution" value="optional"/>
-      <directive name="cardinality" value="multiple"/>
-    </requirement>
-    <requirement namespace="osgi.service">
-      <directive name="filter" value="(objectClass=graphql.kickstart.servlet.core.GraphQLServletRootObjectBuilder)"/>
-      <directive name="effective" value="active"/>
-      <directive name="resolution" value="optional"/>
-    </requirement>
-    <requirement namespace="osgi.service">
-      <directive name="filter" value="(objectClass=graphql.kickstart.servlet.osgi.GraphQLCodeRegistryProvider)"/>
-      <directive name="effective" value="active"/>
-      <directive name="resolution" value="optional"/>
-    </requirement>
-    <requirement namespace="osgi.service">
-      <directive name="filter" value="(objectClass=graphql.kickstart.servlet.osgi.GraphQLMutationProvider)"/>
-      <directive name="effective" value="active"/>
-      <directive name="resolution" value="optional"/>
-      <directive name="cardinality" value="multiple"/>
-    </requirement>
-    <requirement namespace="osgi.service">
-      <directive name="filter" value="(objectClass=graphql.kickstart.servlet.osgi.GraphQLProvider)"/>
-      <directive name="effective" value="active"/>
-      <directive name="resolution" value="optional"/>
-      <directive name="cardinality" value="multiple"/>
-    </requirement>
-    <requirement namespace="osgi.service">
-      <directive name="filter" value="(objectClass=graphql.kickstart.servlet.osgi.GraphQLQueryProvider)"/>
-      <directive name="effective" value="active"/>
-      <directive name="resolution" value="optional"/>
-      <directive name="cardinality" value="multiple"/>
-    </requirement>
-    <requirement namespace="osgi.service">
-      <directive name="filter" value="(objectClass=graphql.kickstart.servlet.osgi.GraphQLSubscriptionProvider)"/>
-      <directive name="effective" value="active"/>
-      <directive name="resolution" value="optional"/>
-      <directive name="cardinality" value="multiple"/>
-    </requirement>
-    <requirement namespace="osgi.service">
-      <directive name="filter" value="(objectClass=graphql.kickstart.servlet.osgi.GraphQLTypesProvider)"/>
-      <directive name="effective" value="active"/>
-      <directive name="resolution" value="optional"/>
-      <directive name="cardinality" value="multiple"/>
-    </requirement>
-  </resource>
-  <resource>
-    <capability namespace="osgi.identity">
-      <attribute name="osgi.identity" value="graphql-java-kickstart"/>
-      <attribute name="type" value="osgi.bundle"/>
-      <attribute name="version" value="15.0.1.SNAPSHOT" type="Version"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="-1389058591,-971839580,-762251688,1895597947,-1941504581,-676535815,423301575,-775517763,-1659821589,400507021,-1690587322,-768850463,-1257815135,-734419298,-778267201,1003224542,-1493706571,-613378433,420086977,-519041477,1610704408,-1349766746,-206947405,849244440,-2115136890,2023444635,-1830812988,1761418202,-189987100,-700239169,1510599074,-722944505,-1643346758,-1160957062,-903778790,554430555,-506226205,121750218,-1062772729,2132717580,-484180204,-480233237,672250635,85008458,-917282325,-174858076,-302339134,1651929220,457181679,658841516,1072148170,1652666578,513038877,-1062519133,1680533480,223539582,853153096,-436364987,1698521163,-875184231,-1755061024,-1194022171,842945037,131193531,499423096,1117219962,-893163722,885112762,80204913,-814428348,-435638521,136244392,1878248054,-368864355,319689377,1363833027,-1393187702,767401095,481021885,-1840240505,586057098,-1406395085,-1395466386,1685315736,-820064789,-756913687,562352255,-2062854401,1627736687,889596288,-730554162" type="List&lt;Long&gt;"/>
     </capability>
     <capability namespace="osgi.wiring.package">
-      <directive name="uses" value="com.fasterxml.jackson.annotation,com.fasterxml.jackson.core,com.fasterxml.jackson.databind,graphql,graphql.execution.instrumentation,graphql.execution.instrumentation.dataloader,graphql.execution.preparsed,graphql.kickstart.execution.config,graphql.kickstart.execution.error,graphql.kickstart.execution.input"/>
-      <attribute name="bundle-symbolic-name" value="graphql-java-kickstart"/>
-      <attribute name="bundle-version" value="15.0.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.execution"/>
-      <attribute name="version" value="15.0.1" type="Version"/>
-      <attribute name="bnd.hashes" value="908277640,-664861314,-1181615118,1227850535,-1735420801,-277446480,1367075058,1470503370,1998922645,-1672695354,-1080101135,-1155034627,1895597947,1287313609,1866927995,-798888068,-1944609146,1391829201,-661479212,-512367971,-1924802544,1415669202,1541738847,148294400,-279888950" type="List&lt;Long&gt;"/>
+      <directive name="uses" value="graphql,graphql.language,graphql.schema,graphql.schema.diff.reporting"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.schema.diff"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="-1939755965,-970892350,1895597947,-1017753227,-1011778977,-970877443,-842800492,415178366,1544411494" type="List&lt;Long&gt;"/>
     </capability>
     <capability namespace="osgi.wiring.package">
-      <directive name="uses" value="com.fasterxml.jackson.databind,graphql,graphql.execution,graphql.execution.instrumentation,graphql.execution.preparsed,graphql.schema"/>
-      <attribute name="bundle-symbolic-name" value="graphql-java-kickstart"/>
-      <attribute name="bundle-version" value="15.0.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.execution.config"/>
-      <attribute name="version" value="15.0.1" type="Version"/>
-      <attribute name="bnd.hashes" value="171230996,-1609403749,-1996943526,857958812,1485609874,614835070,-1286099237,4691496,-1542904993,1644093585" type="List&lt;Long&gt;"/>
+      <directive name="uses" value="graphql,graphql.schema.diff"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.schema.diff.reporting"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="1199603812,-26667007,838348126,-1661621138" type="List&lt;Long&gt;"/>
     </capability>
     <capability namespace="osgi.wiring.package">
-      <directive name="uses" value="graphql,graphql.execution.instrumentation,graphql.execution.instrumentation.dataloader,graphql.kickstart.execution,graphql.kickstart.execution.input,graphql.schema,org.dataloader"/>
-      <attribute name="bundle-symbolic-name" value="graphql-java-kickstart"/>
-      <attribute name="bundle-version" value="15.0.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.execution.context"/>
-      <attribute name="version" value="15.0.1" type="Version"/>
-      <attribute name="bnd.hashes" value="444549569,-627644161,1790738951,-357433452,353410837,1960219164" type="List&lt;Long&gt;"/>
+      <directive name="uses" value="com.google.common.util.concurrent,graphql,graphql.com.google.common.collect,graphql.schema,graphql.schema.diffing.ana"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.schema.diffing"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="-2093702044,-827165044,-32719899,2154973,-628296377,-396959139,964406521,2044107858,1102123368,172587984,1641119500,351760016,-1792757586,1873247420,-1462193190,114701669,635150349,476677164,-1033670595,556834133,2647074,2103017358,-1736073788" type="List&lt;Long&gt;"/>
     </capability>
     <capability namespace="osgi.wiring.package">
-      <directive name="uses" value="com.fasterxml.jackson.annotation,com.fasterxml.jackson.databind,graphql,graphql.kickstart.execution.config,graphql.language"/>
-      <attribute name="bundle-symbolic-name" value="graphql-java-kickstart"/>
-      <attribute name="bundle-version" value="15.0.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.execution.error"/>
-      <attribute name="version" value="15.0.1" type="Version"/>
-      <attribute name="bnd.hashes" value="-944967990,-1357428791,2006439670,-595625333,-1543390604" type="List&lt;Long&gt;"/>
+      <directive name="uses" value="graphql,graphql.schema,graphql.schema.diffing"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.schema.diffing.ana"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="-2068833834,1073473059,1013974414,-722531989,1323774525,-2073733779,-1898802146,-1234686368,-1163353265,-1862987857,966375784,-176450957,-1715456968,2130737324,-1873688571,-896060120,2032705980,-1100096136,-1430505253,-19735554,749309222,1718799380,1586105555,487234952,-903635886,-1330075573,1174118184,525448600,-1074542598,1646671466,1899734562,716230941,1062439628,-685670549,131073948,-1902610627,143695887,612066622,297567581,586633230,-1588956180,457350334,-1551754762,-2026465883,19840631,1846249894,1451855117,-531023491,-796805665,-323987057,-1597776121,936718277,-1208972170,620200757,-1628460025,-1622715594,-1290888835,-2060566950,-57429814,-14260436,-1552221668,-725814444,755417679,-487734785,-1150452873,1662744846,-585915936,155506005,-1613642234,1367990139,-880670643,-256657924,118028535,1291224020,1847968324,-957436762,967464470,1863130830,-2130632247,-1089619975,-2093629199,-1441878520,604427994,-1323065701,-1532362036,-2090180824,-43874310,745733737,-97353784,298094137,1105915869,-1142744913,1877061117,-1702657874,-308189493,1738117021,-452548276,-1304640443,741666071,-595132949,1908188700,1293039070" type="List&lt;Long&gt;"/>
     </capability>
     <capability namespace="osgi.wiring.package">
-      <directive name="uses" value="graphql,graphql.kickstart.execution,graphql.kickstart.execution.context,graphql.schema"/>
-      <attribute name="bundle-symbolic-name" value="graphql-java-kickstart"/>
-      <attribute name="bundle-version" value="15.0.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.execution.input"/>
-      <attribute name="version" value="15.0.1" type="Version"/>
-      <attribute name="bnd.hashes" value="-8843862,-1810919919,-950545559,2069069356,-926051341" type="List&lt;Long&gt;"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.schema.diffing.dot"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="2154973,2433570,-2037162226,-786151899" type="List&lt;Long&gt;"/>
     </capability>
     <capability namespace="osgi.wiring.package">
-      <directive name="uses" value="graphql,graphql.execution,graphql.execution.instrumentation,graphql.execution.instrumentation.dataloader,graphql.execution.instrumentation.parameters,graphql.kickstart.execution.config,graphql.schema,org.dataloader"/>
-      <attribute name="bundle-symbolic-name" value="graphql-java-kickstart"/>
-      <attribute name="bundle-version" value="15.0.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.execution.instrumentation"/>
-      <attribute name="version" value="15.0.1" type="Version"/>
-      <attribute name="bnd.hashes" value="934463457,-233957381,1923539687,-1930307991,-208827011,1046297588,946815658,1456502105,199964575,2099370864" type="List&lt;Long&gt;"/>
+      <directive name="uses" value="graphql"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.schema.fetching"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="772042976" type="List&lt;Long&gt;"/>
     </capability>
     <capability namespace="osgi.wiring.package">
-      <directive name="uses" value="graphql,graphql.kickstart.execution,graphql.kickstart.execution.input,org.reactivestreams"/>
-      <attribute name="bundle-symbolic-name" value="graphql-java-kickstart"/>
-      <attribute name="bundle-version" value="15.0.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.execution.subscriptions"/>
-      <attribute name="version" value="15.0.1" type="Version"/>
-      <attribute name="bnd.hashes" value="174241861,-1687162152,867869110,1267334503,1274587006,-169865184,790846927,-575481966,-445421483,-1337819495" type="List&lt;Long&gt;"/>
+      <directive name="uses" value="graphql,graphql.language,graphql.parser,graphql.schema,graphql.schema.idl.errors,graphql.schema.visibility,graphql.util"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.schema.idl"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="1614093317,-1767569533,460804477,658837035,1320848564,1817281271,1573386907,445631640,-677813520,-1730393761,1341238397,-2102676922,1895597947,435055066,-475463974,-1848004091,-954746576,-458980669,628244355,2131414094,-1695271083,-847858368,415178366,-419823086,407183186,-537238002,1192018285,-1842766326,511401067,-147463295,1220520032,-1371200891,-1430801156,-1542703808,-817367649,-100928743,859354778,1371219382,1308445094,1130505130,-611999960,-1675876160,-611636612,-1305884721,2058121547,1113428418,-1991465839,1501532808" type="List&lt;Long&gt;"/>
     </capability>
     <capability namespace="osgi.wiring.package">
-      <directive name="uses" value="com.fasterxml.jackson.annotation,graphql.kickstart.execution,graphql.kickstart.execution.subscriptions"/>
-      <attribute name="bundle-symbolic-name" value="graphql-java-kickstart"/>
-      <attribute name="bundle-version" value="15.0.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.execution.subscriptions.apollo"/>
-      <attribute name="version" value="15.0.1" type="Version"/>
-      <attribute name="bnd.hashes" value="-672315027,-820530562,-132342846,-1326176180,-1603016186,752107850,-1629310985,2622298,1534883008,1922554702,-1136177888,1733904325,-1884524954,-1529869460" type="List&lt;Long&gt;"/>
+      <directive name="uses" value="graphql,graphql.language"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.schema.idl.errors"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="163485079,-1888419030,597239372,16678308,-1984554866,735381875,-2002187322,-1647907856,-266921081,-345576493,-476720060,-755609471,-1743420696,-1353861479,-1935579773,229252185,1896763425,-985359973,-119226556,1640771898,1342299208,-1665432606,-1780701113,-1148943091,-1173563529,337890047,-377689948,-217582451,307957595,787171574,-1008650367,1391078563,-95752802,-2094717407,-42124488,-17828681,-1296537491,-879624964,122784168,-1099066113" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql,graphql.com.google.common.collect,graphql.language,graphql.schema,graphql.util"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.schema.impl"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="-1570626957,507929126,1544928611,-825271586" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql,graphql.schema"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.schema.transform"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="-1300186405,1426795100,-595569969,89148610,-1340848970,-1040056625,598616068,2086851524" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql,graphql.schema"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.schema.usage"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="1895597947,648109152,662376271" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql,graphql.schema,graphql.util"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.schema.validation"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="1721768748,-281107607,243836363,-1922234866,-966466345,1442844808,1400944910,-2007381868,-218528993,-1016494744,-1816563055,-2060023943,71400132" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql,graphql.schema"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.schema.visibility"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="1895597947,-535536731,-891527164,-330190685,1713077373" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql,graphql.com.google.common.collect,graphql.schema,org.slf4j"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.util"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="-1133632623,1447644318,-1194783709,146263184,1857067075,951756231,68058508,-168093764,-725341250,-2013497070,1321062093,1210311671,-477501069,778300182,-899160290,2479866,2097873590,1036592863,-1021867744,77076827,-31342481,973530461,57171961,-563204478,-1318290503,-1768358063,-516112594,1769272572,1193711374,913647604,-1364705573,533031547,-1846666979" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql,graphql.i18n,graphql.language,graphql.schema"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.validation"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="-593269154,-773549992,-1692184909,-545425370,983180183,1036580657,1702492886,1895597947,-1091259153,-1986861387,672108938,1868321886,449489097,-1281649605,894184242" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <directive name="uses" value="graphql,graphql.language,graphql.schema,graphql.validation"/>
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="graphql.validation.rules"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
+      <attribute name="bnd.hashes" value="-85753129,1910716086,215473420,1523157055,210519080,-579853945,-608500619,-1046859701,1477210036,309055230,-66312760,1961706188,1497978912,-515403790,-570304649,-204472403,-205803745,544972261,-1576908856,-627178134,-1050665446,2128155400,-1869685145,-1219594763,2078499954,326642107,-1531025882,505640072,1801065516,-829577872" type="List&lt;Long&gt;"/>
+    </capability>
+    <capability namespace="osgi.wiring.package">
+      <attribute name="bundle-symbolic-name" value="graphql-java"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.package" value="i18n"/>
+      <attribute name="version" value="20.4.0" type="Version"/>
     </capability>
     <capability namespace="osgi.wiring.bundle">
-      <attribute name="bundle-version" value="15.0.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.bundle" value="graphql-java-kickstart"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.bundle" value="graphql-java"/>
     </capability>
     <capability namespace="osgi.wiring.host">
-      <attribute name="bundle-version" value="15.0.1.SNAPSHOT" type="Version"/>
-      <attribute name="osgi.wiring.host" value="graphql-java-kickstart"/>
+      <attribute name="bundle-version" value="20.4.0" type="Version"/>
+      <attribute name="osgi.wiring.host" value="graphql-java"/>
     </capability>
     <capability namespace="osgi.content">
-      <attribute name="size" value="168579" type="Long"/>
+      <attribute name="size" value="3652037" type="Long"/>
       <attribute name="mime" value="application/vnd.osgi.bundle"/>
-      <attribute name="url" value="graphql-java-kickstart/graphql-java-kickstart-15.0.1.jar"/>
-      <attribute name="osgi.content" value="6B0012C256D61D55CB24C702FBBA191189BDAB6778FBD2FB3F11AF799B01AF92"/>
+      <attribute name="url" value="graphql-java/graphql-java-20.4.0.jar"/>
+      <attribute name="osgi.content" value="C374DFFFA67CEEECD9F68E02D5633408B8C9848D354D5A94169269CBC46EB257"/>
     </capability>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.annotation)(version&gt;=2.14.0)(!(version&gt;=3.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.annotation"/>
+      <directive name="filter" value="(osgi.wiring.package=com.google.common.util.concurrent)"/>
+      <attribute name="osgi.wiring.package" value="com.google.common.util.concurrent"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.core)(version&gt;=2.14.0)(!(version&gt;=3.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.core"/>
+      <directive name="filter" value="(osgi.wiring.package=com.google.errorprone.annotations)"/>
+      <attribute name="osgi.wiring.package" value="com.google.errorprone.annotations"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.core.type)(version&gt;=2.14.0)(!(version&gt;=3.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.core.type"/>
+      <directive name="filter" value="(osgi.wiring.package=com.google.errorprone.annotations.concurrent)"/>
+      <attribute name="osgi.wiring.package" value="com.google.errorprone.annotations.concurrent"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.databind)(version&gt;=2.14.0)(!(version&gt;=3.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.databind"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.databind.annotation)(version&gt;=2.14.0)(!(version&gt;=3.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.databind.annotation"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=com.fasterxml.jackson.datatype.jdk8)(version&gt;=2.14.0)(!(version&gt;=3.0.0)))"/>
-      <attribute name="osgi.wiring.package" value="com.fasterxml.jackson.datatype.jdk8"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql)(version&gt;=20.1.0)(!(version&gt;=21.0.0)))"/>
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
       <attribute name="osgi.wiring.package" value="graphql"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.execution)(version&gt;=20.1.0)(!(version&gt;=21.0.0)))"/>
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.analysis)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.analysis"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.cachecontrol)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.cachecontrol"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.collect)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.collect"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.com.google.common.base)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.com.google.common.base"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.com.google.common.collect)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.com.google.common.collect"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.com.google.common.math)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.com.google.common.math"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.com.google.common.primitives)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.com.google.common.primitives"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.execution)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
       <attribute name="osgi.wiring.package" value="graphql.execution"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.execution.instrumentation)(version&gt;=20.1.0)(!(version&gt;=21.0.0)))"/>
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.execution.directives)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.execution.directives"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.execution.instrumentation)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
       <attribute name="osgi.wiring.package" value="graphql.execution.instrumentation"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.execution.instrumentation.dataloader)(version&gt;=20.1.0)(!(version&gt;=21.0.0)))"/>
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.execution.instrumentation.dataloader)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
       <attribute name="osgi.wiring.package" value="graphql.execution.instrumentation.dataloader"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.execution.instrumentation.parameters)(version&gt;=20.1.0)(!(version&gt;=21.0.0)))"/>
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.execution.instrumentation.parameters)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
       <attribute name="osgi.wiring.package" value="graphql.execution.instrumentation.parameters"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.execution.preparsed)(version&gt;=20.1.0)(!(version&gt;=21.0.0)))"/>
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.execution.preparsed)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
       <attribute name="osgi.wiring.package" value="graphql.execution.preparsed"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.execution.reactive)(version&gt;=20.1.0)(!(version&gt;=21.0.0)))"/>
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.execution.reactive)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
       <attribute name="osgi.wiring.package" value="graphql.execution.reactive"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.introspection)(version&gt;=20.1.0)(!(version&gt;=21.0.0)))"/>
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.extensions)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.extensions"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.i18n)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.i18n"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.introspection)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
       <attribute name="osgi.wiring.package" value="graphql.introspection"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=graphql.kickstart.execution)"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.execution"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=graphql.kickstart.execution.config)"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.execution.config"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=graphql.kickstart.execution.context)"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.execution.context"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=graphql.kickstart.execution.error)"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.execution.error"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=graphql.kickstart.execution.input)"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.execution.input"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=graphql.kickstart.execution.instrumentation)"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.execution.instrumentation"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=graphql.kickstart.execution.subscriptions)"/>
-      <attribute name="osgi.wiring.package" value="graphql.kickstart.execution.subscriptions"/>
-    </requirement>
-    <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.language)(version&gt;=20.1.0)(!(version&gt;=21.0.0)))"/>
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.language)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
       <attribute name="osgi.wiring.package" value="graphql.language"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.parser)(version&gt;=20.1.0)(!(version&gt;=21.0.0)))"/>
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.normalized)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.normalized"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.org.antlr.v4.runtime)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.org.antlr.v4.runtime"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.org.antlr.v4.runtime.atn)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.org.antlr.v4.runtime.atn"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.org.antlr.v4.runtime.dfa)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.org.antlr.v4.runtime.dfa"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.org.antlr.v4.runtime.misc)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.org.antlr.v4.runtime.misc"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.org.antlr.v4.runtime.tree)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.org.antlr.v4.runtime.tree"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.org.antlr.v4.runtime.tree.pattern)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.org.antlr.v4.runtime.tree.pattern"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.org.antlr.v4.runtime.tree.xpath)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.org.antlr.v4.runtime.tree.xpath"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.parser)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
       <attribute name="osgi.wiring.package" value="graphql.parser"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.schema)(version&gt;=20.1.0)(!(version&gt;=21.0.0)))"/>
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.parser.antlr)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.parser.antlr"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.parser.exceptions)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.parser.exceptions"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.scalar)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.scalar"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.schema)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
       <attribute name="osgi.wiring.package" value="graphql.schema"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=java.io)"/>
-      <attribute name="osgi.wiring.package" value="java.io"/>
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.schema.diff)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.schema.diff"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=java.lang)"/>
-      <attribute name="osgi.wiring.package" value="java.lang"/>
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.schema.diff.reporting)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.schema.diff.reporting"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=java.lang.invoke)"/>
-      <attribute name="osgi.wiring.package" value="java.lang.invoke"/>
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.schema.diffing)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.schema.diffing"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=java.time)"/>
-      <attribute name="osgi.wiring.package" value="java.time"/>
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.schema.diffing.ana)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.schema.diffing.ana"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=java.util)"/>
-      <attribute name="osgi.wiring.package" value="java.util"/>
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.schema.diffing.dot)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.schema.diffing.dot"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=java.util.concurrent)"/>
-      <attribute name="osgi.wiring.package" value="java.util.concurrent"/>
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.schema.fetching)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.schema.fetching"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=java.util.concurrent.atomic)"/>
-      <attribute name="osgi.wiring.package" value="java.util.concurrent.atomic"/>
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.schema.idl)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.schema.idl"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=java.util.function)"/>
-      <attribute name="osgi.wiring.package" value="java.util.function"/>
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.schema.idl.errors)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.schema.idl.errors"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(osgi.wiring.package=java.util.stream)"/>
-      <attribute name="osgi.wiring.package" value="java.util.stream"/>
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.schema.impl)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.schema.impl"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=org.dataloader)(version&gt;=3.2.0)(!(version&gt;=4.0.0)))"/>
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.schema.validation)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.schema.validation"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.schema.visibility)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.schema.visibility"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.util)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.util"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.validation)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.validation"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(&amp;(osgi.wiring.package=graphql.validation.rules)(version&gt;=20.4.0)(!(version&gt;=21.0.0)))"/>
+      <attribute name="osgi.wiring.package" value="graphql.validation.rules"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=javax.annotation)"/>
+      <attribute name="osgi.wiring.package" value="javax.annotation"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=javax.annotation.meta)"/>
+      <attribute name="osgi.wiring.package" value="javax.annotation.meta"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=org.checkerframework.checker.nullness.qual)"/>
+      <attribute name="osgi.wiring.package" value="org.checkerframework.checker.nullness.qual"/>
+    </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=org.dataloader)"/>
       <attribute name="osgi.wiring.package" value="org.dataloader"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=org.dataloader.stats)(version&gt;=3.2.0)(!(version&gt;=4.0.0)))"/>
+      <directive name="filter" value="(osgi.wiring.package=org.dataloader.stats)"/>
       <attribute name="osgi.wiring.package" value="org.dataloader.stats"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=org.reactivestreams)(version&gt;=1.0.0)(!(version&gt;=2.0.0)))"/>
+      <directive name="filter" value="(osgi.wiring.package=org.reactivestreams)"/>
       <attribute name="osgi.wiring.package" value="org.reactivestreams"/>
     </requirement>
     <requirement namespace="osgi.wiring.package">
-      <directive name="filter" value="(&amp;(osgi.wiring.package=org.slf4j)(version&gt;=2.0.0)(!(version&gt;=3.0.0)))"/>
+      <directive name="filter" value="(osgi.wiring.package=org.slf4j)"/>
       <attribute name="osgi.wiring.package" value="org.slf4j"/>
     </requirement>
+    <requirement namespace="osgi.wiring.package">
+      <directive name="filter" value="(osgi.wiring.package=sun.misc)"/>
+      <attribute name="osgi.wiring.package" value="sun.misc"/>
+    </requirement>
     <requirement namespace="osgi.ee">
-      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=17))"/>
+      <directive name="filter" value="(&amp;(osgi.ee=JavaSE)(version=1.8))"/>
     </requirement>
   </resource>
 </repository>
