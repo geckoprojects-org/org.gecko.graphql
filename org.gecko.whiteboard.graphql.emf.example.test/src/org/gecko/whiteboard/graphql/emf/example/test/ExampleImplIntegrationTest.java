@@ -18,10 +18,10 @@ import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 
+import org.eclipse.jetty.client.ContentResponse;
 import org.eclipse.jetty.client.HttpClient;
-import org.eclipse.jetty.client.api.ContentResponse;
-import org.eclipse.jetty.client.api.Request;
-import org.eclipse.jetty.client.util.StringContentProvider;
+import org.eclipse.jetty.client.Request;
+import org.eclipse.jetty.client.StringRequestContent;
 import org.gecko.whiteboard.graphql.GeckoGraphQLValueConverter;
 import org.gecko.whiteboard.graphql.GraphqlSchemaTypeBuilder;
 import org.gecko.whiteboard.graphql.GraphqlServiceRuntime;
@@ -57,6 +57,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 public class ExampleImplIntegrationTest {
 
 	private static final String GRAPHQL_ENDPOINT = "http://localhost:8099/graphql";
+	
+	private static final String CONTENT_TYPE = "application/json";
 
 	private static final ObjectMapper OBJECT_MAPPER;
 	static {
@@ -131,8 +133,8 @@ public class ExampleImplIntegrationTest {
 		String payload = "{\"query\":\"query getCatalogsQuery {\\n  ExampleQuery {\\n    getCatalogs {\\n      id\\n      name\\n    }\\n  }\\n}\",\"variables\":{}}";
 
 		Request post = client.POST(GRAPHQL_ENDPOINT);
-
-		post.content(new StringContentProvider(payload), "application/json");
+		
+		post.body(new StringRequestContent(CONTENT_TYPE, payload));
 
 		ContentResponse response = post.send();
 
@@ -176,7 +178,7 @@ public class ExampleImplIntegrationTest {
 
 		Request post = client.POST(GRAPHQL_ENDPOINT);
 
-		post.content(new StringContentProvider(payload), "application/json");
+		post.body(new StringRequestContent(CONTENT_TYPE, payload));
 
 		ContentResponse response = post.send();
 
@@ -210,7 +212,7 @@ public class ExampleImplIntegrationTest {
 
 		Request post = client.POST(GRAPHQL_ENDPOINT);
 
-		post.content(new StringContentProvider(payload), "application/json");
+		post.body(new StringRequestContent(CONTENT_TYPE, payload));
 
 		ContentResponse response = post.send();
 
@@ -245,7 +247,7 @@ public class ExampleImplIntegrationTest {
 
 		Request post = client.POST(GRAPHQL_ENDPOINT);
 
-		post.content(new StringContentProvider(payload), "application/json");
+		post.body(new StringRequestContent(CONTENT_TYPE, payload));
 
 		ContentResponse response = post.send();
 
@@ -281,7 +283,7 @@ public class ExampleImplIntegrationTest {
 
 		Request post = client.POST(GRAPHQL_ENDPOINT);
 
-		post.content(new StringContentProvider(payload), "application/json");
+		post.body(new StringRequestContent(CONTENT_TYPE, payload));
 
 		ContentResponse response = post.send();
 
@@ -317,7 +319,7 @@ public class ExampleImplIntegrationTest {
 
 		Request post = client.POST(GRAPHQL_ENDPOINT);
 
-		post.content(new StringContentProvider(payload), "application/json");
+		post.body(new StringRequestContent(CONTENT_TYPE, payload));
 
 		ContentResponse response = post.send();
 

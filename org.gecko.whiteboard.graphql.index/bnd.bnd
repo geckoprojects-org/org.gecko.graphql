@@ -1,6 +1,6 @@
 -include: ${workspace}/cnf/eclipse/jdt.bnd
 
-Bundle-Version: 2.0.0-SNAPSHOT
+Bundle-Version: 3.0.0-SNAPSHOT
 
 -buildpath: \
 	org.gecko.whiteboard.graphql.api;version=latest,\

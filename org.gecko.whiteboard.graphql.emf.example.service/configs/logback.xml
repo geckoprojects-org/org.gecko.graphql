@@ -19,20 +19,24 @@
 	</logger>
 
 	<!-- log OSGi events; see https://felix.apache.org/documentation/subprojects/apache-felix-logback.html#_mapping_of_osgi_events -->
-	<logger name="Events.Bundle" level="INFO">
-		<appender-ref ref="CONSOLE" />
-	</logger>
-	
-	<logger name="Events.Service.org.gecko" level="INFO">
-		<appender-ref ref="CONSOLE" />
-	</logger>
-	
-	<logger name="LogService" level="INFO">
+	<logger name="Events.Bundle" level="DEBUG">
 		<appender-ref ref="CONSOLE" />
 	</logger>
 
-	<root level="INFO">
+	<logger name="Events.Service.org.gecko" level="DEBUG">
+		<appender-ref ref="CONSOLE" />
+	</logger>
+
+	<logger name="LogService" level="DEBUG">
+		<appender-ref ref="CONSOLE" />
+	</logger>
+
+	<logger name="org.eclipse.jetty" level="INFO">
+		<appender-ref ref="CONSOLE" />
+	</logger>	
+
+    <root level="DEBUG">
 		<appender-ref ref="CONSOLE" />
 	</root>
-	
+
 </configuration>

@@ -11,9 +11,8 @@
 #	data = data
 
 -buildpath: \
-	osgi.annotation;version='7.0',\
-	osgi.core;version='7.0',\
-	osgi.cmpn;version='7.0',\
+	osgi.annotation,\
+	osgi.core,\
 	org.osgi.test.assertj.framework,\
 	org.osgi.test.common,\
 	org.osgi.test.junit5,\
@@ -35,6 +34,7 @@
 	org.gecko.whiteboard.graphql.emf.example.service.api;version=latest,\
 	org.gecko.whiteboard.graphql.emf.example.model;version=latest,\
 	graphql-java,\
+	graphql-java-servlet,\
 	java-dataloader,\
 	org.eclipse.jetty.client,\
 	org.apache.felix.http.jetty,\
@@ -42,5 +42,6 @@
 	com.fasterxml.jackson.core.jackson-annotations,\
 	com.fasterxml.jackson.core.jackson-core
 
-Bundle-Version: 2.0.0.SNAPSHOT
-Private-Package: org.gecko.whiteboard.graphql.emf.example.test
+Bundle-Version: 3.0.0.SNAPSHOT
+Private-Package: org.gecko.whiteboard.graphql.emf.example.test,\
+	org.gecko.whiteboard.graphql.emf.example.test.providers

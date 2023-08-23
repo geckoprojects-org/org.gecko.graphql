@@ -1,9 +1,11 @@
 -include: ${workspace}/cnf/eclipse/jdt.bnd
 
 -buildpath: \
-	osgi.annotation;version='7.0',\
-	osgi.core;version='7.0',\
-	osgi.cmpn;version='7.0',\
+	osgi.annotation,\
+	osgi.core,\
+	org.osgi.service.component,\
+	org.osgi.namespace.implementation,\
+	org.osgi.service.component.annotations,\
 	org.gecko.whiteboard.graphql;version=project,\
 	graphql-java,\
 	graphql-java-kickstart,\
@@ -19,7 +21,7 @@ junit: org.apache.servicemix.bundles.junit;version="[4.11,5)"
 -testpath: \
 	${junit}
 
-Bundle-Version: 2.0.0.SNAPSHOT
+Bundle-Version: 3.0.0.SNAPSHOT
 
 -privatepackage: \
 	org.gecko.whiteboard.graphql.emf,\
